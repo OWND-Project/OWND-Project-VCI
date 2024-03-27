@@ -1,0 +1,87 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package common {
+    class Store
+    package store {
+        class KeyStore
+        class AuthStore
+        KeyStore --> Store
+        AuthStore --> Store
+    }
+    package sd_jwt {
+        class SdJwt {
+            issueFlatCredential()
+        }
+    }
+    package oid4vci {
+        class CredentialOffer {
+            credentialOffer2Url()
+            url2CredentialOffer()
+        }
+        package tokenEndpoint {
+            class TokenIssuer {
+                constructor(config: Config)
+                issue()
+            }
+            interface Config
+            interface AuthCodeStateProvider
+            interface AccessTokenIssuer
+
+            TokenIssuer --> Config
+
+            Config --> AccessTokenIssuer
+            Config --> AuthCodeStateProvider
+        }
+        package credentialEndpoint {
+            class CredentialIssuer {
+                constructor(config: Config)
+                issue()
+            }
+            interface Config
+            interface AccessTokenStateProvider
+            interface IssueJwtVcJsonCredential
+            interface IssueSdJwtVcCredential
+            interface UpdateNonce
+
+            CredentialIssuer --> Config
+
+            Config --> AccessTokenStateProvider
+            Config --> IssueJwtVcJsonCredential
+            Config --> IssueSdJwtVcCredential
+            Config --> UpdateNonce
+        }
+    }
+}
+
+package employee_vci {
+    class Store
+    class TokenConfig
+    class AuthCodeStateProvider
+    class AccessTokenIssuer
+
+    class CredentialConfig
+    class AccessTokenStateProvider
+    class IssueSdJwtVcCredential
+    class UpdateNonce
+
+    Store --> common.store.KeyStore
+    Store --> common.store.AuthStore
+
+    TokenConfig --> AccessTokenIssuer
+    TokenConfig --> AuthCodeStateProvider
+    common.oid4vci.tokenEndpoint.Config <|-- TokenConfig
+    common.oid4vci.tokenEndpoint.AuthCodeStateProvider <|-- AuthCodeStateProvider
+    common.oid4vci.tokenEndpoint.AccessTokenIssuer <|-- AccessTokenIssuer
+
+    CredentialConfig --> AccessTokenStateProvider
+    CredentialConfig --> IssueSdJwtVcCredential
+    CredentialConfig --> UpdateNonce
+    common.oid4vci.credentialEndpoint.Config <|-- CredentialConfig
+    common.oid4vci.credentialEndpoint.AccessTokenStateProvider <|-- AccessTokenStateProvider
+    common.oid4vci.credentialEndpoint.IssueSdJwtVcCredential <|-- IssueSdJwtVcCredential
+    common.oid4vci.credentialEndpoint.UpdateNonce <|-- UpdateNonce
+
+    IssueSdJwtVcCredential --> common.sd_jwt.SdJwt
+}
+@enduml

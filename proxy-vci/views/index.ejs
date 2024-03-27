@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koa Views Example</title>
+    <link rel="stylesheet" href="/styles/reset.css">
+    <style>
+        /* リンクタグのデフォルトのスタイルをリセット */
+        a {
+            text-decoration: none; /* アンダーラインを消す */
+            display: inline-block; /* ボタンのスタイルを適用するためのブロック要素としての性質を持たせる */
+        }
+
+        /* ボタンのスタイル */
+        button {
+            background-color: black; /* 背景色を黒に */
+            color: white; /* 文字色を白に */
+            border: none; /* ボーダーを消す */
+            padding: 10px 20px; /* 内側の余白を設定 */
+            cursor: pointer; /* ホバー時のカーソルをハンドに */
+            font-size: 16px; /* フォントサイズを設定 */
+            border-radius: 4px; /* 角を少し丸める */
+            transition: background-color 0.3s; /* 背景色の変化を滑らかに */
+        }
+
+        /* ボタンをホバーしたときのスタイル */
+        button:hover {
+            background-color: #333; /* 背景色を少し明るい黒に */
+        }
+
+        .pad-16 {
+            padding: 16px
+        }
+        /* Noto Sans JPのMediumスタイルに対応するCSS */
+        .text-style-xs-mobile {
+            font-family: 'Noto Sans JP', sans-serif; /* フォントファミリー */
+            font-weight: 500; /* Mediumは通常500のフォントウェイトに対応 */
+            font-size: 20px; /* フォントサイズ */
+            line-height: 150%; /* 行の高さ */
+            letter-spacing: 0.8px; /* 文字間隔 20px * 0.04 = 0.8px */
+            margin-bottom: 0; /* 段落の下の余白 */
+        }
+        /* Noto Sans JPのMediumスタイルに対応するCSS */
+        .text-style-xxs-mobile {
+            font-family: 'Noto Sans JP', sans-serif; /* フォントファミリー */
+            font-weight: 500; /* Mediumは通常500のフォントウェイトに対応 */
+            font-size: 16px; /* フォントサイズ */
+            line-height: 170%; /* 行の高さ */
+            letter-spacing: 0.64px; /* 文字間隔 16px * 0.04 = 0.64px */
+            margin-bottom: 0; /* 段落の下の余白 */
+        }
+        .text-style-body-l {
+            font-family: 'Noto Sans JP', sans-serif; /* フォントファミリー */
+            font-weight: 400; /* Regularは通常400のフォントウェイトに対応 */
+            font-size: 16px; /* フォントサイズ */
+            line-height: 170%; /* 行の高さ */
+            letter-spacing: 0.64px; /* 文字間隔 */
+            margin-bottom: 0; /* 段落の下の余白 */
+        }
+        .text-style-body-m {
+            font-family: 'Noto Sans JP', sans-serif; /* フォントファミリー */
+            font-weight: 400; /* Regularは通常400のフォントウェイトに対応 */
+            font-size: 14px; /* フォントサイズ */
+            line-height: 170%; /* 行の高さ */
+            letter-spacing: 0.64px; /* 文字間隔 */
+            margin-bottom: 0; /* 段落の下の余白 */
+        }
+        .color-style-light-text-body {
+            color: #1A1A1C;
+        }
+        .color-style-light-text-description {
+            color: #626264;
+        }
+        .color-style-light-border-devider {
+            color: #D8D8DB;
+        }
+        .divider {
+            border: 0; /* デフォルトの境界線を削除 */
+            height: 0.5px; /* 線の高さ */
+            background-color: #D8D8DB; /* 線の色 */
+            margin: 16px 0; /* 上下の余白 */
+        }
+        .spacer-32 {
+            padding-top: 32px;
+        }
+        .spacer-16 {
+            padding-top: 16px;
+        }
+        .spacer-8 {
+            padding-top: 8px;
+        }
+        .main-img {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="pad-16">
+    <div>
+        <div class="text-style-xs-mobile color-style-light-text-description">xIDアプリからマイナンバーカードの情報を取得します</div>
+    </div>
+    <div class="main-img">
+        <img src="/images/auth-client-img.png" alt="xID image">
+    </div>
+    <div class="spacer-32">
+        <div class="text-style-xxs-mobile color-style-light-text-description">取得する目的</div>
+        <div class="text-style-body-l color-style-light-text-description spacer-8">
+            <%= issEntityName %>が証明書を作成し、<%= walletName %>に保管するために取得します。
+        </div>
+    </div>
+    <div class="spacer-32">
+        <div class="text-style-xxs-mobile color-style-light-text-description">取得する情報の項目</div>
+        <div class="text-style-body-l color-style-light-text-body">氏名</div>
+        <hr class="divider">
+        <div class="text-style-body-l color-style-light-text-body">生年月日</div>
+        <div class="text-style-body-m color-style-light-text-description spacer-8">13歳以上、18歳以上、20歳以上を証明するための証明書を作成するために利用します。</div>
+        <hr class="divider">
+        <div class="text-style-body-l color-style-light-text-body">性別</div>
+        <hr class="divider">
+        <div class="text-style-body-l color-style-light-text-body">住所</div>
+        <hr class="divider">
+    </div>
+    <div>
+        <a href="<%= oauth2AuthorizationUrl %>" style="display: inline-block; width: 100%">
+            <button style="width: 100%">開始する</button>
+        </a>
+    </div>
+    <div class="text-style-body-m color-style-light-text-description spacer-16">
+        この端末にインストールされたxIDアプリに、マイナンバーカードを登録しておく必要があります。
+    </div>
+</body>
+</html>

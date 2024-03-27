@@ -1,0 +1,55 @@
+```puml
+@startuml
+autonumber
+hide footbox
+
+skinparam legendBackgroundColor #FFFFFF
+skinparam legendBorderColor #FFFFFF
+legend top right
+    <#FFFFFF,#FFFFFF>|<#lightgreen>     | Service Specific Area|
+    |<#e6e6fa>      | Common Logic |
+end legend
+
+actor user #white
+participant wallet
+participant token_endpoint #lightgreen
+participant common_logic1 as "TokenIssuer"
+participant servicer_logic1 as "service specific process" #lightgreen
+database auth_codes #lightgreen
+database access_tokens #lightgreen
+database c_nonces #lightgreen
+
+user -> wallet: read credential offer
+wallet -> token_endpoint: send pre_auth_code, user_pin
+token_endpoint -> common_logic1: issue
+common_logic1 -> servicer_logic1: execute providing auth state
+servicer_logic1 <-> auth_codes: get auth code state
+servicer_logic1 --> common_logic1: auth code state, auth target
+note over common_logic1
+  exists,
+  expires_in, created_at,
+  user_pin,
+  user_pin_is_used,
+  needs_proof
+end note
+common_logic1 -> common_logic1: validate state
+alt error
+  common_logic1 --> token_endpoint: error
+  token_endpoint --> wallet: error
+end
+common_logic1 -> servicer_logic1: auth code state, auth target
+servicer_logic1 -> servicer_logic1: issue access token
+servicer_logic1 -> access_tokens: save access token
+alt needs proof
+  servicer_logic1 -> servicer_logic1: issue nonce
+  servicer_logic1 -> c_nonces: save nonce
+end
+alt user_pin
+  servicer_logic1 -> auth_codes: mark as user_pin is used
+end
+servicer_logic1 --> common_logic1: token response
+common_logic1 --> token_endpoint: token response
+token_endpoint --> wallet: token response
+
+@enduml
+```

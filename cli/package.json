@@ -1,0 +1,29 @@
+{
+  "name": "proxy-vci",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "ryousuke <wakaba@datasign.jp>",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "commander": "^11.0.0",
+    "elliptic-jwk": "^0.0.1"
+  },
+  "devDependencies": {
+    "@commander-js/extra-typings": "^11.0.0",
+    "@types/node": "^20.5.9",
+    "eslint": "^8.48.0",
+    "eslint-config-prettier": "^8.0.0",
+    "prettier": "^2.0.0",
+    "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "build:ts": "tsc -p tsconfig.json",
+    "lint": "eslint  --ext .js --config .eslintrc.cjs",
+    "lint:prettier": "prettier --check ./src",
+    "fix": "yarn fix:eslint && yarn fix:prettier",
+    "fix:eslint": "yarn lint --fix",
+    "fix:prettier": "yarn lint:prettier --write",
+    "build": "yarn fix && yarn build:ts"
+  }
+}

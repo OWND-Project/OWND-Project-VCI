@@ -1,0 +1,27 @@
+version: 0.0
+os: linux
+files:
+  - source: ./
+    destination: /srv/
+file_exists_behavior: OVERWRITE
+
+hooks:
+  BeforeInstall:
+    - location: codedeploy/scripts/before_install.sh
+      timeout: 90
+      runas: root
+
+  AfterInstall:
+    - location: codedeploy/scripts/after_install.sh
+      timeout: 90
+      runas: root
+
+  ApplicationStart:
+    - location: codedeploy/scripts/application_start.sh
+      timeout: 90
+      runas: root
+
+  ApplicationStop:
+    - location: codedeploy/scripts/application_stop.sh
+      timeout: 90
+      runas: root
