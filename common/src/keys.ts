@@ -63,7 +63,7 @@ const toUnsupportedCurveError = (
     error: { type: "UNSUPPORTED_CURVE", message: description },
   };
 };
-const validateCurveName = (value: string): Result<CRV, string> => {
+const isSupportedCurve = (value: string): Result<CRV, string> => {
   switch (value) {
     case "P-256":
       return { ok: true, payload: value };
@@ -132,7 +132,7 @@ export const genKey = async (
   if (!keyId) {
     return INVALID_PARAMETER_ERROR;
   }
-  const curveCheck = validateCurveName(curve);
+  const curveCheck = isSupportedCurve(curve);
   if (!curveCheck.ok) {
     return INVALID_PARAMETER_ERROR;
   }
