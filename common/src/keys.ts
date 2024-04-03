@@ -5,12 +5,11 @@ import { UNIQUE_CONSTRAINT_FAILED } from "./store.js";
 import keyStore from "./store/keyStore.js";
 import { NgResult, Result } from "./types";
 import {
-  CERT_PEM_POSTAMBLE,
-  CERT_PEM_PREAMBLE,
   createEcdsaCsr,
   createEcdsaSelfCertificate,
 } from "./crypto/x509/issue";
 import { checkEcdsaKeyEquality, jwkToPem } from "./crypto/util";
+import { CERT_PEM_POSTAMBLE, CERT_PEM_PREAMBLE } from "./crypto/x509/constant";
 
 const INVALID_PARAMETER_ERROR: NgResult<NotSuccessResult> = {
   ok: false,
