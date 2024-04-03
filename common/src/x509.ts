@@ -19,20 +19,6 @@ const trimmer = (str: string): string => {
     .replace(/\r?\n|\r/g, "");
 };
 
-export const checkEcdsaKeyEquality = (pem1: string, pem2: string) => {
-  const kidPublicKey = jsrsasign.KEYUTIL.getKey(pem1);
-  const certPublicKey = jsrsasign.KEYUTIL.getKey(pem2);
-  if (
-    !(kidPublicKey instanceof jsrsasign.KJUR.crypto.ECDSA) ||
-    !(certPublicKey instanceof jsrsasign.KJUR.crypto.ECDSA)
-  ) {
-    throw new Error("The key type is assumed to be ECDSA");
-  }
-  const kidXY = kidPublicKey.getPublicKeyXYHex();
-  const certXY = certPublicKey.getPublicKeyXYHex();
-  return kidXY.x === certXY.x && kidXY.y === certXY.y;
-};
-
 export const createEcdsaCsr = (
   subject: string,
   publicKeyPem: string,

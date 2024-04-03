@@ -7,11 +7,10 @@ import { NgResult, Result } from "./types";
 import {
   CERT_PEM_POSTAMBLE,
   CERT_PEM_PREAMBLE,
-  checkEcdsaKeyEquality,
   createEcdsaCsr,
   createEcdsaSelfCertificate,
 } from "./x509.js";
-import { jwkToPem } from "./crypto/util";
+import { checkEcdsaKeyEquality, jwkToPem } from "./crypto/util";
 
 const INVALID_PARAMETER_ERROR: NgResult<NotSuccessResult> = {
   ok: false,

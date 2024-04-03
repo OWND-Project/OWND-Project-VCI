@@ -1,5 +1,6 @@
 import keyutil from "js-crypto-key-utils";
 import { PrivateJwk } from "elliptic-jwk";
+import * as jsrsasign from "jsrsasign";
 
 interface PemKeyPair {
   publicKey: string;
@@ -59,4 +60,17 @@ export const getKeyAlgorithm = (jwk: PrivateJwk): string => {
     default:
       throw new Error("Unsupported key type");
   }
+};
+export const checkEcdsaKeyEquality = (pem1: string, pem2: string) => {
+  const kidPublicKey = jsrsasign.KEYUTIL.getKey(pem1);
+  const certPublicKey = jsrsasign.KEYUTIL.getKey(pem2);
+  if (
+    !(kidPublicKey instanceof jsrsasign.KJUR.crypto.ECDSA) ||
+    !(certPublicKey instanceof jsrsasign.KJUR.crypto.ECDSA)
+  ) {
+    throw new Error("The key type is assumed to be ECDSA");
+  }
+  const kidXY = kidPublicKey.getPublicKeyXYHex();
+  const certXY = certPublicKey.getPublicKeyXYHex();
+  return kidXY.x === certXY.x && kidXY.y === certXY.y;
 };
