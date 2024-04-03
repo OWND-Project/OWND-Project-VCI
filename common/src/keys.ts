@@ -316,4 +316,11 @@ export const registerCert = async (
   }
 };
 
-export default { genKey, getKey, revokeKey, createCsr, createSelfCert, registerCert};
+export default {
+  genKey,
+  getKey,
+  revokeKey,
+  createCsr,
+  createSelfCert,
+  registerCert,
+};
