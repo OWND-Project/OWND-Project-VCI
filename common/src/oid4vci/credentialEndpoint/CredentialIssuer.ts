@@ -52,13 +52,14 @@ export class CredentialIssuer<T> {
         return { ok: false, error: { status: 400, payload: error } };
       }
       // proof: OPTIONAL. JSON object containing proof of possession of the key material the issued Credential shall be bound to.
-      const checkFlow = await authStore.getAuthCode(authorizedCode.code)
+      const checkFlow = await authStore.getAuthCode(authorizedCode.code);
       const validateProofResult = await validateProof(
         body.proof,
         this.config.credentialIssuer,
         authorizedCode.proofElements,
         {
-          preAuthorizedFlow: (checkFlow == undefined) ? true : checkFlow.preAuthFlow,
+          preAuthorizedFlow:
+            checkFlow == undefined ? true : checkFlow.preAuthFlow,
           supportAnonymousAccess: this.config.supportAnonymousAccess || false,
         },
       );

@@ -1,5 +1,9 @@
 import * as jsrsasign from "jsrsasign";
-import {addSeconds, formatDateTimeForDisplay, getCurrentUTCDate} from "./utils/datetime";
+import {
+  addSeconds,
+  formatDateTimeForDisplay,
+  getCurrentUTCDate,
+} from "./utils/datetime";
 
 export const CSR_PEM_PREAMBLE = "-----BEGIN CERTIFICATE REQUEST-----";
 export const CSR_PEM_POSTAMBLE = "-----END CERTIFICATE REQUEST-----";

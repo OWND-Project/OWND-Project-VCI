@@ -1,4 +1,3 @@
-
 export type xIdResponse = {
   last_name: string;
   first_name: string;
