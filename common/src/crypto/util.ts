@@ -74,3 +74,13 @@ export const checkEcdsaKeyEquality = (pem1: string, pem2: string) => {
   const certXY = certPublicKey.getPublicKeyXYHex();
   return kidXY.x === certXY.x && kidXY.y === certXY.y;
 };
+export const positiveSerialNumber = (): string => {
+  let hexValue: string;
+  do {
+    hexValue = jsrsasign.KJUR.crypto.Util.getRandomHexOfNbytes(20);
+  } while (
+    BigInt("0x" + hexValue) >> BigInt(hexValue.length * 4 - 1) ===
+    BigInt(1)
+  );
+  return hexValue;
+};

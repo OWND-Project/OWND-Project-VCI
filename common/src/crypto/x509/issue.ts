@@ -4,6 +4,7 @@ import {
   formatDateTimeForDisplay,
   getCurrentUTCDate,
 } from "../../utils/datetime";
+import { positiveSerialNumber } from "../util";
 
 export const CSR_PEM_PREAMBLE = "-----BEGIN CERTIFICATE REQUEST-----";
 export const CSR_PEM_POSTAMBLE = "-----END CERTIFICATE REQUEST-----";
@@ -31,17 +32,6 @@ export const createEcdsaCsr = (
     sbjprvkey: privateKeyPem,
   });
   return trimmer(regularCsr);
-};
-
-const positiveSerialNumber = () => {
-  let hexValue: string;
-  do {
-    hexValue = jsrsasign.KJUR.crypto.Util.getRandomHexOfNbytes(20);
-  } while (
-    BigInt("0x" + hexValue) >> BigInt(hexValue.length * 4 - 1) ===
-    BigInt(1)
-  );
-  return hexValue;
 };
 
 export const createEcdsaSelfCertificate = (
