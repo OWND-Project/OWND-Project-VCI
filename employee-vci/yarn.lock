@@ -290,10 +290,10 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.14.tgz#74a97a5573980802f32c8e47b663530ab3b6b7d1"
   integrity sha512-U3PUjAudAdJBeC2pgN8uTIKgxrb4nlDF3SF0++EldXQvQBGkpFZMSnwQiIoDU77tv45VgNkl/L4ouD+rEomujw==
 
-"@types/jsrsasign@^10.5.9":
-  version "10.5.11"
-  resolved "https://registry.yarnpkg.com/@types/jsrsasign/-/jsrsasign-10.5.11.tgz#db7991d73f9800f561ca2da85d3036dcda4e47fc"
-  integrity sha512-dBjGoI99kzjDe79LEfOpSHjc/U2BnEvY/FG6Yy1qvPYS2S0yxuWRKOk2Urzh3vGeb5dDq2JRqzilSKhH05t//Q==
+"@types/jsrsasign@^10.5.13":
+  version "10.5.13"
+  resolved "https://registry.yarnpkg.com/@types/jsrsasign/-/jsrsasign-10.5.13.tgz#10f10d298d35f960b1d98a7de0664b6ed13e0da1"
+  integrity sha512-vvVHLrXxoUZgBWTcJnTMSC4FAQcG2loK7N1Uy20I3nr/aUhetbGdfuwSzXkrMoll2RoYKW0IcMIN0I0bwMwVMQ==
 
 "@types/keygrip@*":
   version "1.0.4"
@@ -2007,10 +2007,10 @@ json-stringify-safe@^5.0.1:
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
   integrity sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==
 
-jsrsasign@^10.8.6:
-  version "10.8.6"
-  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-10.8.6.tgz#ebf7f3c812c6517af84f0d8a10115e0dbfabe145"
-  integrity sha512-bQmbVtsfbgaKBTWCKiDCPlUPbdlRIK/FzSwT3BzIgZl/cU6TqXu6pZJsCI/dJVrZ9Gir5GC4woqw9shH/v7MBw==
+jsrsasign@^11.1.0:
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-11.1.0.tgz#195e788102731102fbf3e36b33fde28936f4bf57"
+  integrity sha512-Ov74K9GihaK9/9WncTe1mPmvrO7Py665TUfUKvraXBpu+xcTWitrtuOwcjf4KMU9maPaYn0OuaWy0HOzy/GBXg==
 
 keygrip@~1.1.0:
   version "1.1.0"
