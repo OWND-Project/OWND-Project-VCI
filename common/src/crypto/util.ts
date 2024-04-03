@@ -28,10 +28,11 @@ export const ellipticJwkToPem = async (jwk: {
   x: string;
   y: string | undefined;
 }): Promise<PemKeyPair> => {
-
   // Check for convertibility.
-  if ((jwk.kty !== "EC" && jwk.kty !== "OKP") ||
-      (jwk.crv !== "P-256" && jwk.crv !== "secp256k1" && jwk.crv !== "Ed25519")) {
+  if (
+    (jwk.kty !== "EC" && jwk.kty !== "OKP") ||
+    (jwk.crv !== "P-256" && jwk.crv !== "secp256k1" && jwk.crv !== "Ed25519")
+  ) {
     throw new Error(`Unsupported kty or crv: ${jwk.kty}, ${jwk.crv}`);
   }
 
