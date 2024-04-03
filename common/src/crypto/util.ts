@@ -1,4 +1,6 @@
 import keyutil from "js-crypto-key-utils";
+import { createHash } from "crypto";
+
 import { PrivateJwk } from "elliptic-jwk";
 import * as jsrsasign from "jsrsasign";
 
@@ -91,4 +93,12 @@ export const positiveSerialNumber = (): string => {
     BigInt(1)
   );
   return hexValue;
+};
+
+export const hexToBinary = (hex: string): Buffer => {
+  return Buffer.from(hex, "hex");
+};
+
+export const sha1Binary = (binary: Buffer): string => {
+  return createHash("sha1").update(binary).digest("hex");
 };
