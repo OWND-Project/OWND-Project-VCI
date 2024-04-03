@@ -9,7 +9,7 @@ import {
   CERT_PEM_PREAMBLE,
   createEcdsaCsr,
   createEcdsaSelfCertificate,
-} from "./x509.js";
+} from "./crypto/x509/issue";
 import { checkEcdsaKeyEquality, jwkToPem } from "./crypto/util";
 
 const INVALID_PARAMETER_ERROR: NgResult<NotSuccessResult> = {
