@@ -7,6 +7,7 @@ import { NgResult, Result } from "./types";
 import {
   createEcdsaCsr,
   createEcdsaSelfCertificate,
+  trimmer,
 } from "./crypto/x509/issue";
 import { checkEcdsaKeyEquality, jwkToPem } from "./crypto/util";
 import { CERT_PEM_POSTAMBLE, CERT_PEM_PREAMBLE } from "./crypto/x509/constant";
@@ -205,7 +206,7 @@ export const createCsr = async (
     const { publicKey, privateKey } = await jwkToPem(jwkPair);
     const csr = createEcdsaCsr(subject, publicKey, privateKey);
     const payload = {
-      csr: csr,
+      csr: trimmer(csr),
     };
     return { ok: true, payload };
   } catch (err) {
@@ -246,7 +247,7 @@ export const createSelfCert = async (
     const { privateKey } = await jwkToPem(jwkPair);
     const cert = createEcdsaSelfCertificate(csr, privateKey);
     const payload = {
-      cert: cert,
+      cert: trimmer(cert),
     };
     return { ok: true, payload };
   } catch (err) {

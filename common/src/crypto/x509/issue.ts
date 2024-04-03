@@ -12,7 +12,7 @@ import {
   CSR_PEM_PREAMBLE,
 } from "./constant";
 
-const trimmer = (str: string): string => {
+export const trimmer = (str: string): string => {
   return str
     .replace(new RegExp(CSR_PEM_PREAMBLE, "g"), "")
     .replace(new RegExp(CSR_PEM_POSTAMBLE, "g"), "")
@@ -25,14 +25,14 @@ export const createEcdsaCsr = (
   subject: string,
   publicKeyPem: string,
   privateKeyPem: string,
-) => {
+): string => {
   const regularCsr = jsrsasign.KJUR.asn1.csr.CSRUtil.newCSRPEM({
     subject: { str: subject },
     sbjpubkey: publicKeyPem,
     sigalg: "SHA256withECDSA",
     sbjprvkey: privateKeyPem,
   });
-  return trimmer(regularCsr);
+  return regularCsr;
 };
 
 export const createEcdsaSelfCertificate = (
@@ -62,5 +62,5 @@ export const createEcdsaSelfCertificate = (
     ext: [],
   });
 
-  return trimmer(cert.getPEM());
+  return cert.getPEM();
 };
