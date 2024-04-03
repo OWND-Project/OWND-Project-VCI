@@ -6,11 +6,12 @@ import keyStore from "./store/keyStore.js";
 import { NgResult, Result } from "./types";
 import {
   generateCsr,
-  createEcdsaSelfCertificate,
   trimmer,
+  generateRootCertificate,
 } from "./crypto/x509/issue";
 import { checkEcdsaKeyEquality, ellipticJwkToPem } from "./crypto/util";
 import { CERT_PEM_POSTAMBLE, CERT_PEM_PREAMBLE } from "./crypto/x509/constant";
+import { addSeconds, getCurrentUTCDate } from "./utils/datetime";
 
 const INVALID_PARAMETER_ERROR: NgResult<NotSuccessResult> = {
   ok: false,
@@ -251,7 +252,16 @@ export const createSelfCert = async (
       d,
     };
     const { privateKey } = await ellipticJwkToPem(jwkPair);
-    const cert = createEcdsaSelfCertificate(csr, privateKey);
+
+    const notBefore = getCurrentUTCDate();
+    const notAfter = addSeconds(notBefore, 86400 * 365);
+    const cert = generateRootCertificate(
+      csr,
+      notBefore,
+      notAfter,
+      "SHA256withECDSA",
+      privateKey,
+    );
     const payload = {
       cert: trimmer(cert),
     };

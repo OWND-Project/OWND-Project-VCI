@@ -38,31 +38,55 @@ export const generateCsr = (
   return csr.getPEM();
 };
 
-export const createEcdsaSelfCertificate = (
+export const generateRootCertificate = (
   csr: string,
-  privateKeyPEM: string,
+  notBefore: Date,
+  notAfter: Date,
+  signatureAlgorithm: string,
+  issuerPrivateKeyPEM: string,
 ): string => {
-  const privateKey = jsrsasign.KEYUTIL.getKey(privateKeyPEM);
+  const csrWithLabel =
+    CSR_PEM_PREAMBLE + "\n" + trimmer(csr) + "\n" + CSR_PEM_POSTAMBLE;
+  const parameter = jsrsasign.KJUR.asn1.csr.CSRUtil.getParam(csrWithLabel);
+  return generateCertificate(
+    csr,
+    parameter.subject.str,
+    notBefore,
+    notAfter,
+    signatureAlgorithm,
+    issuerPrivateKeyPEM,
+  );
+};
 
-  const csrWithMarker =
-    CSR_PEM_PREAMBLE + "\n" + csr + "\n" + CSR_PEM_POSTAMBLE;
-  const parameter = jsrsasign.KJUR.asn1.csr.CSRUtil.getParam(csrWithMarker);
+export const generateCertificate = (
+  csr: string,
+  issuerName: string,
+  notBefore: Date,
+  notAfter: Date,
+  signatureAlgorithm: string,
+  issuerPrivateKeyPEM: string,
+): string => {
+  // const signatureAlgorithm = ""
+  // const notBefore = getCurrentUTCDate();
+  // const notAfter = addSeconds(notBefore, 86400 * 365);
 
-  const notBefore = getCurrentUTCDate();
-  const notAfter = addSeconds(notBefore, 86400 * 365);
-  const serialNumber = positiveSerialNumber();
+  const csrWithLabel =
+    CSR_PEM_PREAMBLE + "\n" + trimmer(csr) + "\n" + CSR_PEM_POSTAMBLE;
+
+  const parameter = jsrsasign.KJUR.asn1.csr.CSRUtil.getParam(csrWithLabel);
+  const extension = parameter.extreq === undefined ? [] : parameter.extreq;
 
   const cert = new jsrsasign.KJUR.asn1.x509.Certificate({
     version: 3,
-    cakey: privateKey,
-    issuer: parameter.subject,
+    cakey: jsrsasign.KEYUTIL.getKey(issuerPrivateKeyPEM),
+    issuer: { str: issuerName },
     subject: parameter.subject,
     sbjpubkey: parameter.sbjpubkey,
-    sigalg: "SHA256withECDSA",
-    serial: { hex: serialNumber },
+    sigalg: signatureAlgorithm,
+    serial: { hex: positiveSerialNumber() },
     notbefore: formatDateTimeForDisplay(notBefore),
     notafter: formatDateTimeForDisplay(notAfter),
-    ext: [],
+    ext: extension,
   });
 
   return cert.getPEM();
