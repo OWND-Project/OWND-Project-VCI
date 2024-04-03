@@ -9,7 +9,7 @@ import {
   createEcdsaSelfCertificate,
   trimmer,
 } from "./crypto/x509/issue";
-import { checkEcdsaKeyEquality, jwkToPem } from "./crypto/util";
+import { checkEcdsaKeyEquality, ellipticJwkToPem } from "./crypto/util";
 import { CERT_PEM_POSTAMBLE, CERT_PEM_PREAMBLE } from "./crypto/x509/constant";
 
 const INVALID_PARAMETER_ERROR: NgResult<NotSuccessResult> = {
@@ -203,7 +203,7 @@ export const createCsr = async (
       y,
       d,
     };
-    const { publicKey, privateKey } = await jwkToPem(jwkPair);
+    const { publicKey, privateKey } = await ellipticJwkToPem(jwkPair);
     const csr = createEcdsaCsr(subject, publicKey, privateKey);
     const payload = {
       csr: trimmer(csr),
@@ -244,7 +244,7 @@ export const createSelfCert = async (
       y,
       d,
     };
-    const { privateKey } = await jwkToPem(jwkPair);
+    const { privateKey } = await ellipticJwkToPem(jwkPair);
     const cert = createEcdsaSelfCertificate(csr, privateKey);
     const payload = {
       cert: trimmer(cert),
@@ -287,7 +287,7 @@ export const registerCert = async (
       d,
     };
 
-    const { publicKey } = await jwkToPem(jwkPair);
+    const { publicKey } = await ellipticJwkToPem(jwkPair);
     const endCertificate = certificates[0];
     const certWithMarker =
       CERT_PEM_PREAMBLE + "\n" + endCertificate + "\n" + CERT_PEM_POSTAMBLE;
