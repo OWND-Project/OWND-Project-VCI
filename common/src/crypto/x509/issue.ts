@@ -21,18 +21,21 @@ export const trimmer = (str: string): string => {
     .replace(/\r?\n|\r/g, "");
 };
 
-export const createEcdsaCsr = (
+export const generateCsr = (
   subject: string,
-  publicKeyPem: string,
-  privateKeyPem: string,
+  subjectPublicKeyPem: string,
+  subjectPrivateKeyPem: string,
+  csrSigningAlgorithm: string,
+  extension: any[],
 ): string => {
-  const regularCsr = jsrsasign.KJUR.asn1.csr.CSRUtil.newCSRPEM({
+  const csr = new jsrsasign.KJUR.asn1.csr.CertificationRequest({
     subject: { str: subject },
-    sbjpubkey: publicKeyPem,
-    sigalg: "SHA256withECDSA",
-    sbjprvkey: privateKeyPem,
+    sbjpubkey: subjectPublicKeyPem,
+    sbjprvkey: subjectPrivateKeyPem,
+    sigalg: csrSigningAlgorithm,
+    extreq: extension,
   });
-  return regularCsr;
+  return csr.getPEM();
 };
 
 export const createEcdsaSelfCertificate = (

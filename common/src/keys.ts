@@ -5,7 +5,7 @@ import { UNIQUE_CONSTRAINT_FAILED } from "./store.js";
 import keyStore from "./store/keyStore.js";
 import { NgResult, Result } from "./types";
 import {
-  createEcdsaCsr,
+  generateCsr,
   createEcdsaSelfCertificate,
   trimmer,
 } from "./crypto/x509/issue";
@@ -204,7 +204,13 @@ export const createCsr = async (
       d,
     };
     const { publicKey, privateKey } = await ellipticJwkToPem(jwkPair);
-    const csr = createEcdsaCsr(subject, publicKey, privateKey);
+    const csr = generateCsr(
+      subject,
+      publicKey,
+      privateKey,
+      "SHA256withECDSA",
+      [],
+    );
     const payload = {
       csr: trimmer(csr),
     };
