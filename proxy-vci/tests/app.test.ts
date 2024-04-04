@@ -253,7 +253,7 @@ describe("/admin/keys/:kid/signselfcert endpoint test", () => {
     const csrResponse = await request(app.callback())
       .post("/admin/keys/key-1/csr")
       .auth(username, password)
-      .send({ subject: "example_subject" });
+      .send({ subject: "/CN=example_subject" });
     assert.equal(csrResponse.status, 200);
     const csr = csrResponse.body.payload.csr;
 
@@ -296,7 +296,7 @@ describe("/admin/keys/:kid/registercert endpoint test", () => {
     const csrResponse = await request(app.callback())
       .post("/admin/keys/key-1/csr")
       .auth(username, password)
-      .send({ subject: "example_subject" });
+      .send({ subject: "/CN=example_subject" });
     assert.equal(csrResponse.status, 200);
     const csr = csrResponse.body.payload.csr;
 

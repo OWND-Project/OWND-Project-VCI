@@ -2,7 +2,8 @@ import crypto from "crypto";
 import { DisclosureFrame, issueSDJWT } from "@meeco/sd-jwt";
 import { importJWK, JWTHeaderParameters, JWTPayload, SignJWT } from "jose";
 import { PrivateJwk } from "elliptic-jwk";
-import { getKeyAlgorithm } from "../keys.js";
+
+import { getKeyAlgorithm } from "../crypto/util";
 
 export const AlwaysDisclosedClaimNames = [
   "iss",

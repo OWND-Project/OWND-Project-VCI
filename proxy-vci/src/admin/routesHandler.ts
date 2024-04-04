@@ -1,11 +1,7 @@
 import Koa from "koa";
 
 import { handleNotSuccessResult } from "../../../common/src/routerCommon.js";
-import keys, {
-  createCsr,
-  createSelfCert,
-  registerCert,
-} from "../../../common/src/keys.js";
+import keys from "../../../common/src/keys.js";
 
 export async function handleNewKey(ctx: Koa.Context) {
   if (!ctx.request.body) {
@@ -37,7 +33,7 @@ export async function handleRevokeKey(ctx: Koa.Context) {
 export async function handleCsr(ctx: Koa.Context) {
   const { kid } = ctx.params;
   const subject = ctx.request.body.subject;
-  const result = await createCsr(kid, subject);
+  const result = await keys.createCsr(kid, subject);
   if (result.ok) {
     ctx.body = { status: "success", payload: result.payload };
     ctx.status = 200;
@@ -49,7 +45,7 @@ export async function handleCsr(ctx: Koa.Context) {
 export async function handleSignSelfCert(ctx: Koa.Context) {
   const { kid } = ctx.params;
   const csr = ctx.request.body.csr;
-  const result = await createSelfCert(kid, csr);
+  const result = await keys.createSelfCert(kid, csr);
   if (result.ok) {
     ctx.body = { status: "success", payload: result.payload };
     ctx.status = 200;
@@ -60,7 +56,7 @@ export async function handleSignSelfCert(ctx: Koa.Context) {
 export async function handleRegisterCert(ctx: Koa.Context) {
   const { kid } = ctx.params;
   const certificates = ctx.request.body.certificates || [];
-  const result = await registerCert(kid, certificates);
+  const result = await keys.registerCert(kid, certificates);
   if (result.ok) {
     ctx.body = {
       status: "success",

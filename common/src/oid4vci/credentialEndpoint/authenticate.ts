@@ -13,7 +13,7 @@ export const authenticate = async <T>(
   invalid_token:
     - Credential Request contains the wrong Access Token or the Access Token is missing
    */
-  if (!authHeader || !RegExp('^Bearer ', "i").test(authHeader)) {
+  if (!authHeader || !RegExp("^Bearer ", "i").test(authHeader)) {
     const error = {
       error: INVALID_TOKEN,
       error_description: "Invalid data received!",

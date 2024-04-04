@@ -1,24 +1,17 @@
-import { CRV, newPrivateJwk, PrivateJwk, PublicJwk } from "elliptic-jwk";
-import keyutil from "js-crypto-key-utils";
+import { CRV, newPrivateJwk, PublicJwk } from "elliptic-jwk";
 
 import { NotSuccessResult } from "./routerCommon";
 import { UNIQUE_CONSTRAINT_FAILED } from "./store.js";
 import keyStore from "./store/keyStore.js";
 import { NgResult, Result } from "./types";
 import {
-  CERT_PEM_POSTAMBLE,
-  CERT_PEM_PREAMBLE,
-  checkEcdsaKeyEquality,
-  createEcdsaCsr,
-  createEcdsaSelfCertificate,
-} from "./x509.js";
-
-interface Csr {
-  csr: string;
-}
-interface X509Cert {
-  cert: string;
-}
+  generateCsr,
+  trimmer,
+  generateRootCertificate,
+} from "./crypto/x509/issue";
+import { checkEcdsaKeyEquality, ellipticJwkToPem } from "./crypto/util";
+import { CERT_PEM_POSTAMBLE, CERT_PEM_PREAMBLE } from "./crypto/x509/constant";
+import { addSeconds, getCurrentUTCDate } from "./utils/datetime";
 
 const INVALID_PARAMETER_ERROR: NgResult<NotSuccessResult> = {
   ok: false,
@@ -63,7 +56,7 @@ const toUnsupportedCurveError = (
     error: { type: "UNSUPPORTED_CURVE", message: description },
   };
 };
-const validateCurveName = (value: string): Result<CRV, string> => {
+const isSupportedCurve = (value: string): Result<CRV, string> => {
   switch (value) {
     case "P-256":
       return { ok: true, payload: value };
@@ -79,52 +72,6 @@ const validateCurveName = (value: string): Result<CRV, string> => {
   }
 };
 
-interface PemKeyPair {
-  publicKey: string;
-  privateKey: string;
-}
-
-const curveNistName = (crv: string): string => {
-  switch (crv) {
-    case "secp256k1":
-      return "P-256K";
-    case "secp256r1":
-      return "P-256";
-    case "secp384r1":
-      return "P-384";
-    case "secp521r1":
-      return "P-521";
-    default:
-      throw new Error(`Unsupported curve: ${crv}`);
-  }
-};
-
-const jwkToPem = async (jwk: {
-  kty: "EC" | "OKP";
-  d: string;
-  crv: "P-256" | "secp256k1" | "Ed25519";
-  x: string;
-  y: string | undefined;
-}): Promise<PemKeyPair> => {
-  // See https://github.com/junkurihara/jscu/blob/8168ab947e23876d2915ed8849f021d59673e8aa/packages/js-crypto-key-utils/src/params.ts#L12
-  const preprocessedJwk = jwk.crv.startsWith("sec")
-    ? {
-        kty: jwk.kty,
-        d: jwk.d,
-        crv: curveNistName(jwk.crv),
-        x: jwk.x,
-        y: jwk.y,
-      }
-    : jwk;
-
-  const keyObj = new keyutil.Key("jwk", preprocessedJwk);
-  const privatePem = (await keyObj.export("pem")) as string;
-  const publicPem = (await keyObj.export("pem", {
-    outputPublic: true,
-  })) as string;
-  return { publicKey: publicPem, privateKey: privatePem };
-};
-
 export const genKey = async (
   keyId: string,
   curve: string,
@@ -132,7 +79,7 @@ export const genKey = async (
   if (!keyId) {
     return INVALID_PARAMETER_ERROR;
   }
-  const curveCheck = validateCurveName(curve);
+  const curveCheck = isSupportedCurve(curve);
   if (!curveCheck.ok) {
     return INVALID_PARAMETER_ERROR;
   }
@@ -225,6 +172,13 @@ export const revokeKey = async (
   }
 };
 
+interface Csr {
+  csr: string;
+}
+interface X509Cert {
+  cert: string;
+}
+
 export const createCsr = async (
   keyId: string,
   subject: string,
@@ -250,10 +204,16 @@ export const createCsr = async (
       y,
       d,
     };
-    const { publicKey, privateKey } = await jwkToPem(jwkPair);
-    const csr = createEcdsaCsr(subject, publicKey, privateKey);
+    const { publicKey, privateKey } = await ellipticJwkToPem(jwkPair);
+    const csr = generateCsr(
+      subject,
+      publicKey,
+      privateKey,
+      "SHA256withECDSA",
+      [],
+    );
     const payload = {
-      csr: csr,
+      csr: trimmer(csr),
     };
     return { ok: true, payload };
   } catch (err) {
@@ -291,10 +251,19 @@ export const createSelfCert = async (
       y,
       d,
     };
-    const { privateKey } = await jwkToPem(jwkPair);
-    const cert = createEcdsaSelfCertificate(csr, privateKey);
+    const { privateKey } = await ellipticJwkToPem(jwkPair);
+
+    const notBefore = getCurrentUTCDate();
+    const notAfter = addSeconds(notBefore, 86400 * 365);
+    const cert = generateRootCertificate(
+      csr,
+      notBefore,
+      notAfter,
+      "SHA256withECDSA",
+      privateKey,
+    );
     const payload = {
-      cert: cert,
+      cert: trimmer(cert),
     };
     return { ok: true, payload };
   } catch (err) {
@@ -334,7 +303,7 @@ export const registerCert = async (
       d,
     };
 
-    const { publicKey } = await jwkToPem(jwkPair);
+    const { publicKey } = await ellipticJwkToPem(jwkPair);
     const endCertificate = certificates[0];
     const certWithMarker =
       CERT_PEM_PREAMBLE + "\n" + endCertificate + "\n" + CERT_PEM_POSTAMBLE;
@@ -363,20 +332,11 @@ export const registerCert = async (
   }
 };
 
-export const getKeyAlgorithm = (jwk: PrivateJwk): string => {
-  switch (jwk.kty) {
-    case "EC":
-      // todo add patterns of crv
-      if (jwk.crv === "P-256") {
-        return "ES256";
-      } else {
-        return "ES256K";
-      }
-    case "OKP":
-      return "EdDSA";
-    default:
-      throw new Error("Unsupported key type");
-  }
+export default {
+  genKey,
+  getKey,
+  revokeKey,
+  createCsr,
+  createSelfCert,
+  registerCert,
 };
-
-export default { genKey, getKey, revokeKey };
