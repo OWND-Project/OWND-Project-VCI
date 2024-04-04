@@ -66,9 +66,6 @@ export const generateCertificate = (
   signatureAlgorithm: string,
   issuerPrivateKeyPEM: string,
 ): string => {
-  // const signatureAlgorithm = ""
-  // const notBefore = getCurrentUTCDate();
-  // const notAfter = addSeconds(notBefore, 86400 * 365);
 
   const csrWithLabel =
     CSR_PEM_PREAMBLE + "\n" + trimmer(csr) + "\n" + CSR_PEM_POSTAMBLE;
