@@ -66,7 +66,6 @@ export const generateCertificate = (
   signatureAlgorithm: string,
   issuerPrivateKeyPEM: string,
 ): string => {
-
   const csrWithLabel =
     CSR_PEM_PREAMBLE + "\n" + trimmer(csr) + "\n" + CSR_PEM_POSTAMBLE;
 
