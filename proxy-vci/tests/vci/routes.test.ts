@@ -440,7 +440,7 @@ describe("POST /credential", () => {
         "Missing JWK in JWT header",
       );
     });
-    it("should return 400 when iss is valid in JWT payload", async () => {
+    it("should return 400 when iss is invalid in JWT payload", async () => {
       const { defaultJwtPayload, alg, jwk, privateKey, currentUnixTime } =
         await getDefaultInput();
       const payload = { ...defaultJwtPayload, iat: currentUnixTime + 5 }; // 現在のUnix時間 + 5（秒）
@@ -458,7 +458,7 @@ describe("POST /credential", () => {
       assert.equal(response.body.error, "invalid_or_missing_proof");
       assert.equal(response.body.error_description, "Failed to verify iss");
     });
-    it("should return 400 when iat is valid in JWT payload", async () => {
+    it("should return 400 when iat is invalid in JWT payload", async () => {
       const { defaultJwtPayload, alg, jwk, privateKey, currentUnixTime } =
         await getDefaultInput();
       const payload = { ...defaultJwtPayload, iat: currentUnixTime + 6 };
@@ -478,7 +478,7 @@ describe("POST /credential", () => {
       assert.equal(response.body.error, "invalid_or_missing_proof");
       assert.equal(response.body.error_description, "Failed to verify iat");
     });
-    it("should return 400 when nonce is valid in JWT payload", async () => {
+    it("should return 400 when nonce is invalid in JWT payload", async () => {
       const { defaultJwtPayload, alg, jwk, privateKey } =
         await getDefaultInput();
       const payload = { ...defaultJwtPayload, nonce: "wrong_nonce" };
