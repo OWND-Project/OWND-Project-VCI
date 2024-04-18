@@ -461,7 +461,7 @@ describe("POST /credential", () => {
     it("should return 400 when iat is valid in JWT payload", async () => {
       const { defaultJwtPayload, alg, jwk, privateKey, currentUnixTime } =
         await getDefaultInput();
-      const payload = { ...defaultJwtPayload, iat: currentUnixTime + 5 }; // 現在のUnix時間 + 5（秒）
+      const payload = { ...defaultJwtPayload, iat: currentUnixTime + 6 };
       const token = await new jose.SignJWT(payload)
         .setProtectedHeader({ alg, jwk })
         .setIssuer("urn:example:issuer")
@@ -473,6 +473,7 @@ describe("POST /credential", () => {
         .post("/credentials")
         .set("Authorization", "BEARER validToken")
         .send(getPostPayload(token));
+      console.log(`Response ; ${JSON.stringify(response)}`)
       assert.equal(response.status, 400);
       assert.equal(response.body.error, "invalid_or_missing_proof");
       assert.equal(response.body.error_description, "Failed to verify iat");
