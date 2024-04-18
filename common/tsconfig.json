@@ -8,6 +8,7 @@
     "module": "es2022",                                /* Specify what module code is generated. */
     "moduleResolution": "Node", /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
     "types": [
+      "koa-body", /* See https://github.com/koajs/koa-body/issues/109#issuecomment-438146730 */
       "node",
       "mocha"
     ],
