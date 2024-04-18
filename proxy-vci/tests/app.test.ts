@@ -375,6 +375,11 @@ describe("Root path test", () => {
       .set("Cookie", [cookie]);
 
     assert.equal(callbackResponse.status, 302);
+
+    if(!process.env.CREDENTIAL_OFFER_ENDPOINT){
+      assert.fail("CREDENTIAL_OFFER_ENDPOINT is not set")
+    }
+
     assert.include(
       callbackResponse.headers.location,
       process.env.CREDENTIAL_OFFER_ENDPOINT,
