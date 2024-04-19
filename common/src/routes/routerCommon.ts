@@ -67,3 +67,9 @@ export const handleNotSuccessResult = (
   }
   console.debug(ctx.status, ctx.body);
 };
+
+export const basicAuthOpts = () => {
+  const name = process.env.BASIC_AUTH_USERNAME || "";
+  const pass = process.env.BASIC_AUTH_PASSWORD || "";
+  return { name, pass };
+};
