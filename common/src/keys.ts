@@ -1,6 +1,6 @@
 import { CRV, newPrivateJwk, PublicJwk } from "elliptic-jwk";
 
-import { NotSuccessResult } from "./routes/routerCommon.js";
+import { NotSuccessResult } from "./routes/common.js";
 import { UNIQUE_CONSTRAINT_FAILED } from "./store.js";
 import keyStore from "./store/keyStore.js";
 import { NgResult, Result } from "./types.js";

@@ -1,10 +1,7 @@
 import Koa from "koa";
 
 import keys from "../../keys.js";
-import { basicAuthOpts, handleNotSuccessResult } from "../routerCommon.js";
-import Router from "koa-router";
-import auth from "koa-basic-auth";
-import { koaBody } from "koa-body";
+import { handleNotSuccessResult } from "../common.js";
 
 export async function handleNewKey(ctx: Koa.Context) {
   if (!ctx.request.body) {
@@ -80,41 +77,3 @@ export async function handleGetKey(ctx: Koa.Context) {
     handleNotSuccessResult(result.error, ctx);
   }
 }
-
-const routeDefinitions = {
-  get: {
-    "/admin/keys/:kid": handleGetKey,
-  },
-  post: {
-    "/admin/keys/new": handleNewKey,
-    "/admin/keys/:kid/revoke": handleRevokeKey,
-    "/admin/keys/:kid/csr": handleCsr,
-    "/admin/keys/:kid/signselfcert": handleSignSelfCert,
-    "/admin/keys/:kid/registercert": handleRegisterCert,
-  },
-};
-
-export const setupRoute = (router: Router<any, {}>) => {
-  const forGetMethod = routeDefinitions.get;
-  const forPostMethod = routeDefinitions.post;
-  for (const [path, handler] of Object.entries(forGetMethod)) {
-    router.get(path, auth(basicAuthOpts()), async (ctx: Koa.Context) => {
-      await handler(ctx);
-    });
-  }
-  for (const [path, handler] of Object.entries(forPostMethod)) {
-    router.post(
-      path,
-      auth(basicAuthOpts()),
-      koaBody(),
-      async (ctx: Koa.Context) => {
-        await handler(ctx);
-      },
-    );
-  }
-};
-
-export default {
-  basicAuthOpts,
-  setupRoute,
-};

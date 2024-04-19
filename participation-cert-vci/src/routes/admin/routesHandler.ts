@@ -4,7 +4,7 @@ import { Result } from "../../../../common/src/types.js";
 import {
   handleNotSuccessResult,
   NotSuccessResult,
-} from "../../../../common/src/routes/routerCommon.js";
+} from "../../../../common/src/routes/common.js";
 import { generateRandomString } from "../../../../common/src/utils/randomStringUtils.js";
 import { credentialOffer2Url } from "../../../../common/src/oid4vci/CredentialOffer.js";
 

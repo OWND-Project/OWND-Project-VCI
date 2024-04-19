@@ -1,10 +1,10 @@
 import Router from "koa-router";
 
-import adminHandler from "../../../../common/src/routes/admin/handler.js";
+import adminRoutes from "../../../../common/src/routes/admin/routes.js";
 
 const init = () => {
   const router = new Router();
-  adminHandler.setupRoute(router);
+  adminRoutes.setupRoute(router);
   return router;
 };
 

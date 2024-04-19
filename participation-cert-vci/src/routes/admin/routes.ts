@@ -4,13 +4,13 @@ import { koaBody } from "koa-body";
 import Router from "koa-router";
 
 import routesHandler from "./routesHandler.js";
-import adminHandler from "../../../../common/src/routes/admin/handler.js";
-import { basicAuthOpts } from "../../../../common/src/routes/routerCommon.js";
+import adminRoutes from "../../../../common/src/routes/admin/routes.js";
+import { basicAuthOpts } from "../../../../common/src/routes/common.js";
 
 const init = () => {
   const router = new Router();
 
-  adminHandler.setupRoute(router);
+  adminRoutes.setupRoute(router);
 
   router.post(
     "/admin/conferences/new",
