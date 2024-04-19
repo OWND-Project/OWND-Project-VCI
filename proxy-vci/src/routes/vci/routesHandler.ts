@@ -1,15 +1,12 @@
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
-import fs from "fs/promises";
 
 import Koa from "koa";
 import { v4 as uuidv4 } from "uuid";
 
 import oauth2 from "../../auth.js";
 import store from "../../store.js";
-import authStore, {
-  getAuthCode,
-} from "../../../../common/src/store/authStore.js";
+import authStore from "../../../../common/src/store/authStore.js";
 import { CredentialIssuer } from "../../../../common/src/oid4vci/credentialEndpoint/CredentialIssuer.js";
 import { configure } from "../../logic/credentialsConfigProvider.js";
 import { readLocalMetadataResource } from "../../../../common/src/utils/resourceUtils.js";
