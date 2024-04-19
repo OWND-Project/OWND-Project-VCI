@@ -6,13 +6,6 @@ import Koa from "koa";
 const init = () => {
   const router = new Router();
 
-  // Delete the following routes as soon as the certificate is issued
-  router.get(
-    "/.well-known/pki-validation/7EC32DFC4930966CB488383792CF5E1F.txt",
-    routesHandler.handleSectigoDomainValidation,
-  );
-  // Delete the above routes as soon as the certificate is issued
-
   router.get(
     "/.well-known/openid-credential-issuer",
     routesHandler.handleIssueMetadata,

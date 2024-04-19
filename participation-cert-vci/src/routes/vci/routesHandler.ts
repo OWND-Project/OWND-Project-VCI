@@ -38,16 +38,6 @@ const jsonCertChainToPem = (jsonCertChain: string): string => {
     .join("\n");
 };
 
-// Delete the following routes as soon as the certificate is issued
-export async function handleSectigoDomainValidation(ctx: Koa.Context) {
-  ctx.body = `24DDAEF7A546FFD4AE8CD12AB7341C1B1932DEAAD26D978EB5462AA7E2467A41
-sectigo.com
-J001`;
-  ctx.status = 200;
-  ctx.set("Content-Type", "text/plain");
-}
-// Delete the above routes as soon as the certificate is issued
-
 export async function handleCertificateChain(ctx: Koa.Context) {
   const keyPair = await keyStore.getLatestKeyPair();
   if (keyPair) {
@@ -155,7 +145,6 @@ export async function handleCredential(ctx: Koa.Context) {
 }
 
 export default {
-  handleSectigoDomainValidation,
   handleIssueMetadata,
   handleAuthServer,
   handleToken,
