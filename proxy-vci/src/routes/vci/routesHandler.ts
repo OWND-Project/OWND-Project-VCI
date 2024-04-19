@@ -13,6 +13,7 @@ import authStore, {
 import { CredentialIssuer } from "../../../../common/src/oid4vci/credentialEndpoint/CredentialIssuer.js";
 import { configure } from "../../logic/credentialsConfigProvider.js";
 import { readLocalMetadataResource } from "../../../../common/src/utils/resourceUtils.js";
+import { generatePreAuthCredentialOffer } from "../../../../common/src/oid4vci/CredentialOffer.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename).split("/src")[0];
@@ -71,26 +72,16 @@ export async function handleRootPathCallback(ctx: Koa.Context) {
     );
     await store.addXIDAccessToken(tokenResponse, preAuthorizedCodeId!);
 
-    // todo VCI関連のコードはどこかに移動してまとめる
     const credentialIssuer = process.env.CREDENTIAL_ISSUER_IDENTIFIER || "";
-    const credentialOffer = {
-      credential_issuer: credentialIssuer,
-      credentials: ["IdentityCredential"],
-      grants: {
-        "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
-          "pre-authorized_code": preAuthCode,
-          user_pin_required: false,
-        },
-      },
-    };
+    const credentialOfferUrl = generatePreAuthCredentialOffer(
+      credentialIssuer,
+      ["IdentityCredential"],
+      preAuthCode,
+      false,
+      credentialOfferEndpoint,
+    );
 
-    const serializedCredentialOffer = JSON.stringify(credentialOffer);
-    const encodedCredentialOffer = encodeURIComponent(
-      serializedCredentialOffer,
-    );
-    ctx.redirect(
-      `${credentialOfferEndpoint}?credential_offer=${encodedCredentialOffer}`,
-    );
+    ctx.redirect(credentialOfferUrl);
   } catch (error) {
     console.error("Token request error:", error);
     const errorPage = new URL(

@@ -22,3 +22,23 @@ export const url2CredentialOffer = (credentialOfferUrl: string) => {
 
   return JSON.parse(decodedCredentialOffer);
 };
+
+export const generatePreAuthCredentialOffer = (
+  credentialIssuer: string,
+  credentials: string[],
+  preAuthCode: string,
+  pinRequired: boolean,
+  endpoint?: string,
+): string => {
+  const credentialOffer = {
+    credential_issuer: credentialIssuer || "",
+    credentials: credentials,
+    grants: {
+      "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
+        "pre-authorized_code": preAuthCode,
+        user_pin_required: pinRequired,
+      },
+    },
+  };
+  return credentialOffer2Url(credentialOffer, endpoint);
+};

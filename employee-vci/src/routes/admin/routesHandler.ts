@@ -9,7 +9,7 @@ import {
   generateRandomNumericString,
   generateRandomString,
 } from "../../../../common/src/utils/randomStringUtils.js";
-import { credentialOffer2Url } from "../../../../common/src/oid4vci/CredentialOffer.js";
+import { generatePreAuthCredentialOffer } from "../../../../common/src/oid4vci/CredentialOffer.js";
 
 import store, { NewEmployee } from "../../store.js";
 
@@ -32,7 +32,7 @@ export async function handleNewEmployee(ctx: Koa.Context) {
 
 export async function handleEmployeeCredentialOffer(ctx: Koa.Context) {
   const { employeeNo } = ctx.params;
-  const result = await generateCredentialOffer(employeeNo);
+  const result = await credentialOfferForEmployee(employeeNo);
   if (result.ok) {
     ctx.body = result.payload;
     ctx.status = 201;
@@ -94,7 +94,8 @@ export type GenerateCredentialOfferResult = {
   credentialOffer: string;
   userPin: string;
 };
-const generateCredentialOffer = async (
+
+const credentialOfferForEmployee = async (
   employeeNo: string,
 ): Promise<Result<GenerateCredentialOfferResult, NotSuccessResult>> => {
   // get employee
@@ -109,18 +110,13 @@ const generateCredentialOffer = async (
   const userPin = generateRandomNumericString();
   await store.addPreAuthCode(code, expiresIn, userPin, employee.id);
 
-  // generate credential offer
-  const credentialOffer = {
-    credential_issuer: process.env.CREDENTIAL_ISSUER || "",
-    credentials: ["EmployeeIdentificationCredential"],
-    grants: {
-      "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
-        "pre-authorized_code": code,
-        user_pin_required: true,
-      },
-    },
-  };
-  const credentialOfferUrl = credentialOffer2Url(credentialOffer);
+  const credentialOfferUrl = generatePreAuthCredentialOffer(
+    process.env.CREDENTIAL_ISSUER || "",
+    ["EmployeeIdentificationCredential"],
+    code,
+    true,
+  );
+
   const payload = {
     subject: { employeeNo },
     credentialOffer: credentialOfferUrl,

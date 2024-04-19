@@ -6,7 +6,7 @@ import {
   NotSuccessResult,
 } from "../../../../common/src/routes/common.js";
 import { generateRandomString } from "../../../../common/src/utils/randomStringUtils.js";
-import { credentialOffer2Url } from "../../../../common/src/oid4vci/CredentialOffer.js";
+import { generatePreAuthCredentialOffer } from "../../../../common/src/oid4vci/CredentialOffer.js";
 
 import store, { Conference, NewConference } from "../../store.js";
 
@@ -29,7 +29,7 @@ export async function handleNewConference(ctx: Koa.Context) {
 
 export async function handleConferenceCredentialOffer(ctx: Koa.Context) {
   const { conferenceId } = ctx.params;
-  const result = await generateCredentialOffer(conferenceId);
+  const result = await credentialOfferForConference(conferenceId);
   if (result.ok) {
     ctx.body = result.payload;
     ctx.status = 201;
@@ -102,7 +102,7 @@ export type GenerateCredentialOfferResult = {
   subject: any;
   credentialOffer: string;
 };
-const generateCredentialOffer = async (
+const credentialOfferForConference = async (
   conferenceId: string,
 ): Promise<Result<GenerateCredentialOfferResult, NotSuccessResult>> => {
   const conference = await store.getConferenceById(conferenceId);
@@ -115,18 +115,13 @@ const generateCredentialOffer = async (
   const expiresIn = Number(process.env.VCI_PRE_AUTH_CODE_EXPIRES_IN || "86400");
   await store.addPreAuthCode(code, expiresIn, "", conference.id);
 
-  // generate credential offer
-  const credentialOffer = {
-    credential_issuer: process.env.CREDENTIAL_ISSUER || "",
-    credentials: ["ParticipationCertificate"],
-    grants: {
-      "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
-        "pre-authorized_code": code,
-        user_pin_required: false,
-      },
-    },
-  };
-  const credentialOfferUrl = credentialOffer2Url(credentialOffer);
+  const credentialOfferUrl = generatePreAuthCredentialOffer(
+    process.env.CREDENTIAL_ISSUER || "",
+    ["ParticipationCertificate"],
+    code,
+    false,
+  );
+
   const payload = {
     subject: { conferenceId: conferenceId },
     credentialOffer: credentialOfferUrl,
