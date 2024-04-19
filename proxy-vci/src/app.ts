@@ -5,8 +5,8 @@ import Koa from "koa";
 import serve from "koa-static";
 import views from "@ladjs/koa-views";
 
-import adminRoutes from "./admin/routes.js";
-import vciRoutes from "./vci/routes.js";
+import adminRoutes from "./routes/admin/routes.js";
+import vciRoutes from "./routes/vci/routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename).split("/src")[0];

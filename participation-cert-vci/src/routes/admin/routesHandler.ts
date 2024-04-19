@@ -1,14 +1,14 @@
 import Koa from "koa";
 
-import { Result } from "../../../common/src/types";
+import { Result } from "../../../../common/src/types.js";
 import {
   handleNotSuccessResult,
   NotSuccessResult,
-} from "../../../common/src/routes/routerCommon.js";
-import { generateRandomString } from "../../../common/src/utils/randomStringUtils.js";
-import { credentialOffer2Url } from "../../../common/src/oid4vci/CredentialOffer.js";
+} from "../../../../common/src/routes/routerCommon.js";
+import { generateRandomString } from "../../../../common/src/utils/randomStringUtils.js";
+import { credentialOffer2Url } from "../../../../common/src/oid4vci/CredentialOffer.js";
 
-import store, { Conference, NewConference } from "../store.js";
+import store, { Conference, NewConference } from "../../store.js";
 
 export async function handleNewConference(ctx: Koa.Context) {
   if (!ctx.request.body) {

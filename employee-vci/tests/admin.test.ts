@@ -4,7 +4,7 @@ import request from "supertest";
 import { url2CredentialOffer } from "../../common/src/oid4vci/CredentialOffer";
 import { init } from "../src/app";
 import store, { Employee, NewEmployee } from "../src/store";
-import { GenerateCredentialOfferResult } from "../src/admin/routesHandler";
+import { GenerateCredentialOfferResult } from "../src/routes/admin/routesHandler";
 
 const app = init();
 const username = "username";

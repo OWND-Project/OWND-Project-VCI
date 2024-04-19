@@ -4,8 +4,8 @@ import { koaBody } from "koa-body";
 import Router from "koa-router";
 
 import routesHandler from "./routesHandler.js";
-import adminHandler from "../../../common/src/routes/admin/handler.js"
-import { basicAuthOpts } from "../../../common/src/routes/routerCommon.js";
+import adminHandler from "../../../../common/src/routes/admin/handler.js"
+import { basicAuthOpts } from "../../../../common/src/routes/routerCommon.js";
 
 
 const init = () => {

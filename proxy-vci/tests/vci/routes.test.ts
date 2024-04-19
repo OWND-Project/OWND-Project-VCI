@@ -10,7 +10,7 @@ import store from "../../src/store";
 import authStore from "../../../common/src/store/authStore";
 import keyStore from "../../../common/src/store/keyStore";
 import oauth2 from "../../src/auth";
-import credentials from "../../src/vci/identityCredential";
+import credentials from "../../src/logic/identityCredential";
 import { URL } from "url";
 import {xIdResponse} from "../../../common/src/sd-jwt/types";
 

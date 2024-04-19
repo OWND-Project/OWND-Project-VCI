@@ -1,17 +1,17 @@
 import Koa from "koa";
 
-import { Result } from "../../../common/src/types";
+import { Result } from "../../../../common/src/types.js";
 import {
   handleNotSuccessResult,
   NotSuccessResult,
-} from "../../../common/src/routes/routerCommon.js";
+} from "../../../../common/src/routes/routerCommon.js";
 import {
   generateRandomNumericString,
   generateRandomString,
-} from "../../../common/src/utils/randomStringUtils.js";
-import { credentialOffer2Url } from "../../../common/src/oid4vci/CredentialOffer.js";
+} from "../../../../common/src/utils/randomStringUtils.js";
+import { credentialOffer2Url } from "../../../../common/src/oid4vci/CredentialOffer.js";
 
-import store, { NewEmployee } from "../store.js";
+import store, { NewEmployee } from "../../store.js";
 
 export async function handleNewEmployee(ctx: Koa.Context) {
   if (!ctx.request.body) {
