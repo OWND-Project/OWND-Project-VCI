@@ -1,7 +1,7 @@
 import Koa from "koa";
 
 import keys from "../../keys.js";
-import { handleNotSuccessResult } from "../../routerCommon.js";
+import { handleNotSuccessResult } from "../routerCommon.js";
 
 
 export async function handleNewKey(ctx: Koa.Context) {

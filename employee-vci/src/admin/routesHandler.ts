@@ -4,7 +4,7 @@ import { Result } from "../../../common/src/types";
 import {
   handleNotSuccessResult,
   NotSuccessResult,
-} from "../../../common/src/routerCommon.js";
+} from "../../../common/src/routes/routerCommon.js";
 import {
   generateRandomNumericString,
   generateRandomString,
