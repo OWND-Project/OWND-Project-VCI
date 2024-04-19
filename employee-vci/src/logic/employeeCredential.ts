@@ -41,7 +41,8 @@ const issueEmployeeCredential = async (
     const iat = Math.floor(Date.now() / 1000);
     const exp = iat + 60 * 60 * 24 * 365;
     const vct = "EmployeeIdentificationCredential";
-    const { companyName, employeeNo, division, givenName, familyName, gender} = employee;
+    const { companyName, employeeNo, division, givenName, familyName, gender } =
+      employee;
     const claims = {
       companyName,
       employeeNo,

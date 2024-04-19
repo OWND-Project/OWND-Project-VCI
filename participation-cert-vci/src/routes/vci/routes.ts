@@ -8,8 +8,8 @@ const init = () => {
 
   // Delete the following routes as soon as the certificate is issued
   router.get(
-      "/.well-known/pki-validation/7EC32DFC4930966CB488383792CF5E1F.txt",
-      routesHandler.handleSectigoDomainValidation,
+    "/.well-known/pki-validation/7EC32DFC4930966CB488383792CF5E1F.txt",
+    routesHandler.handleSectigoDomainValidation,
   );
   // Delete the above routes as soon as the certificate is issued
 

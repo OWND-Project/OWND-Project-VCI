@@ -12,7 +12,7 @@ import keyStore from "../../../common/src/store/keyStore";
 import oauth2 from "../../src/auth";
 import credentials from "../../src/logic/identityCredential";
 import { URL } from "url";
-import {xIdResponse} from "../../../common/src/sd-jwt/types";
+import { xIdResponse } from "../../../common/src/sd-jwt/types";
 
 const app = init();
 
@@ -161,11 +161,11 @@ const validAccesstokenMockNotPreAuth = async () => {
   const cNonceExpiresIn = 86400;
   if (id) {
     await authStore.addAccessToken(
-        accessToken,
-        expiresIn,
-        cNonce,
-        cNonceExpiresIn,
-        id,
+      accessToken,
+      expiresIn,
+      cNonce,
+      cNonceExpiresIn,
+      id,
     );
   }
 };
@@ -473,7 +473,7 @@ describe("POST /credential", () => {
         .post("/credentials")
         .set("Authorization", "BEARER validToken")
         .send(getPostPayload(token));
-      console.log(`Response ; ${JSON.stringify(response)}`)
+      console.log(`Response ; ${JSON.stringify(response)}`);
       assert.equal(response.status, 400);
       assert.equal(response.body.error, "invalid_or_missing_proof");
       assert.equal(response.body.error_description, "Failed to verify iat");
@@ -584,8 +584,6 @@ describe("POST /credential", () => {
     });
   });
 });
-
-
 
 async function encryptUserData(userData: xIdResponse, publicKey: string) {
   const encryptedUserData = {

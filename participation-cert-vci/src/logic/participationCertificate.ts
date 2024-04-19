@@ -27,10 +27,28 @@ const issueParticipationCertificate = async (
     const iat = Math.floor(Date.now() / 1000);
     const exp = iat + 60 * 60 * 24 * 365;
     const type = "ParticipationCertificate";
-    const { name, description, location, startDate, endDate, url, organizerUrl, organizerName } = conference;
+    const {
+      name,
+      description,
+      location,
+      startDate,
+      endDate,
+      url,
+      organizerUrl,
+      organizerName,
+    } = conference;
     const claims = {
       vc: {
-        credentialSubject: { name, description, organizerName, location, startDate, endDate, url, organizerUrl},
+        credentialSubject: {
+          name,
+          description,
+          organizerName,
+          location,
+          startDate,
+          endDate,
+          url,
+          organizerUrl,
+        },
         type: [type],
       },
       iss,

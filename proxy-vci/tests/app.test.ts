@@ -376,8 +376,8 @@ describe("Root path test", () => {
 
     assert.equal(callbackResponse.status, 302);
 
-    if(!process.env.CREDENTIAL_OFFER_ENDPOINT){
-      assert.fail("CREDENTIAL_OFFER_ENDPOINT is not set")
+    if (!process.env.CREDENTIAL_OFFER_ENDPOINT) {
+      assert.fail("CREDENTIAL_OFFER_ENDPOINT is not set");
     }
 
     assert.include(

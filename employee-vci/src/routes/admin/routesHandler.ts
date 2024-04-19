@@ -49,7 +49,8 @@ const registerEmployee = async (
       return { ok: false, error: { type: "INVALID_PARAMETER" } };
     }
 
-    const { companyName, employeeNo, division, givenName, familyName, gender } = payload;
+    const { companyName, employeeNo, division, givenName, familyName, gender } =
+      payload;
 
     if (
       typeof companyName !== "string" ||

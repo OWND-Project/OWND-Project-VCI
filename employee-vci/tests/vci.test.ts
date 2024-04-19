@@ -286,7 +286,7 @@ describe("POST /credential", () => {
       assert.isString(response.body.credential);
       const tmp = response.body.credential.split("~");
       const disclosures = decodeDisclosure(tmp.slice(1, tmp.length - 1));
-      console.log("==================================")
+      console.log("==================================");
       console.log(disclosures);
       assert.equal(disclosures.length, 6);
 

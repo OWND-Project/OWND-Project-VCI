@@ -2,17 +2,19 @@ import axios, { AxiosResponse } from "axios";
 import _sodium from "libsodium-wrappers";
 import * as jose from "jose";
 
-import {xIdResponse, MynaInfoCredential} from "../../../common/src/sd-jwt/types";
+import {
+  xIdResponse,
+  MynaInfoCredential,
+} from "../../../common/src/sd-jwt/types";
 import store from "../store.js";
 import keyStore from "../../../common/src/store/keyStore.js";
 import { issueFlatCredential } from "../../../common/src/sd-jwt/issuer.js";
 import { ErrorPayload, Result } from "../../../common/src/types";
 
-
 const convertVerifiedAt = (verifiedAt: number): string => {
-    const date = new Date(verifiedAt * 1000);
-    return date.toISOString();
-}
+  const date = new Date(verifiedAt * 1000);
+  return date.toISOString();
+};
 
 const convertGender = (responseGender: string): string => {
   switch (responseGender) {
@@ -23,28 +25,27 @@ const convertGender = (responseGender: string): string => {
     default:
       return "不明";
   }
-}
+};
 
 const interpretXIDResponse = (userData: xIdResponse): MynaInfoCredential => {
-
-  const notCopy = ["verified_at", "gender"]
-  const tmp = {} as MynaInfoCredential
+  const notCopy = ["verified_at", "gender"];
+  const tmp = {} as MynaInfoCredential;
   for (const key in userData) {
     if (notCopy.includes(key)) continue;
     // @ts-ignore
-    tmp[key] = userData[key]
+    tmp[key] = userData[key];
   }
 
   const verified_at = convertVerifiedAt(userData.verified_at);
-  const gender = convertGender(userData.gender)
+  const gender = convertGender(userData.gender);
   const ageOver = generateAgeOverInfo(
-      userData.year,
-      userData.month,
-      userData.date,
+    userData.year,
+    userData.month,
+    userData.date,
   );
 
-  return {...tmp, ...ageOver, verified_at, gender};
-}
+  return { ...tmp, ...ageOver, verified_at, gender };
+};
 
 const issueIdentityCredential = async (
   preAuthorizedCode: string,
@@ -87,8 +88,6 @@ const fieldsToDecrypt = [
   "sub_char_address",
 ];
 
-
-
 const getUserData = async (accessToken: string): Promise<xIdResponse> => {
   try {
     const xIDApiBaseUrl = process.env.X_ID_API_BASE_URL || "";
@@ -109,7 +108,7 @@ const getUserData = async (accessToken: string): Promise<xIdResponse> => {
       // @ts-ignore
       decrypted[field] = await decrypt(decrypted[field], publicKey, privateKey);
     }
-    return {...decrypted};
+    return { ...decrypted };
   } catch (error) {
     console.error("Error fetching user data:", error);
     throw error;
@@ -193,7 +192,11 @@ const generateAgeOverInfo = (
   year: string,
   month: string,
   date: string,
-): {is_older_than_13: boolean;  is_older_than_18: boolean; is_older_than_20: boolean;} => {
+): {
+  is_older_than_13: boolean;
+  is_older_than_18: boolean;
+  is_older_than_20: boolean;
+} => {
   const birthdate = new Date(Number(year), Number(month) - 1, Number(date));
   const age = calculateAge(birthdate);
 

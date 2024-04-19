@@ -43,7 +43,7 @@ describe("/admin/conferences/new endpoint test", () => {
       endDate: "conference end date",
       url: "url",
       organizerUrl: "organizer url",
-      organizerName: "organizer name"
+      organizerName: "organizer name",
     };
     const response = await request(app.callback())
       .post(NEW_CONFERENCE_ENDPOINT)
