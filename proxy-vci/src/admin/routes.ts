@@ -3,7 +3,7 @@ import auth from "koa-basic-auth";
 import { koaBody } from "koa-body";
 import Router from "koa-router";
 
-import routesHandler from "./routesHandler.js";
+import routesHandler from "../../../common/src/routes/admin/handler.js"
 
 const basicAuthOpts = () => {
   const name = process.env.BASIC_AUTH_USERNAME || "";
