@@ -1,4 +1,4 @@
-import { Message } from "./types";
+import { Message } from "./types.js";
 
 export type RESULT_TYPE_INVALID_PARAMETER = "INVALID_PARAMETER";
 export type RESULT_TYPE_NOT_FOUND = "NOT_FOUND";
