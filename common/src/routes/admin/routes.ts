@@ -24,7 +24,7 @@ const routeDefinitions = {
     "/admin/keys/:kid/registercert": handleRegisterCert,
   },
 };
-export const setupRoute = (router: Router<any, {}>) => {
+export const setupCommonRoute = (router: Router<any, {}>) => {
   const forGetMethod = routeDefinitions.get;
   const forPostMethod = routeDefinitions.post;
   for (const [path, handler] of Object.entries(forGetMethod)) {
@@ -45,5 +45,5 @@ export const setupRoute = (router: Router<any, {}>) => {
 };
 
 export default {
-  setupRoute,
+  setupCommonRoute,
 };

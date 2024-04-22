@@ -10,7 +10,7 @@ import { basicAuthOpts } from "../../../../common/src/routes/common.js";
 const init = () => {
   const router = new Router();
 
-  adminRoutes.setupRoute(router);
+  adminRoutes.setupCommonRoute(router);
 
   router.post(
     "/admin/conferences/new",

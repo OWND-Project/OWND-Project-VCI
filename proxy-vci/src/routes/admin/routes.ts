@@ -4,7 +4,7 @@ import adminRoutes from "../../../../common/src/routes/admin/routes.js";
 
 const init = () => {
   const router = new Router();
-  adminRoutes.setupRoute(router);
+  adminRoutes.setupCommonRoute(router);
   return router;
 };
 
