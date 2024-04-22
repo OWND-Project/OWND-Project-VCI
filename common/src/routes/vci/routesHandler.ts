@@ -1,23 +1,18 @@
-import { fileURLToPath } from "url";
-import path, { dirname } from "path";
-
 import Koa from "koa";
 
-import { TokenIssuer } from "../../../../common/src/oid4vci/tokenEndpoint/TokenIssuer.js";
-import { readLocalMetadataResource } from "../../../../common/src/utils/resourceUtils.js";
-import { CredentialIssuer } from "../../../../common/src/oid4vci/credentialEndpoint/CredentialIssuer.js";
+import { readLocalMetadataResource } from "../../utils/resourceUtils.js";
+import path from "path";
+import { TokenIssuerConfig } from "../../oid4vci/tokenEndpoint/types.js";
+import { TokenIssuer } from "../../oid4vci/tokenEndpoint/TokenIssuer.js";
+import { CredentialIssuerConfig } from "../../oid4vci/credentialEndpoint/types.js";
+import { StoredAccessToken } from "../../store/authStore.js";
+import { CredentialIssuer } from "../../oid4vci/credentialEndpoint/CredentialIssuer.js";
 
-import { tokenConfigure } from "../../logic/vciConfigProvider.js";
-import { configure } from "../../logic/credentialsConfigProvider.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename).split("/src")[0];
-
-export async function handleIssueMetadata(ctx: Koa.Context) {
+export async function handleIssueMetadata(ctx: Koa.Context, dirname: string) {
   const environment = process.env.ENVIRONMENT || "dev";
   try {
     const metadataJson = await readLocalMetadataResource(
-      path.join(__dirname, "metadata", environment),
+      path.join(dirname, "metadata", environment),
       "credential_issuer_metadata.json",
     );
     console.debug(metadataJson);
@@ -32,11 +27,11 @@ export async function handleIssueMetadata(ctx: Koa.Context) {
   }
 }
 
-export async function handleAuthServer(ctx: Koa.Context) {
+export async function handleAuthServer(ctx: Koa.Context, dirname: string) {
   const environment = process.env.ENVIRONMENT || "dev";
   try {
     const metadataJson = await readLocalMetadataResource(
-      path.join(__dirname, "metadata", environment),
+      path.join(dirname, "metadata", environment),
       "authorization_server.json",
     );
     console.debug(metadataJson);
@@ -50,8 +45,11 @@ export async function handleAuthServer(ctx: Koa.Context) {
   }
 }
 
-export async function handleToken(ctx: Koa.Context) {
-  const tokenRequest = new TokenIssuer(tokenConfigure());
+export async function handleToken(
+  ctx: Koa.Context,
+  configGenerator: () => TokenIssuerConfig,
+) {
+  const tokenRequest = new TokenIssuer(configGenerator());
   const result = await tokenRequest.issue({
     getHeader: (name: string) => ctx.get(name),
     getBody: () => ctx.request.body,
@@ -71,8 +69,11 @@ export async function handleToken(ctx: Koa.Context) {
   ctx.set("Content-Type", "application/json");
 }
 
-export async function handleCredential(ctx: Koa.Context) {
-  const credentialIssuer = new CredentialIssuer(configure());
+export async function handleCredential(
+  ctx: Koa.Context,
+  configGenerator: () => CredentialIssuerConfig<StoredAccessToken>,
+) {
+  const credentialIssuer = new CredentialIssuer(configGenerator());
   const result = await credentialIssuer.issue({
     getHeader: (name: string) => ctx.get(name),
     getBody: () => ctx.request.body,

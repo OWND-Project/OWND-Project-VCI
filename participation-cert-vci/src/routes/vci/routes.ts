@@ -1,29 +1,30 @@
 import Router from "koa-router";
 
 import routesHandler from "./routesHandler.js";
-import { koaBody } from "koa-body";
-import Koa from "koa";
+
+import { tokenConfigure } from "../../logic/vciConfigProvider.js";
+import { configure } from "../../logic/credentialsConfigProvider.js";
+import commonVciRoutes from "../../../../common/src/routes/vci/routes.js";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename).split("/src")[0];
+
 const init = () => {
   const router = new Router();
+  commonVciRoutes.setupCommonRoute(
+    router,
+    tokenConfigure,
+    configure,
+    __dirname,
+  );
 
-  router.get(
-    "/.well-known/openid-credential-issuer",
-    routesHandler.handleIssueMetadata,
-  );
-  router.get(
-    "/.well-known/oauth-authorization-server",
-    routesHandler.handleAuthServer,
-  );
   router.get(
     "/issuer-certificate/chain.pem",
     routesHandler.handleCertificateChain,
   );
-  router.post("/token", koaBody(), async (ctx: Koa.Context) => {
-    await routesHandler.handleToken(ctx);
-  });
-  router.post("/credentials", koaBody(), async (ctx: Koa.Context) => {
-    await routesHandler.handleCredential(ctx);
-  });
+
   return router;
 };
 
