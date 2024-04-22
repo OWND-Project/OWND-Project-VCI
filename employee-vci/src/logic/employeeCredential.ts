@@ -5,23 +5,6 @@ import keyStore from "../../../common/src/store/keyStore.js";
 import { issueFlatCredential } from "../../../common/src/sd-jwt/issuer.js";
 import { ErrorPayload, Result } from "../../../common/src/types";
 
-export interface UserData {
-  last_name: string;
-  first_name: string;
-  previous_name: string;
-  year: string;
-  month: string;
-  date: string;
-  prefecture: string;
-  city: string;
-  address: string;
-  sub_char_common_name: string;
-  sub_char_previous_name: string;
-  sub_char_address: string;
-  gender: string;
-  verified_at: number;
-  [key: string]: any;
-}
 
 const issueEmployeeCredential = async (
   authorizedCode: string,
