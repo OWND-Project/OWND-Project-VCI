@@ -10,33 +10,10 @@ import { CredentialIssuer } from "../../../../common/src/oid4vci/credentialEndpo
 import keyStore from "../../../../common/src/store/keyStore.js";
 import { tokenConfigure } from "../../logic/vciConfigProvider.js";
 import { configure } from "../../logic/credentialsConfigProvider.js";
+import { jsonCertChainToPem } from "../../../../common/src/crypto/util.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename).split("/src")[0];
-
-const wrap64str = (str: string): string => {
-  var result = "";
-  for (const [index, char] of str.split("").entries()) {
-    if (index % 64 == 0 && index != 0) {
-      result += "\n";
-    }
-    result += char;
-  }
-  return result;
-};
-
-const jsonCertChainToPem = (jsonCertChain: string): string => {
-  const preamble = "-----BEGIN CERTIFICATE-----\n";
-  const postamble = "\n-----END CERTIFICATE-----";
-  const jsn = JSON.parse(jsonCertChain);
-  return jsn
-    .map((cert: string) => {
-      const decodedBuffer: Buffer = Buffer.from(cert, "base64");
-      const base64EncodedString: string = decodedBuffer.toString("base64");
-      return preamble + wrap64str(base64EncodedString) + postamble;
-    })
-    .join("\n");
-};
 
 export async function handleCertificateChain(ctx: Koa.Context) {
   const keyPair = await keyStore.getLatestKeyPair();
@@ -96,7 +73,6 @@ export async function handleAuthServer(ctx: Koa.Context) {
 }
 
 export async function handleToken(ctx: Koa.Context) {
-  console.debug("handleToken:");
   const tokenRequest = new TokenIssuer(tokenConfigure());
   const result = await tokenRequest.issue({
     getHeader: (name: string) => ctx.get(name),
@@ -104,8 +80,6 @@ export async function handleToken(ctx: Koa.Context) {
   });
 
   if (!result.ok) {
-    console.debug("result is not ok");
-    console.info(`result : ${JSON.stringify(result)}`);
     const { status, payload } = result.error;
     ctx.status = status;
     ctx.body = payload;

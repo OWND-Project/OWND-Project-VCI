@@ -3,6 +3,7 @@ import { createHash } from "crypto";
 
 import { PrivateJwk } from "elliptic-jwk";
 import * as jsrsasign from "jsrsasign";
+import { CERT_PEM_POSTAMBLE, CERT_PEM_PREAMBLE } from "./x509/constant.js";
 
 interface PemKeyPair {
   publicKey: string;
@@ -101,4 +102,32 @@ export const hexToBinary = (hex: string): Buffer => {
 
 export const sha1Binary = (binary: Buffer): string => {
   return createHash("sha1").update(binary).digest("hex");
+};
+
+const wrap64str = (str: string): string => {
+  var result = "";
+  for (const [index, char] of str.split("").entries()) {
+    if (index % 64 == 0 && index != 0) {
+      result += "\n";
+    }
+    result += char;
+  }
+  return result;
+};
+
+export const jsonCertChainToPem = (jsonCertChain: string): string => {
+  const jsn = JSON.parse(jsonCertChain);
+  return jsn
+    .map((cert: string) => {
+      const decodedBuffer: Buffer = Buffer.from(cert, "base64");
+      const base64EncodedString: string = decodedBuffer.toString("base64");
+      return (
+        CERT_PEM_PREAMBLE +
+        "\n" +
+        wrap64str(base64EncodedString) +
+        "\n" +
+        CERT_PEM_POSTAMBLE
+      );
+    })
+    .join("\n");
 };
