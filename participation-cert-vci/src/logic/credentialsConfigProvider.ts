@@ -17,7 +17,6 @@ const accessTokenStateProvider: AccessTokenStateProvider<
   StoredAccessToken
 > = async (accessToken: string) => {
   const storedAccessToken = await store.getAccessToken(accessToken);
-  console.log(`storedAccessToken: ${JSON.stringify(storedAccessToken)}`);
   if (!storedAccessToken) {
     return { exists: false };
   }
