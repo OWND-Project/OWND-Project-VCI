@@ -5,7 +5,6 @@ import keyStore from "../../../common/src/store/keyStore.js";
 import { issueFlatCredential } from "../../../common/src/sd-jwt/issuer.js";
 import { ErrorPayload, Result } from "../../../common/src/types";
 
-
 const issueEmployeeCredential = async (
   authorizedCode: string,
   jwk: jose.JWK,
