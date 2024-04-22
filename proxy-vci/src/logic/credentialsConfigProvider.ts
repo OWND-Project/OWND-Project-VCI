@@ -11,7 +11,7 @@ import {
   Identifiable,
   VCIAccessToken,
 } from "../../../common/src/oid4vci/types";
-import oauth2 from "../auth.js";
+import { generateRandomString } from "../../../common/src/utils/randomStringUtils.js";
 
 type StoredAccessToken = VCIAccessToken & Identifiable;
 const accessTokenStateProvider: AccessTokenStateProvider<
@@ -77,7 +77,7 @@ const issueSdJwtVcCredential: IssueSdJwtVcCredential = async (
 };
 
 const updateNonce = async (storedAccessToken: StoredAccessToken) => {
-  const nonce = oauth2.generateRandomString(); // assuming this function exists for c_nonce generation
+  const nonce = generateRandomString(); // assuming this function exists for c_nonce generation
   const expiresIn = Number(process.env.VCI_ACCESS_TOKEN_C_NONCE_EXPIRES_IN);
   await authStore.refreshNonce(storedAccessToken.id, nonce, expiresIn);
   return { nonce, expiresIn };

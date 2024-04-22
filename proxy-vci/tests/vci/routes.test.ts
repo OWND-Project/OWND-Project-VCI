@@ -9,10 +9,10 @@ import { init } from "../../src/app";
 import store from "../../src/store";
 import authStore from "../../../common/src/store/authStore";
 import keyStore from "../../../common/src/store/keyStore";
-import oauth2 from "../../src/auth";
 import credentials from "../../src/logic/identityCredential";
 import { URL } from "url";
 import { xIdResponse } from "../../../common/src/sd-jwt/types";
+import { generateRandomString } from "../../../common/src/utils/randomStringUtils";
 
 const app = init();
 
@@ -58,7 +58,7 @@ describe("POST /token", () => {
     assert.equal(response.body.error, "invalid_grant");
   });
   it("should return 400 when the token has expired", async () => {
-    const preAuthorizedCode = oauth2.generateRandomString();
+    const preAuthorizedCode = generateRandomString();
     const tokenResponse = {
       access_token: "expired-access-token",
       expires_in: -1, // Immediate expiry
@@ -93,7 +93,7 @@ describe("POST /token", () => {
   });
 
   it("should return 200 and access token details when correct pre-authorized_code is provided", async () => {
-    const preAuthorizedCode = oauth2.generateRandomString();
+    const preAuthorizedCode = generateRandomString();
     const tokenResponse = {
       access_token: "some-access-token",
       expires_in: 86400,

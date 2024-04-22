@@ -1,17 +1,5 @@
 import axios from "axios";
-
-const generateRandomString = (length = 32) => {
-  const possibleCharacters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * possibleCharacters.length);
-    result += possibleCharacters[randomIndex];
-  }
-
-  return result;
-};
+import { generateRandomString } from "../../common/src/utils/randomStringUtils.js";
 
 const buildAuthCodeFlowURL = () => {
   const OAUTH2_AUTH_ENDPOINT = process.env.OAUTH2_AUTH_ENDPOINT || "";
@@ -61,4 +49,4 @@ const getAccessToken = async (code: string) => {
 
   return response.data;
 };
-export default { buildAuthCodeFlowURL, generateRandomString, getAccessToken };
+export default { buildAuthCodeFlowURL, getAccessToken };

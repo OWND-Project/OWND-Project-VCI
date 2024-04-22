@@ -11,6 +11,7 @@ import { CredentialIssuer } from "../../../../common/src/oid4vci/credentialEndpo
 import { configure } from "../../logic/credentialsConfigProvider.js";
 import { readLocalMetadataResource } from "../../../../common/src/utils/resourceUtils.js";
 import { generatePreAuthCredentialOffer } from "../../../../common/src/oid4vci/CredentialOffer.js";
+import { generateRandomString } from "../../../../common/src/utils/randomStringUtils.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename).split("/src")[0];
@@ -58,7 +59,7 @@ export async function handleRootPathCallback(ctx: Koa.Context) {
 
   try {
     const tokenResponse = await oauth2.getAccessToken(code);
-    const preAuthCode = oauth2.generateRandomString();
+    const preAuthCode = generateRandomString();
     const expiresIn = process.env.VCI_PRE_AUTH_CODE_EXPIRES_IN || "30";
     const preAuthorizedCodeId = await authStore.addAuthCode(
       preAuthCode,
@@ -240,11 +241,11 @@ export async function handleToken(ctx: Koa.Context) {
     return;
   }
 
-  // create own access token using oauth2.generateRandomString()
-  const newAccessToken = oauth2.generateRandomString(); // assuming this function exists
+  // create own access token using generateRandomString()
+  const newAccessToken = generateRandomString(); // assuming this function exists
 
   const expiresIn = Number(process.env.VCI_ACCESS_TOKEN_EXPIRES_IN);
-  const cNonce = oauth2.generateRandomString(); // assuming this function exists for c_nonce generation
+  const cNonce = generateRandomString(); // assuming this function exists for c_nonce generation
   const cNonceExpiresIn = Number(
     process.env.VCI_ACCESS_TOKEN_C_NONCE_EXPIRES_IN,
   );
@@ -283,31 +284,6 @@ export async function handleToken(ctx: Koa.Context) {
 }
 
 export async function handleCredential(ctx: Koa.Context) {
-  /*
-  1. example of a Credential Request for a credential in JWT VC format (JSON encoding) with a proof type jwt:
-
-  POST /credential HTTP/1.1
-  Host: server.example.com
-  Content-Type: application/json
-  Authorization: BEARER czZCaGRSa3F0MzpnWDFmQmF0M2JW
-
-  {
-     "format":"jwt_vc_json",
-     "types":[
-        "VerifiableCredential",
-        "UniversityDegreeCredential"
-     ],
-     "proof":{
-        "proof_type":"jwt",
-        "jwt":"eyJraWQiOiJkaWQ6ZXhhbXBsZTplYmZlYjFmNzEyZWJjNmYxYzI3NmUxMmVjMjEva2V5cy8
-        xIiwiYWxnIjoiRVMyNTYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJzNkJoZFJrcXQzIiwiYXVkIjoiaHR
-        0cHM6Ly9zZXJ2ZXIuZXhhbXBsZS5jb20iLCJpYXQiOiIyMDE4LTA5LTE0VDIxOjE5OjEwWiIsIm5vbm
-        NlIjoidFppZ25zbkZicCJ9.ewdkIkPV50iOeBUqMXCC_aZKPxgihac0aW9EkL1nOzM"
-     }
-  }
-
-  */
-  // get access token from Authorization Header
   const credentialIssuer = new CredentialIssuer(configure());
   const result = await credentialIssuer.issue({
     getHeader: (name: string) => ctx.get(name),
