@@ -22,7 +22,8 @@
     "libsodium-wrappers": "^0.7.13",
     "sqlite": "^5.0.1",
     "sqlite3": "^5.1.6",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "ownd-vci": "../../"
   },
   "devDependencies": {
     "@types/chai": "^4.3.6",

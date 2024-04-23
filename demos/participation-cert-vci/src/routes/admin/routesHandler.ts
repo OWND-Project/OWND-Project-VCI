@@ -1,12 +1,12 @@
 import Koa from "koa";
 
-import { Result } from "../../../../../src/types";
+import { Result } from "ownd-vci/dist/types";
 import {
   handleNotSuccessResult,
   NotSuccessResult,
-} from "../../../../../src/routes/common.js";
-import { generateRandomString } from "../../../../../src/utils/randomStringUtils.js";
-import { generatePreAuthCredentialOffer } from "../../../../../src/oid4vci/CredentialOffer.js";
+} from "ownd-vci/dist/routes/common.js";
+import { generateRandomString } from "ownd-vci/dist/utils/randomStringUtils.js";
+import { generatePreAuthCredentialOffer } from "ownd-vci/dist/oid4vci/CredentialOffer.js";
 
 import store, { Conference, NewConference } from "../../store.js";
 

@@ -5,11 +5,11 @@ import * as jose from "jose";
 import {
   xIdResponse,
   MynaInfoCredential,
-} from "../../../../src/credentials/sd-jwt/types";
+} from "ownd-vci/dist/credentials/sd-jwt/types";
 import store from "../store.js";
-import keyStore from "../../../../src/store/keyStore.js";
-import { issueFlatCredential } from "../../../../src/credentials/sd-jwt/issuer.js";
-import { ErrorPayload, Result } from "../../../../src/types";
+import keyStore from "ownd-vci/dist/store/keyStore.js";
+import { issueFlatCredential } from "ownd-vci/dist/credentials/sd-jwt/issuer.js";
+import { ErrorPayload, Result } from "ownd-vci/dist/types";
 
 const convertVerifiedAt = (verifiedAt: number): string => {
   const date = new Date(verifiedAt * 1000);

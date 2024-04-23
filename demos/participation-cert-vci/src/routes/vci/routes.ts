@@ -4,7 +4,7 @@ import routesHandler from "./routesHandler.js";
 
 import { tokenConfigure } from "../../logic/vciConfigProvider.js";
 import { configure } from "../../logic/credentialsConfigProvider.js";
-import commonVciRoutes from "../../../../../src/routes/vci/routes.js";
+import commonVciRoutes from "ownd-vci/dist/routes/vci/routes.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 

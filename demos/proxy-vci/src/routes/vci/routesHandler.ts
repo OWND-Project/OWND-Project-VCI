@@ -6,12 +6,12 @@ import { v4 as uuidv4 } from "uuid";
 
 import oauth2 from "../../auth.js";
 import store from "../../store.js";
-import authStore from "../../../../../src/store/authStore.js";
-import { CredentialIssuer } from "../../../../../src/oid4vci/credentialEndpoint/CredentialIssuer.js";
+import authStore from "ownd-vci/dist/store/authStore.js";
+import { CredentialIssuer } from "ownd-vci/dist/oid4vci/credentialEndpoint/CredentialIssuer.js";
 import { configure } from "../../logic/credentialsConfigProvider.js";
-import { readLocalMetadataResource } from "../../../../../src/utils/resourceUtils.js";
-import { generatePreAuthCredentialOffer } from "../../../../../src/oid4vci/CredentialOffer.js";
-import { generateRandomString } from "../../../../../src/utils/randomStringUtils.js";
+import { readLocalMetadataResource } from "ownd-vci/dist/utils/resourceUtils.js";
+import { generatePreAuthCredentialOffer } from "ownd-vci/dist/oid4vci/CredentialOffer.js";
+import { generateRandomString } from "ownd-vci/dist/utils/randomStringUtils.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename).split("/src")[0];

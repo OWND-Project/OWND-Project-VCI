@@ -1,10 +1,10 @@
-import { ErrorPayload, Result } from "../../../../src/types";
-import keyStore from "../../../../src/store/keyStore.js";
+import { ErrorPayload, Result } from "ownd-vci/dist/types";
+import keyStore from "ownd-vci/dist/store/keyStore.js";
 import store from "../store.js";
 import {
   issueJwtCredential,
   X509CertificateInfo,
-} from "../../../../src/credentials/jwt/issuer.js";
+} from "ownd-vci/dist/credentials/jwt/issuer.js";
 
 const issueParticipationCertificate = async (
   authorizedCode: string,

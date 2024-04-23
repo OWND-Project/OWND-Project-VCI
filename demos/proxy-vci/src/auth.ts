@@ -1,5 +1,5 @@
 import axios from "axios";
-import { generateRandomString } from "../../../src/utils/randomStringUtils.js";
+import { generateRandomString } from "ownd-vci/dist/utils/randomStringUtils.js";
 
 const buildAuthCodeFlowURL = () => {
   const OAUTH2_AUTH_ENDPOINT = process.env.OAUTH2_AUTH_ENDPOINT || "";
