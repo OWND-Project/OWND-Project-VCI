@@ -3,8 +3,8 @@ import keyStore from "../../../src/store/keyStore.js";
 import authStore, {
   TBL_NM_AUTH_CODES,
 } from "../../../src/store/authStore.js";
-import store from "../../../src/store";
-import { AccessToken } from "../../../src/oid4vci/types";
+import store from "../../../src/store.js";
+import { AccessToken } from "../../../src/oid4vci/types.js";
 
 const TBL_NM_SESSIONS = "sessions";
 const TBL_NM_XID_ACCESS_TOKENS = "xid_access_tokens";

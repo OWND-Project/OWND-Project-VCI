@@ -1,6 +1,6 @@
-import { HttpRequest } from "../types";
-import { IssueResult, TokenIssuerConfig } from "./types";
-import validate from "./validate";
+import { HttpRequest } from "../types.js";
+import { IssueResult, TokenIssuerConfig } from "./types.js";
+import validate from "./validate.js";
 
 export class TokenIssuer {
   // eslint-disable-next-line no-unused-vars

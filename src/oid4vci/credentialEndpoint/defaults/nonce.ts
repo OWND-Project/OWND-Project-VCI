@@ -1,6 +1,6 @@
-import { UpdateNonce } from "../types";
-import authStore, { StoredAccessToken } from "../../../store/authStore";
-import { generateRandomString } from "../../../utils/randomStringUtils";
+import { UpdateNonce } from "../types.js";
+import authStore, { StoredAccessToken } from "../../../store/authStore.js";
+import { generateRandomString } from "../../../utils/randomStringUtils.js";
 
 export const updateNonce: UpdateNonce<StoredAccessToken> = async (
   storedAccessToken: StoredAccessToken,

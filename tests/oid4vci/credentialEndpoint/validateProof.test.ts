@@ -2,7 +2,7 @@ import { assert } from "chai";
 import ellipticJwk, { publicJwkFromPrivate } from "elliptic-jwk";
 import * as jose from "jose"; // joseライブラリを使用しています。
 
-import { validateProof } from "../../../oid4vci/credentialEndpoint/validateProof"; // 適切なパスに置き換えてください。
+import { validateProof } from "../../../src/oid4vci/credentialEndpoint/validateProof.js"; // 適切なパスに置き換えてください。
 
 const privateJwk = ellipticJwk.newPrivateJwk("P-256");
 // @ts-ignore

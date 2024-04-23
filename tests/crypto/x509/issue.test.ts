@@ -4,8 +4,8 @@ import {
   generateCsr,
   generateRootCertificate,
   trimmer,
-} from "../../../crypto/x509/issue";
-import { hexToBinary, sha1Binary } from "../../../crypto/util";
+} from "../../../src/crypto/x509/issue.js";
+import { hexToBinary, sha1Binary } from "../../../src/crypto/util.js";
 
 /*
     // jsrsasign key generation sample code

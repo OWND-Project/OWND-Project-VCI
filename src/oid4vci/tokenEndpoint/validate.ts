@@ -1,7 +1,7 @@
-import { ErrorPayload, Result } from "../../types";
-import { HttpRequest } from "../types";
-import { isExpired } from "../utils";
-import { PayloadAtExists, AuthCodeStateProvider } from "./types";
+import { ErrorPayload, Result } from "../../types.js";
+import { HttpRequest } from "../types.js";
+import { isExpired } from "../utils.js";
+import { PayloadAtExists, AuthCodeStateProvider } from "./types.js";
 
 /**
  * `validate` is an asynchronous function that takes an HTTP request and a function providing the state of a authorized code,

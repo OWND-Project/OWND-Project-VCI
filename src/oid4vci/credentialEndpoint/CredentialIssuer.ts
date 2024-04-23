@@ -4,12 +4,12 @@ import {
   IssueResult,
   ProofOfPossession,
 } from "./types";
-import { HttpRequest } from "../types";
-import { authenticate } from "./authenticate";
-import { validateProof } from "./validateProof";
-import { Result } from "../../types";
-import { toError } from "../utils";
-import authStore from "../../store/authStore";
+import { HttpRequest } from "../types.js";
+import { authenticate } from "./authenticate.js";
+import { validateProof } from "./validateProof.js";
+import { Result } from "../../types.js";
+import { toError } from "../utils.js";
+import authStore from "../../store/authStore.js";
 
 const UNEXPECTED_ERROR = "unexpected_error";
 const INVALID_REQUEST = "invalid_request";

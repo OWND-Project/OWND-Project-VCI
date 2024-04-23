@@ -1,7 +1,7 @@
 import Koa from "koa";
 
-import keys from "../../keys";
-import { handleNotSuccessResult } from "../common";
+import keys from "../../keys.js";
+import { handleNotSuccessResult } from "../common.js";
 
 export async function handleNewKey(ctx: Koa.Context) {
   if (!ctx.request.body) {

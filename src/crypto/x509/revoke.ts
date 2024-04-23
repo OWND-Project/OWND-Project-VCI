@@ -2,7 +2,7 @@ import * as jsrsasign from "jsrsasign";
 import {
   formatDateToCustomCompactForm,
   getCurrentUTCDate,
-} from "../../utils/datetime";
+} from "../../utils/datetime.js";
 
 export interface RevokedCertificate {
   serialNumber: string;

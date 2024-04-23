@@ -1,6 +1,6 @@
 import Router from "koa-router";
 import auth from "koa-basic-auth";
-import { basicAuthOpts } from "../common";
+import { basicAuthOpts } from "../common.js";
 import Koa from "koa";
 import { koaBody } from "koa-body";
 import {
@@ -10,7 +10,7 @@ import {
   handleRegisterCert,
   handleRevokeKey,
   handleSignSelfCert,
-} from "./routesHandler";
+} from "./routesHandler.js";
 
 const routeDefinitions = {
   get: {

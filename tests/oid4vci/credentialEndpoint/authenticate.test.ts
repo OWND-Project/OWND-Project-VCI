@@ -1,9 +1,9 @@
 import { assert } from "chai";
-import { authenticate } from "../../../oid4vci/credentialEndpoint/authenticate";
+import { authenticate } from "../../../src/oid4vci/credentialEndpoint/authenticate.js";
 import {
   AccessTokenStateProvider,
   ValidAccessTokenState,
-} from "../../../oid4vci/credentialEndpoint/types";
+} from "../../../src/oid4vci/credentialEndpoint/types.js";
 
 const accessToken: ValidAccessTokenState<{}> = {
   authorizedCode: {

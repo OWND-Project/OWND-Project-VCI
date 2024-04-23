@@ -1,12 +1,12 @@
 import Koa from "koa";
 
-import { readLocalMetadataResource } from "../../utils/resourceUtils";
+import { readLocalMetadataResource } from "../../utils/resourceUtils.js";
 import path from "path";
-import { TokenIssuerConfig } from "../../oid4vci/tokenEndpoint/types";
-import { TokenIssuer } from "../../oid4vci/tokenEndpoint/TokenIssuer";
-import { CredentialIssuerConfig } from "../../oid4vci/credentialEndpoint/types";
-import { StoredAccessToken } from "../../store/authStore";
-import { CredentialIssuer } from "../../oid4vci/credentialEndpoint/CredentialIssuer";
+import { TokenIssuerConfig } from "../../oid4vci/tokenEndpoint/types.js";
+import { TokenIssuer } from "../../oid4vci/tokenEndpoint/TokenIssuer.js";
+import { CredentialIssuerConfig } from "../../oid4vci/credentialEndpoint/types.js";
+import { StoredAccessToken } from "../../store/authStore.js";
+import { CredentialIssuer } from "../../oid4vci/credentialEndpoint/CredentialIssuer.js";
 
 export async function handleIssueMetadata(ctx: Koa.Context, dirname: string) {
   const environment = process.env.ENVIRONMENT || "dev";

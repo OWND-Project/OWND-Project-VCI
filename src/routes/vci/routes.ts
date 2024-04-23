@@ -2,10 +2,10 @@ import Koa from "koa";
 import Router from "koa-router";
 import { koaBody } from "koa-body";
 
-import { TokenIssuerConfig } from "../../oid4vci/tokenEndpoint/types";
-import { CredentialIssuerConfig } from "../../oid4vci/credentialEndpoint/types";
-import { StoredAccessToken } from "../../store/authStore";
-import routesHandler from "./routesHandler";
+import { TokenIssuerConfig } from "../../oid4vci/tokenEndpoint/types.js";
+import { CredentialIssuerConfig } from "../../oid4vci/credentialEndpoint/types.js";
+import { StoredAccessToken } from "../../store/authStore.js";
+import routesHandler from "./routesHandler.js";
 
 export const setupCommonRoute = (
   router: Router<any, {}>,

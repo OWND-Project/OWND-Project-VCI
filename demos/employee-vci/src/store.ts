@@ -1,4 +1,4 @@
-import store from "../../../src/store";
+import store from "../../../src/store.js";
 import keyStore from "../../../src/store/keyStore.js";
 import authStore, {
   StoredAccessToken,
@@ -7,7 +7,7 @@ import authStore, {
 import {
   Identifiable,
   AuthorizedCode,
-} from "../../../src/oid4vci/types";
+} from "../../../src/oid4vci/types.js";
 
 /*
 @startuml

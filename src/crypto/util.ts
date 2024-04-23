@@ -3,7 +3,7 @@ import { createHash } from "crypto";
 
 import { PrivateJwk } from "elliptic-jwk";
 import * as jsrsasign from "jsrsasign";
-import { CERT_PEM_POSTAMBLE, CERT_PEM_PREAMBLE } from "./x509/constant";
+import { CERT_PEM_POSTAMBLE, CERT_PEM_PREAMBLE } from "./x509/constant.js";
 
 interface PemKeyPair {
   publicKey: string;

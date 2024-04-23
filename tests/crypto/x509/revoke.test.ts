@@ -3,7 +3,7 @@ import * as jsrsasign from "jsrsasign";
 import {
   generateCrl,
   RevokedCertificate,
-} from "../../../crypto/x509/revoke";
+} from "../../../src/crypto/x509/revoke.js";
 
 describe("generateCrl", () => {
   it("empty", async () => {

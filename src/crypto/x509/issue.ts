@@ -1,16 +1,14 @@
 import * as jsrsasign from "jsrsasign";
 import {
-  addSeconds,
   formatDateTimeForDisplay,
-  getCurrentUTCDate,
-} from "../../utils/datetime";
-import { positiveSerialNumber } from "../util";
+} from "../../utils/datetime.js";
+import { positiveSerialNumber } from "../util.js";
 import {
   CERT_PEM_POSTAMBLE,
   CERT_PEM_PREAMBLE,
   CSR_PEM_POSTAMBLE,
   CSR_PEM_PREAMBLE,
-} from "./constant";
+} from "./constant.js";
 
 export const trimmer = (str: string): string => {
   return str

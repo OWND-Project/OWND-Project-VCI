@@ -1,5 +1,5 @@
-import { AccessTokenStateProvider } from "../types";
-import authStore, { StoredAccessToken } from "../../../store/authStore";
+import { AccessTokenStateProvider } from "../types.js";
+import authStore, { StoredAccessToken } from "../../../store/authStore.js";
 
 export const accessTokenStateProvider: AccessTokenStateProvider<
   StoredAccessToken

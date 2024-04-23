@@ -1,6 +1,6 @@
-import { ErrorPayload, ErrorResponse, Result } from "../../types";
-import { TokenResponse } from "../protocol.types";
-import { Exists, NotExists, AuthorizedCode } from "../types";
+import { ErrorPayload, ErrorResponse, Result } from "../../types.js";
+import { TokenResponse } from "../protocol.types.js";
+import { Exists, NotExists, AuthorizedCode } from "../types.js";
 
 export interface TokenIssuerConfig {
   authCodeStateProvider: AuthCodeStateProvider;

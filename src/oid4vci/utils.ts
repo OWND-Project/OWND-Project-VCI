@@ -1,4 +1,4 @@
-export { toError } from "../utils";
+export { toError } from "../utils/index.js";
 
 export const isExpired = (createdAt: Date, expiresIn: number) => {
   // todo GMTの文字列で受け取る方が良いかも

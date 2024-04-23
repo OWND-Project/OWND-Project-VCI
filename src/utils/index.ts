@@ -1,4 +1,4 @@
-import { ErrorPayload } from "../types";
+import { ErrorPayload } from "../types.js";
 
 export const toError = (
   error: string,

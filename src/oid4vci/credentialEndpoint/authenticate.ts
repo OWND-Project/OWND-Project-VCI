@@ -1,6 +1,6 @@
-import { AccessTokenStateProvider, ValidAccessTokenState } from "./types";
-import { ErrorPayload, Result } from "../../types";
-import { isExpired } from "../utils";
+import { AccessTokenStateProvider, ValidAccessTokenState } from "./types.js";
+import { ErrorPayload, Result } from "../../types.js";
+import { isExpired } from "../utils.js";
 
 const INVALID_TOKEN = "invalid_token";
 export const authenticate = async <T>(

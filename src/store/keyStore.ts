@@ -2,7 +2,7 @@ import { PrivateJwk } from "elliptic-jwk";
 import store, {
   FOREIGN_KEY_CONSTRAINT_FAILED,
   UNIQUE_CONSTRAINT_FAILED,
-} from "../store";
+} from "../store.js";
 /*
 @startuml
 

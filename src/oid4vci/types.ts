@@ -1,4 +1,4 @@
-export * from "./protocol.types";
+export * from "./protocol.types.js";
 
 export interface Identifiable {
   id: number;

@@ -1,8 +1,8 @@
 import * as jose from "jose";
 
-import { ErrorPayload, Result } from "../../types";
-import { isExpired, toError } from "../utils";
-import { Proof, ProofJwtHeader, ProofOfPossession } from "./types";
+import { ErrorPayload, Result } from "../../types.js";
+import { isExpired, toError } from "../utils.js";
+import { Proof, ProofJwtHeader, ProofOfPossession } from "./types.js";
 
 const INVALID_OR_MISSING_PROOF = "invalid_or_missing_proof";
 const isIatValid = (iat: any): boolean => {

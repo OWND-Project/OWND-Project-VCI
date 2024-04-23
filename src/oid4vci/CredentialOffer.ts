@@ -1,4 +1,4 @@
-import { CredentialOffer } from "./types";
+import { CredentialOffer } from "./types.js";
 
 export const credentialOffer2Url = (
   credentialOffer: CredentialOffer,
