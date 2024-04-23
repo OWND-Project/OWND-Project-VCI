@@ -4,8 +4,8 @@ import { koaBody } from "koa-body";
 import Router from "koa-router";
 
 import routesHandler from "./routesHandler.js";
-import commonAdminRoutes from "../../../../../common/src/routes/admin/routes.js";
-import { basicAuthOpts } from "../../../../../common/src/routes/common.js";
+import commonAdminRoutes from "../../../../../src/routes/admin/routes.js";
+import { basicAuthOpts } from "../../../../../src/routes/common.js";
 
 const init = () => {
   const router = new Router();

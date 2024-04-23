@@ -1,11 +1,11 @@
-import { generateRandomString } from "../../../../common/src/utils/randomStringUtils.js";
+import { generateRandomString } from "../../../../src/utils/randomStringUtils.js";
 import store from "../store.js";
 import {
   AccessTokenIssuer,
   AuthCodeStateProvider,
   AuthorizedCodeWithStoredData,
   TokenIssuerConfig,
-} from "../../../../common/src/oid4vci/tokenEndpoint/types";
+} from "../../../../src/oid4vci/tokenEndpoint/types";
 
 export const authCodeStateProvider: AuthCodeStateProvider = async (
   authorizedCode: string,

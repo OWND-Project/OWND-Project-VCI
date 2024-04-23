@@ -1,15 +1,15 @@
-import { StoredAccessToken } from "../../../../common/src/store/authStore.js";
+import { StoredAccessToken } from "../../../../src/store/authStore.js";
 import {
   CredentialIssuerConfig,
   IssueJwtVcJsonCredential,
   PayloadJwtVc,
   ProofOfPossession,
-} from "../../../../common/src/oid4vci/credentialEndpoint/types.js";
+} from "../../../../src/oid4vci/credentialEndpoint/types.js";
 
-import { ErrorPayload, Result } from "../../../../common/src/types";
+import { ErrorPayload, Result } from "../../../../src/types";
 import participationCertificate from "./participationCertificate.js";
-import { updateNonce } from "../../../../common/src/oid4vci/credentialEndpoint/defaults/nonce.js";
-import { accessTokenStateProvider } from "../../../../common/src/oid4vci/credentialEndpoint/defaults/accessToken.js";
+import { updateNonce } from "../../../../src/oid4vci/credentialEndpoint/defaults/nonce.js";
+import { accessTokenStateProvider } from "../../../../src/oid4vci/credentialEndpoint/defaults/accessToken.js";
 
 const issueJwtJsonVcCredential: IssueJwtVcJsonCredential = async (
   preAuthorizedCode: string,

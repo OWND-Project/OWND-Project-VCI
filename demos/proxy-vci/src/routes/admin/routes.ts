@@ -1,6 +1,6 @@
 import Router from "koa-router";
 
-import commonAdminRoutes from "../../../../../common/src/routes/admin/routes.js";
+import commonAdminRoutes from "../../../../../src/routes/admin/routes.js";
 
 const init = () => {
   const router = new Router();

@@ -7,12 +7,12 @@ import { decodeDisclosure } from "@meeco/sd-jwt";
 
 import { init } from "../../src/app";
 import store from "../../src/store";
-import authStore from "../../../../common/src/store/authStore";
-import keyStore from "../../../../common/src/store/keyStore";
+import authStore from "../../../../src/store/authStore";
+import keyStore from "../../../../src/store/keyStore";
 import credentials from "../../src/logic/identityCredential";
 import { URL } from "url";
-import { xIdResponse } from "../../../../common/src/sd-jwt/types";
-import { generateRandomString } from "../../../../common/src/utils/randomStringUtils";
+import { xIdResponse } from "../../../../src/sd-jwt/types";
+import { generateRandomString } from "../../../../src/utils/randomStringUtils";
 
 const app = init();
 

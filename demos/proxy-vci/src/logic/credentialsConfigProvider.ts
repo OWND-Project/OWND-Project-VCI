@@ -4,14 +4,14 @@ import {
   ProofOfPossession,
   IssueSdJwtVcCredential,
   PayloadSdJwtVc,
-} from "../../../../common/src/oid4vci/credentialEndpoint/types";
+} from "../../../../src/oid4vci/credentialEndpoint/types";
 import identityCredential from "./identityCredential.js";
-import authStore from "../../../../common/src/store/authStore.js";
+import authStore from "../../../../src/store/authStore.js";
 import {
   Identifiable,
   VCIAccessToken,
-} from "../../../../common/src/oid4vci/types";
-import { generateRandomString } from "../../../../common/src/utils/randomStringUtils.js";
+} from "../../../../src/oid4vci/types";
+import { generateRandomString } from "../../../../src/utils/randomStringUtils.js";
 
 type StoredAccessToken = VCIAccessToken & Identifiable;
 const accessTokenStateProvider: AccessTokenStateProvider<

@@ -1,7 +1,7 @@
 import Koa from "koa";
 
-import keyStore from "../../../../../common/src/store/keyStore.js";
-import { jsonCertChainToPem } from "../../../../../common/src/crypto/util.js";
+import keyStore from "../../../../../src/store/keyStore.js";
+import { jsonCertChainToPem } from "../../../../../src/crypto/util.js";
 
 export async function handleCertificateChain(ctx: Koa.Context) {
   const keyPair = await keyStore.getLatestKeyPair();

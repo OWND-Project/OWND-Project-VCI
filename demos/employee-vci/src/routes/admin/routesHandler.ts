@@ -1,15 +1,15 @@
 import Koa from "koa";
 
-import { Result } from "../../../../../common/src/types.js";
+import { Result } from "../../../../../src/types";
 import {
   handleNotSuccessResult,
   NotSuccessResult,
-} from "../../../../../common/src/routes/common.js";
+} from "../../../../../src/routes/common.js";
 import {
   generateRandomNumericString,
   generateRandomString,
-} from "../../../../../common/src/utils/randomStringUtils.js";
-import { generatePreAuthCredentialOffer } from "../../../../../common/src/oid4vci/CredentialOffer.js";
+} from "../../../../../src/utils/randomStringUtils.js";
+import { generatePreAuthCredentialOffer } from "../../../../../src/oid4vci/CredentialOffer.js";
 
 import store, { NewEmployee } from "../../store.js";
 

@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import request from "supertest";
 
-import { url2CredentialOffer } from "../../../common/src/oid4vci/CredentialOffer";
+import { url2CredentialOffer } from "../../../src/oid4vci/CredentialOffer";
 import { init } from "../src/app";
 import store, { Employee, NewEmployee } from "../src/store";
 import { GenerateCredentialOfferResult } from "../src/routes/admin/routesHandler";

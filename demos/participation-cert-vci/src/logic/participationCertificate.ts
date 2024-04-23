@@ -1,10 +1,10 @@
-import { ErrorPayload, Result } from "../../../../common/src/types";
-import keyStore from "../../../../common/src/store/keyStore.js";
+import { ErrorPayload, Result } from "../../../../src/types";
+import keyStore from "../../../../src/store/keyStore.js";
 import store from "../store.js";
 import {
   issueJwtCredential,
   X509CertificateInfo,
-} from "../../../../common/src/jwt/issuer.js";
+} from "../../../../src/jwt/issuer.js";
 
 const issueParticipationCertificate = async (
   authorizedCode: string,

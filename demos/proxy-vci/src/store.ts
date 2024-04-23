@@ -1,10 +1,10 @@
 import { TokenResponse } from "./auth.js";
-import keyStore from "../../../common/src/store/keyStore.js";
+import keyStore from "../../../src/store/keyStore.js";
 import authStore, {
   TBL_NM_AUTH_CODES,
-} from "../../../common/src/store/authStore.js";
-import store from "../../../common/src/store.js";
-import { AccessToken } from "../../../common/src/oid4vci/types";
+} from "../../../src/store/authStore.js";
+import store from "../../../src/store";
+import { AccessToken } from "../../../src/oid4vci/types";
 
 const TBL_NM_SESSIONS = "sessions";
 const TBL_NM_XID_ACCESS_TOKENS = "xid_access_tokens";

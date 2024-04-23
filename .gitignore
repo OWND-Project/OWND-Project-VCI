@@ -20,4 +20,4 @@ participation-cert-vci/TEST_DB
 participation-cert-vci/database.sqlite
 participation-cert-vci/dist
 
-common/dist
+src/dist

@@ -1,9 +1,9 @@
 import * as jose from "jose";
 
 import store from "../store.js";
-import keyStore from "../../../../common/src/store/keyStore.js";
-import { issueFlatCredential } from "../../../../common/src/sd-jwt/issuer.js";
-import { ErrorPayload, Result } from "../../../../common/src/types";
+import keyStore from "../../../../src/store/keyStore.js";
+import { issueFlatCredential } from "../../../../src/sd-jwt/issuer.js";
+import { ErrorPayload, Result } from "../../../../src/types";
 
 const issueEmployeeCredential = async (
   authorizedCode: string,
