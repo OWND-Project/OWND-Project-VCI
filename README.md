@@ -42,6 +42,14 @@ This repository contains three web applications:
 
 Each application offers the following features:
 
+## Technical Limitations
+
+### About dependent libraries
+
+This project currently depends on [Koa](https://koajs.com/) as a web application framework.
+If you use this project to develop your applications, you are required to use Koa.
+In the future, we are considering eliminating our dependence on Koa framework and making the core VCI implementation available on its own.
+
 ### My Number Card Information VCI App
 - A REST API to issue My Number card information as a Verifiable Credential (VC).
 
