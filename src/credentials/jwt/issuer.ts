@@ -1,7 +1,7 @@
 import { JWTHeaderParameters, JWTPayload, SignJWT, importJWK } from "jose";
 import { PrivateJwk } from "elliptic-jwk";
 
-import { getKeyAlgorithm } from "../crypto/util.js";
+import { getKeyAlgorithm } from "../../crypto/util.js";
 
 export interface X509CertificateInfo {
   x5u?: string;

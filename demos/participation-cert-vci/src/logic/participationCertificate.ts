@@ -4,7 +4,7 @@ import store from "../store.js";
 import {
   issueJwtCredential,
   X509CertificateInfo,
-} from "../../../../src/jwt/issuer.js";
+} from "../../../../src/credentials/jwt/issuer.js";
 
 const issueParticipationCertificate = async (
   authorizedCode: string,

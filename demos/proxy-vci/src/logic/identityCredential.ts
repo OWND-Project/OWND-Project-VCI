@@ -5,10 +5,10 @@ import * as jose from "jose";
 import {
   xIdResponse,
   MynaInfoCredential,
-} from "../../../../src/sd-jwt/types";
+} from "../../../../src/credentials/sd-jwt/types";
 import store from "../store.js";
 import keyStore from "../../../../src/store/keyStore.js";
-import { issueFlatCredential } from "../../../../src/sd-jwt/issuer.js";
+import { issueFlatCredential } from "../../../../src/credentials/sd-jwt/issuer.js";
 import { ErrorPayload, Result } from "../../../../src/types";
 
 const convertVerifiedAt = (verifiedAt: number): string => {

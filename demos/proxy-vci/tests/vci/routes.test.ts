@@ -11,7 +11,7 @@ import authStore from "../../../../src/store/authStore";
 import keyStore from "../../../../src/store/keyStore";
 import credentials from "../../src/logic/identityCredential";
 import { URL } from "url";
-import { xIdResponse } from "../../../../src/sd-jwt/types";
+import { xIdResponse } from "../../../../src/credentials/sd-jwt/types";
 import { generateRandomString } from "../../../../src/utils/randomStringUtils";
 
 const app = init();
