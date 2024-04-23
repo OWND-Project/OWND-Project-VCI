@@ -1,4 +1,8 @@
-import { Identifiable, AuthorizedCode, VCIAccessToken } from "../oid4vci/types.js";
+import {
+  Identifiable,
+  AuthorizedCode,
+  VCIAccessToken,
+} from "../oid4vci/types.js";
 import store, { handleError, UNIQUE_CONSTRAINT_FAILED } from "../store.js";
 /*
 @startuml

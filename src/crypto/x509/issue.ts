@@ -1,7 +1,5 @@
 import * as jsrsasign from "jsrsasign";
-import {
-  formatDateTimeForDisplay,
-} from "../../utils/datetime.js";
+import { formatDateTimeForDisplay } from "../../utils/datetime.js";
 import { positiveSerialNumber } from "../util.js";
 import {
   CERT_PEM_POSTAMBLE,
