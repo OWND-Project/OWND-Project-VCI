@@ -10,10 +10,7 @@ import {
   generateRootCertificate,
 } from "./crypto/x509/issue";
 import { checkEcdsaKeyEquality, ellipticJwkToPem } from "./crypto/util";
-import {
-  CERT_PEM_POSTAMBLE,
-  CERT_PEM_PREAMBLE,
-} from "./crypto/x509/constant";
+import { CERT_PEM_POSTAMBLE, CERT_PEM_PREAMBLE } from "./crypto/x509/constant";
 import { addSeconds, getCurrentUTCDate } from "./utils/datetime";
 
 const INVALID_PARAMETER_ERROR: NgResult<NotSuccessResult> = {
