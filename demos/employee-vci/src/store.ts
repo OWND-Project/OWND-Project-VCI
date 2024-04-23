@@ -1,13 +1,13 @@
-import store from "../../../src/store.js";
-import keyStore from "../../../src/store/keyStore.js";
+import store from "ownd-vci/dist/store.js";
+import keyStore from "ownd-vci/dist/store/keyStore.js";
 import authStore, {
   StoredAccessToken,
   TBL_NM_AUTH_CODES,
-} from "../../../src/store/authStore.js";
+} from "ownd-vci/dist/store/authStore.js";
 import {
   Identifiable,
   AuthorizedCode,
-} from "../../../src/oid4vci/types.js";
+} from "ownd-vci/dist/oid4vci/types.js";
 
 /*
 @startuml

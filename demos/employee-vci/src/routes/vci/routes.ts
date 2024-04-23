@@ -1,6 +1,6 @@
 import Router from "koa-router";
 
-import commonVciRoutes from "../../../../../src/routes/vci/routes.js";
+import commonVciRoutes from "ownd-vci/dist/routes/vci/routes.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 

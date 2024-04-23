@@ -1,14 +1,14 @@
-import { StoredAccessToken } from "../../../../src/store/authStore.js";
+import { StoredAccessToken } from "ownd-vci/dist/store/authStore.js";
 import {
   CredentialIssuerConfig,
   IssueSdJwtVcCredential,
   PayloadSdJwtVc,
   ProofOfPossession,
-} from "../../../../src/oid4vci/credentialEndpoint/types.js";
+} from "ownd-vci/dist/oid4vci/credentialEndpoint/types.js";
 
 import employeeCredential from "./employeeCredential.js";
-import { updateNonce } from "../../../../src/oid4vci/credentialEndpoint/defaults/nonce.js";
-import { accessTokenStateProvider } from "../../../../src/oid4vci/credentialEndpoint/defaults/accessToken.js";
+import { updateNonce } from "ownd-vci/dist/oid4vci/credentialEndpoint/defaults/nonce.js";
+import { accessTokenStateProvider } from "ownd-vci/dist/oid4vci/credentialEndpoint/defaults/accessToken.js";
 
 const issueSdJwtVcCredential: IssueSdJwtVcCredential = async (
   authorizedCode: string,
