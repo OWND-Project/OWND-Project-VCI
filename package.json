@@ -49,7 +49,7 @@
     "typescript": "^5.2.2"
   },
   "scripts": {
-    "build": "yarn fix && ./node_modules/.bin/tsc -p tsconfig.json",
+    "build": "yarn fix && ./node_modules/.bin/tsc -p tsconfig.build.json",
     "test": "./node_modules/.bin/mocha --exit",
     "lint": "./node_modules/.bin/eslint  --ext .js --config ./.eslintrc.cjs",
     "lint:prettier": "./node_modules/.bin/prettier --check ./src ./tests",
