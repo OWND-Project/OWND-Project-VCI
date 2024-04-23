@@ -1,43 +1,15 @@
 import { StoredAccessToken } from "../../../common/src/store/authStore.js";
-import { generateRandomString } from "../../../common/src/utils/randomStringUtils.js";
 import {
-  AccessTokenStateProvider,
   CredentialIssuerConfig,
   IssueSdJwtVcCredential,
   PayloadSdJwtVc,
   ProofOfPossession,
-  UpdateNonce,
-} from "../../../common/src/oid4vci/credentialEndpoint/types";
+} from "../../../common/src/oid4vci/credentialEndpoint/types.js";
 
-import store from "../store.js";
 import employeeCredential from "./employeeCredential.js";
+import { updateNonce } from "../../../common/src/oid4vci/credentialEndpoint/defaults/nonce.js";
+import { accessTokenStateProvider } from "../../../common/src/oid4vci/credentialEndpoint/defaults/accessToken.js";
 
-const accessTokenStateProvider: AccessTokenStateProvider<
-  StoredAccessToken
-> = async (accessToken: string) => {
-  const storedAccessToken = await store.getAccessToken(accessToken);
-  if (!storedAccessToken) {
-    return { exists: false };
-  }
-  const { cNonce, cNonceExpiresIn, cNonceCreatedAt } = storedAccessToken;
-  const proofElements = storedAccessToken.authorizedCode.needsProof
-    ? {
-        cNonce: cNonce!,
-        createdAt: cNonceCreatedAt!,
-        expiresIn: cNonceExpiresIn!,
-      }
-    : undefined;
-  const payload = {
-    authorizedCode: {
-      code: storedAccessToken.authorizedCode.code,
-      proofElements,
-    },
-    expiresIn: storedAccessToken.expiresIn,
-    createdAt: new Date(storedAccessToken.createdAt),
-    storedAccessToken,
-  };
-  return { exists: true, payload };
-};
 const issueSdJwtVcCredential: IssueSdJwtVcCredential = async (
   authorizedCode: string,
   payload: PayloadSdJwtVc,
@@ -67,15 +39,6 @@ const issueSdJwtVcCredential: IssueSdJwtVcCredential = async (
     };
     return { ok: false, error };
   }
-};
-
-const updateNonce: UpdateNonce<StoredAccessToken> = async (
-  storedAccessToken: StoredAccessToken,
-) => {
-  const nonce = generateRandomString();
-  const expiresIn = Number(process.env.VCI_ACCESS_TOKEN_C_NONCE_EXPIRES_IN);
-  await store.refreshNonce(storedAccessToken.id, nonce, expiresIn);
-  return { nonce, expiresIn };
 };
 
 export const configure = (): CredentialIssuerConfig<StoredAccessToken> => {
