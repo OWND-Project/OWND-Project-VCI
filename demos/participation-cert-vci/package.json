@@ -50,6 +50,8 @@
     "typescript": "^5.2.2"
   },
   "scripts": {
+    "preinstall": "rm -rf node_modules && rm -rf ../*/node_modules && rm -rf ../../node_modules",
+    "postinstall": "cd ./node_modules/ownd-vci && yarn install && ../.bin/tsc -p tsconfig.build.json",
     "build": "yarn fix && tsc -p tsconfig.json",
     "start": "nodemon",
     "test": "mocha --exit",

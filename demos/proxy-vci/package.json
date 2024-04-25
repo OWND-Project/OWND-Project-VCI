@@ -50,6 +50,8 @@
     "typescript": "^5.2.2"
   },
   "scripts": {
+    "preinstall": "rm -rf node_modules && rm -rf ../*/node_modules && rm -rf ../../node_modules",
+    "postinstall": "cd ./node_modules/ownd-vci && yarn install && ../.bin/tsc -p tsconfig.build.json",
     "copy_res_views": "mkdir -p dist/views && cp -r views/* dist/views/",
     "copy_res_statics": "mkdir -p dist/public && cp -r public/* dist/public/",
     "copy_res": "yarn copy_res_views && yarn copy_res_statics",
