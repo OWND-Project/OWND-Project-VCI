@@ -4,6 +4,8 @@ import {
   VCIAccessToken,
 } from "../oid4vci/types.js";
 import store, { handleError, UNIQUE_CONSTRAINT_FAILED } from "../store.js";
+import sqlite3 from "sqlite3";
+import {ISqlite} from "sqlite";
 /*
 @startuml
 
@@ -167,11 +169,12 @@ export const addAccessToken = async (
   cNonce: string,
   cNonceExpiresIn: number,
   authorizedCodeId: number,
-) => {
+  // @ts-ignore
+): Promise<ISqlite.RunResult<sqlite3.Statement>> | never => {
   try {
     const db = await store.openDb();
     let result = await db.run(
-      `INSERT INTO ${TBL_NM_ACCESS_TOKENS} (token, expiresIn, authorized_code_id) VALUES (?, ?, ?)`,
+      `INSERT INTO ${TBL_NM_ACCESS_TOKENS} (token, expiresIn, authorized_code_id) VALUES (?, ?,?)`,
       accessToken,
       expiresIn,
       authorizedCodeId,
