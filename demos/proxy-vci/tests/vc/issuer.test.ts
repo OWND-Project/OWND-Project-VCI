@@ -2,7 +2,7 @@ import { assert } from "chai";
 import {
   getDisclosableClaims,
   issueFlatCredential,
-} from "../../../../src/credentials/sd-jwt/issuer";
+} from "ownd-vci/dist/credentials/sd-jwt/issuer";
 import { CRV, newPrivateJwk, publicJwkFromPrivate } from "elliptic-jwk";
 import { importJWK, jwtVerify } from "jose";
 import { base64encode, verifySDJWT } from "@meeco/sd-jwt";

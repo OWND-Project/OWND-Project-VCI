@@ -7,8 +7,8 @@ import { decodeDisclosure } from "@meeco/sd-jwt";
 import {
   generateRandomString,
   generateRandomNumericString,
-} from "../../../src/utils/randomStringUtils";
-import keyStore from "../../../src/store/keyStore";
+} from "ownd-vci/dist/utils/randomStringUtils";
+import keyStore from "ownd-vci/dist/store/keyStore";
 
 import { init } from "../src/app";
 import store, { NewEmployee } from "../src/store";

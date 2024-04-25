@@ -6,8 +6,8 @@ import nock from "nock";
 
 import { init } from "../src/app";
 import store from "../src/store";
-import keyStore from "../../../src/store/keyStore";
-import { CredentialOffer } from "../../../src/oid4vci/types";
+import keyStore from "ownd-vci/dist/store/keyStore";
+import { CredentialOffer } from "ownd-vci/dist/oid4vci/types";
 
 const app = init();
 const username = "username";
