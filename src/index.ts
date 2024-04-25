@@ -1,3 +1,3 @@
 /* export functions */
 
-// export { getCurrentUTCDate } from "./utils/datetime.js";
+export { getCurrentUTCDate } from "./utils/datetime.js";
