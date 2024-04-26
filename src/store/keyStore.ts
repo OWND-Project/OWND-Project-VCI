@@ -3,7 +3,7 @@ import store, {
   FOREIGN_KEY_CONSTRAINT_FAILED,
   UNIQUE_CONSTRAINT_FAILED,
 } from "../store.js";
-import {ISqlite} from "sqlite";
+import { ISqlite } from "sqlite";
 import sqlite3 from "sqlite3";
 /*
 @startuml
@@ -74,7 +74,9 @@ export interface ECKeyPair extends PrivateJwk {
 }
 type NewECKeyPair = Omit<ECKeyPair, "createdAt" | "revokedAt">;
 
-export const insertECKeyPair = async (keyPair: NewECKeyPair):  Promise<ISqlite.RunResult<sqlite3.Statement>> | never => {
+export const insertECKeyPair = async (
+  keyPair: NewECKeyPair,
+): Promise<ISqlite.RunResult<sqlite3.Statement>> | never => {
   try {
     const { kid, kty, crv, x, y, d } = keyPair;
     const db = await store.openDb();
