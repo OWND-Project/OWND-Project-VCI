@@ -7,7 +7,7 @@ on:
       - reopened
       - opened
 jobs:
-  check-bats-version:
+  build-and-test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -19,8 +19,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: installing yarn ...
-      - run: npm install -g yarn
+        run: npm install -g yarn
       - name: yarn install ...
-      - run: yarn install
+        run: yarn install
       - name: yarn test ...
-      - run: yarn test
+        run: yarn test
