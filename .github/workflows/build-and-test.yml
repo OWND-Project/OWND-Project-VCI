@@ -1,5 +1,5 @@
 name: build-and-test
-run-name: build-and-test
+run-name: Initiated by ${{ github.actor }} for commit ${{ github.sha }}
 on:
   pull_request:
     types:
@@ -7,7 +7,7 @@ on:
       - reopened
       - opened
 jobs:
-  build-and-test:
+  for-common:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -18,9 +18,37 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      - name: installing yarn ...
+      - name: install yarn
         run: npm install -g yarn
-      - name: yarn install ...
+      - name: yarn install
         run: yarn install
-      - name: yarn test ...
+      - name: yarn test
         run: yarn test
+      - name: prettier
+        run: yarn lint:prettier
+      - name: eslint
+        run: yarn lint
+  for-demos-proxy-vci:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [18.16.0]
+    defaults:
+      run:
+        working-directory: demos/proxy-vci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: install yarn
+        run: npm install -g yarn
+      - name: yarn install
+        run: yarn install
+      - name: yarn test
+        run: yarn test
+      - name: prettier
+        run: yarn lint:prettier
+      - name: eslint
+        run: yarn lint
