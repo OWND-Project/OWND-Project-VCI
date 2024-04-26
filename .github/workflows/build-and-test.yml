@@ -52,3 +52,51 @@ jobs:
         run: yarn lint:prettier
       - name: eslint
         run: yarn lint
+  for-demos-employee-vci:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [18.16.0]
+    defaults:
+      run:
+        working-directory: demos/employee-vci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: install yarn
+        run: npm install -g yarn
+      - name: yarn install
+        run: yarn install
+      - name: yarn test
+        run: yarn test
+      - name: prettier
+        run: yarn lint:prettier
+      - name: eslint
+        run: yarn lint
+  for-demos-participation-cert-vci:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [18.16.0]
+    defaults:
+      run:
+        working-directory: demos/participation-cert-vci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: install yarn
+        run: npm install -g yarn
+      - name: yarn install
+        run: yarn install
+      - name: yarn test
+        run: yarn test
+      - name: prettier
+        run: yarn lint:prettier
+      - name: eslint
+        run: yarn lint
