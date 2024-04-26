@@ -6,9 +6,6 @@ on:
       - synchronize
       - reopened
       - opened
-    branches:
-      - main
-      - npm-installable
 jobs:
   check-bats-version:
     runs-on: ${{ matrix.os }}
