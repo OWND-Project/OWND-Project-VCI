@@ -1,0 +1,21 @@
+name: build-and-test
+run-name: build-and-test
+on: [pull_request]
+jobs:
+  check-bats-version:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [18.16.0]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: installing yarn ...
+      - run: npm install -g yarn
+      - name: yarn install ...
+      - run: yarn install
+      - name: yarn test ...
+      - run: yarn test
