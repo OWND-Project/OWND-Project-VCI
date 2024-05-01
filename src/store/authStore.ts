@@ -5,7 +5,7 @@ import {
 } from "../oid4vci/types.js";
 import store, { handleError, UNIQUE_CONSTRAINT_FAILED } from "../store.js";
 import sqlite3 from "sqlite3";
-import {ISqlite} from "sqlite";
+import { ISqlite } from "sqlite";
 /*
 @startuml
 

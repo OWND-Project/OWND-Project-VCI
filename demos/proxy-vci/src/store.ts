@@ -1,8 +1,6 @@
 import { TokenResponse } from "./auth.js";
 import keyStore from "ownd-vci/dist/store/keyStore.js";
-import authStore, {
-  TBL_NM_AUTH_CODES,
-} from "ownd-vci/dist/store/authStore.js";
+import authStore, { TBL_NM_AUTH_CODES } from "ownd-vci/dist/store/authStore.js";
 import store from "ownd-vci/dist/store.js";
 import { AccessToken } from "ownd-vci/dist/oid4vci/types.js";
 
