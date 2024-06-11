@@ -93,9 +93,16 @@ export const validateProof = async (
     const JWKS = jose.createLocalJWKSet({
       keys: [decodedHeader.jwk],
     });
+
+    // A list of algorithms that can be handled by `jose.jwtVerify`.
+    // https://github.com/panva/jose/issues/210#jws-alg
+
+    // Ideally, proofs should be created and tested using the algorithms listed above,
+    // and should be listed in the metadata `proof_signing_alg_values_supported`.
     const { payload } = await jose.jwtVerify(proof.jwt, JWKS, {
       audience: credentialIssuer,
     });
+
     // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#name-proof-types
     // todo check header rules
 
