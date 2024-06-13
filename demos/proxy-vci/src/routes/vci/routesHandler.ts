@@ -121,7 +121,6 @@ export async function handleIssueMetadata(
           preferred,
           defaultLocale,
         );
-        console.log(`localized metadata: ${JSON.stringify(ctx.body)}`)
       } catch (err) {
         console.log(
           `unable to localize metadata using accept-language header: ${acceptLanguage}`,
