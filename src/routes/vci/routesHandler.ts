@@ -31,15 +31,15 @@ export async function handleIssueMetadata(
     if (acceptLanguage) {
       try {
         const preferred = resolveAcceptLanguage(
-            acceptLanguage,
-            availableLocales,
-            defaultLocale,
+          acceptLanguage,
+          availableLocales,
+          defaultLocale,
         );
         // TODO: stop dynamic generation.
         ctx.body = localizeIssuerMetadata(
-            metadataJson,
-            preferred,
-            defaultLocale,
+          metadataJson,
+          preferred,
+          defaultLocale,
         );
       } catch (err) {
         console.log(

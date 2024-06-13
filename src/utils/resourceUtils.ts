@@ -10,7 +10,6 @@ import {
 } from "../oid4vci/protocol.types.js";
 import { fileURLToPath } from "url";
 
-
 export const readLocalJsonResource = async (
   dirname: string,
   filename: string,
