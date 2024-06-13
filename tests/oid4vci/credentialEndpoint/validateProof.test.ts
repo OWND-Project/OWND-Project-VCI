@@ -194,7 +194,6 @@ describe("validateProof function with P-256", () => {
   });
 });
 
-
 // Currently, unable to create a key pair for P-384
 //
 // const privateJwkP384 = ellipticJwk.newPrivateJwk("P-384");
@@ -202,14 +201,12 @@ describe("validateProof function with P-256", () => {
 // const privateKeyP384 = await jose.importJWK(privateJwkP384, "ES384");
 // const jwkP384 = publicJwkFromPrivate(privateJwkP384);
 
-
 const privateJwkK1 = ellipticJwk.newPrivateJwk("secp256k1");
 // @ts-ignore
 const privateKeyK1 = await jose.importJWK(privateJwkK1, "ES256K");
 const jwkK1 = publicJwkFromPrivate(privateJwkK1);
 
 describe("validateProof function with other algorithms", () => {
-
   const credentialIssuer = "https://example.com"; // 適切なCredential Issuer URLに置き換えてください。
   const cNonce = "test-cnonce"; // テスト用のcNonceを設定してください。
   const createdAt = new Date().toISOString();
@@ -220,39 +217,43 @@ describe("validateProof function with other algorithms", () => {
     expiresIn,
   };
 
-// Currently, unable to test with key pair for P-384
-//
-//  describe("P-384", () => {
-//    it("should return a valid payload if all verifications pass", async () => {
-//      const token = await new jose.SignJWT({ nonce: cNonce })
-//          .setProtectedHeader({ alg: "ES256", jwkP384 })
-//          .setIssuedAt()
-//          .setIssuer("urn:example:issuer")
-//          .setAudience(credentialIssuer)
-//          .setExpirationTime("2h")
-//          .sign(privateKeyP384);
-//      const proof = { proof_type: "jwt", jwt: token };
-//      const result = await validateProof(proof, credentialIssuer, proofElements);
-//      if (result.ok) {
-//        const { jwt } = result.payload;
-//        assert.deepEqual(jwt.header.jwk, publicJwkFromPrivate(privateJwkP384));
-//      } else {
-//        assert.fail("result.ok is false when it should be true");
-//      }
-//    });
-//  })
+  // Currently, unable to test with key pair for P-384
+  //
+  //  describe("P-384", () => {
+  //    it("should return a valid payload if all verifications pass", async () => {
+  //      const token = await new jose.SignJWT({ nonce: cNonce })
+  //          .setProtectedHeader({ alg: "ES256", jwkP384 })
+  //          .setIssuedAt()
+  //          .setIssuer("urn:example:issuer")
+  //          .setAudience(credentialIssuer)
+  //          .setExpirationTime("2h")
+  //          .sign(privateKeyP384);
+  //      const proof = { proof_type: "jwt", jwt: token };
+  //      const result = await validateProof(proof, credentialIssuer, proofElements);
+  //      if (result.ok) {
+  //        const { jwt } = result.payload;
+  //        assert.deepEqual(jwt.header.jwk, publicJwkFromPrivate(privateJwkP384));
+  //      } else {
+  //        assert.fail("result.ok is false when it should be true");
+  //      }
+  //    });
+  //  })
 
   describe("secp256k1", () => {
     it("should return a valid payload if all verifications pass", async () => {
       const token = await new jose.SignJWT({ nonce: cNonce })
-          .setProtectedHeader({ alg: "ES256K", jwk: jwkK1 })
-          .setIssuedAt()
-          .setIssuer("urn:example:issuer")
-          .setAudience(credentialIssuer)
-          .setExpirationTime("2h")
-          .sign(privateKeyK1);
+        .setProtectedHeader({ alg: "ES256K", jwk: jwkK1 })
+        .setIssuedAt()
+        .setIssuer("urn:example:issuer")
+        .setAudience(credentialIssuer)
+        .setExpirationTime("2h")
+        .sign(privateKeyK1);
       const proof = { proof_type: "jwt", jwt: token };
-      const result = await validateProof(proof, credentialIssuer, proofElements);
+      const result = await validateProof(
+        proof,
+        credentialIssuer,
+        proofElements,
+      );
       if (result.ok) {
         const { jwt } = result.payload;
         assert.deepEqual(jwt.header.jwk, publicJwkFromPrivate(privateJwkK1));
@@ -260,5 +261,5 @@ describe("validateProof function with other algorithms", () => {
         assert.fail("result.ok is false when it should be true");
       }
     });
-  })
-})
+  });
+});
