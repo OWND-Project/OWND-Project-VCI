@@ -110,16 +110,15 @@ export async function handleIssueMetadata(
     console.log(`accept-language: ${acceptLanguage}`);
     if (acceptLanguage) {
       try {
-        const { match } = resolveAcceptLanguage(
+        const preferred = resolveAcceptLanguage(
           acceptLanguage,
           availableLocales,
           defaultLocale,
         );
-        console.log(`matched locale: ${match.toString()}`)
         // TODO: stop dynamic generation.
         ctx.body = localizeIssuerMetadata(
           metadataJson,
-          match.toString(),
+          preferred,
           defaultLocale,
         );
         console.log(`localized metadata: ${JSON.stringify(ctx.body)}`)
