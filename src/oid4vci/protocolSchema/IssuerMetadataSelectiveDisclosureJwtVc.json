@@ -2,8 +2,21 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "additionalProperties": false,
   "definitions": {
+    "BaseLogo": {
+      "additionalProperties": true,
+      "properties": {
+        "alt_text": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        }
+      },
+      "required": ["uri"],
+      "type": "object"
+    },
     "ClaimDisplay": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "locale": {
           "type": "string"
@@ -15,7 +28,7 @@
       "type": "object"
     },
     "CredentialDisplay": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "background_color": {
           "type": "string"
@@ -27,6 +40,7 @@
               "type": "string"
             }
           },
+          "required": ["uri"],
           "type": "object"
         },
         "description": {
@@ -36,16 +50,8 @@
           "type": "string"
         },
         "logo": {
-          "additionalProperties": false,
-          "properties": {
-            "alt_text": {
-              "type": "string"
-            },
-            "uri": {
-              "type": "string"
-            }
-          },
-          "type": "object"
+          "$ref": "#/definitions/BaseLogo",
+          "additionalProperties": true
         },
         "name": {
           "type": "string"
@@ -75,25 +81,22 @@
           "type": "boolean"
         }
       },
+      "required": [
+        "alg_values_supported",
+        "enc_values_supported",
+        "encryption_required"
+      ],
       "type": "object"
     },
     "IssuerDisplay": {
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "locale": {
           "type": "string"
         },
         "logo": {
-          "additionalProperties": false,
-          "properties": {
-            "alt_text": {
-              "type": "string"
-            },
-            "uri": {
-              "type": "string"
-            }
-          },
-          "type": "object"
+          "$ref": "#/definitions/BaseLogo",
+          "additionalProperties": true
         },
         "name": {
           "type": "string"
@@ -175,6 +178,7 @@
                   "type": "array"
                 }
               },
+              "required": ["proof_signing_alg_values_supported"],
               "type": "object"
             },
             "type": "object"
@@ -186,6 +190,7 @@
             "type": "string"
           }
         },
+        "required": ["claims", "format", "vct"],
         "type": "object"
       },
       "type": "object"
@@ -218,5 +223,10 @@
       "type": "string"
     }
   },
+  "required": [
+    "credential_configurations_supported",
+    "credential_endpoint",
+    "credential_issuer"
+  ],
   "type": "object"
 }

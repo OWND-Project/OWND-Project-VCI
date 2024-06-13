@@ -1,12 +1,12 @@
 import {
-  AbstractDisplay,
+  BaseDisplay,
   ClaimDisplay,
   CredentialDisplay,
   IssuerDisplay,
   IssuerMetadata,
 } from "../oid4vci/protocol.types.js";
 
-const localizeDisplay = <T extends AbstractDisplay>(
+const localizeDisplay = <T extends BaseDisplay>(
   displays: T[],
   locale: string,
   defaultLocale: string,

@@ -29,23 +29,31 @@ export interface CredentialResponseEncryption {
   encryption_required: boolean;
 }
 
-export interface AbstractDisplay {
+export interface BaseDisplay {
   name?: string;
   locale?: string;
 }
 
-export interface IssuerDisplay extends AbstractDisplay {
-  logo?: {
-    uri: string;
-    alt_text?: string;
-  };
+/**
+ * @TJS-additionalProperties true
+ */
+export interface BaseLogo {
+  uri: string;
+  alt_text?: string;
 }
 
-export interface CredentialDisplay extends AbstractDisplay {
-  logo?: {
-    uri: string;
-    alt_text?: string;
-  };
+/**
+ * @TJS-additionalProperties true
+ */
+export interface IssuerDisplay extends BaseDisplay {
+  logo?: BaseLogo;
+}
+
+/**
+ * @TJS-additionalProperties true
+ */
+export interface CredentialDisplay extends BaseDisplay {
+  logo?: BaseLogo;
   description?: string;
   background_color?: string;
   background_image?: {
@@ -54,7 +62,10 @@ export interface CredentialDisplay extends AbstractDisplay {
   text_color?: string;
 }
 
-export interface ClaimDisplay extends AbstractDisplay {}
+/**
+ * @TJS-additionalProperties true
+ */
+export interface ClaimDisplay extends BaseDisplay {}
 
 interface BaseIssuerMetadata {
   credential_issuer: string;
@@ -98,7 +109,7 @@ export interface IssuerMetadataJwtVcWithoutJsonLd extends BaseIssuerMetadata {
           };
         };
       };
-      order: string[];
+      order?: string[];
     };
   };
 }
@@ -132,7 +143,7 @@ export interface IssuerMetadataDataIntegrityVcWithJsonLd
           };
         };
       };
-      order: string[];
+      order?: string[];
     };
   };
 }
@@ -168,7 +179,7 @@ export interface IssuerMetadataSelectiveDisclosureJwtVc
           display?: ClaimDisplay[];
         };
       };
-      order: string[];
+      order?: string[];
     };
   };
 }
