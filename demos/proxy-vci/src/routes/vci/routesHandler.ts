@@ -100,11 +100,10 @@ export async function handleIssueMetadata(
 ) {
   const environment = process.env.ENVIRONMENT || "dev";
   try {
-    const metadataJson = await getIssuerMetadata(
+    const originalMetadataJson = await getIssuerMetadata(
       path.join(__dirname, "metadata", environment),
       "credential_issuer_metadata.json",
     );
-    console.debug(metadataJson);
 
     const acceptLanguage = ctx.request.header["accept-language"];
     console.log(`accept-language: ${acceptLanguage}`);
@@ -117,7 +116,7 @@ export async function handleIssueMetadata(
         );
         // TODO: stop dynamic generation.
         ctx.body = localizeIssuerMetadata(
-          metadataJson,
+          structuredClone(originalMetadataJson),
           preferred,
           defaultLocale,
         );
@@ -125,10 +124,10 @@ export async function handleIssueMetadata(
         console.log(
           `unable to localize metadata using accept-language header: ${acceptLanguage}`,
         );
-        ctx.body = metadataJson;
+        ctx.body = originalMetadataJson;
       }
     } else {
-      ctx.body = metadataJson;
+      ctx.body = originalMetadataJson;
     }
 
     ctx.status = 200;

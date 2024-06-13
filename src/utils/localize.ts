@@ -103,6 +103,8 @@ export const localizeIssuerMetadata = (
         }
       });
     }
+
+    localizedMetadata.credential_configurations_supported[key] = config;
   });
 
   return localizedMetadata;
