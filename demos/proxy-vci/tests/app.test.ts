@@ -398,10 +398,15 @@ describe("Root path test", () => {
     const credentialOffer = JSON.parse(
       decodedCredentialOffer,
     ) as CredentialOffer;
+
+    const grantsPreAuth = credentialOffer.grants;
+    assert.isOk(grantsPreAuth);
+
     const preAuthorizedCode =
-      credentialOffer.grants[
-        "urn:ietf:params:oauth:grant-type:pre-authorized_code"
-      ]["pre-authorized_code"];
+      grantsPreAuth["urn:ietf:params:oauth:grant-type:pre-authorized_code"][
+        "pre-authorized_code"
+      ];
+
     const accessToken = await store.getXIDAccessToken(preAuthorizedCode);
     assert.isNotNull(accessToken);
     assert.equal(accessToken?.token, accessTokenValue);

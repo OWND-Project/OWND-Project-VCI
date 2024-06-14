@@ -103,18 +103,21 @@ describe("/admin/employees/employNo/credential-offer endpoint test", () => {
       credentialOffer.credential_issuer,
       process.env.CREDENTIAL_ISSUER || "",
     );
-    assert.equal(credentialOffer.credentials.length, 1);
+    assert.equal(credentialOffer.credential_configuration_ids.length, 1);
     assert.equal(
-      credentialOffer.credentials[0],
+      credentialOffer.credential_configuration_ids[0],
       "EmployeeIdentificationCredential",
     );
 
-    const grant =
-      credentialOffer.grants[
-        "urn:ietf:params:oauth:grant-type:pre-authorized_code"
-      ];
-    assert.isString(grant["pre-authorized_code"]);
-    assert.isTrue(grant.user_pin_required);
+    const grants = credentialOffer.grants;
+    assert.isOk(grants);
+
+    if (grants) {
+      const preAuthGrant =
+        grants["urn:ietf:params:oauth:grant-type:pre-authorized_code"];
+      assert.isString(preAuthGrant["pre-authorized_code"]);
+      assert.isTrue(preAuthGrant.user_pin_required);
+    }
 
     assert.equal(8, userPin.length);
     assert.match(userPin, /^[0-9]+$/);

@@ -7,12 +7,10 @@ interface Grants {
   "urn:ietf:params:oauth:grant-type:pre-authorized_code": CredentialGrant;
 }
 
-type CredentialItem = string | { [key: string]: any };
-
 export interface CredentialOffer {
   credential_issuer: string;
-  credentials: CredentialItem[];
-  grants: Grants;
+  credential_configuration_ids: string[];
+  grants?: Grants;
 }
 
 export interface TokenResponse {

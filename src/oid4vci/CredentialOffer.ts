@@ -20,7 +20,8 @@ export const url2CredentialOffer = (credentialOfferUrl: string) => {
 
   const decodedCredentialOffer = decodeURIComponent(encodedCredentialOffer);
 
-  return JSON.parse(decodedCredentialOffer);
+  // todo: should validate the data structure.
+  return JSON.parse(decodedCredentialOffer) as CredentialOffer;
 };
 
 export const generatePreAuthCredentialOffer = (
@@ -32,7 +33,7 @@ export const generatePreAuthCredentialOffer = (
 ): string => {
   const credentialOffer = {
     credential_issuer: credentialIssuer || "",
-    credentials: credentials,
+    credential_configuration_ids: credentials,
     grants: {
       "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
         "pre-authorized_code": preAuthCode,
