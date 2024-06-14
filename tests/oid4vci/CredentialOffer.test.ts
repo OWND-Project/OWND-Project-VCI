@@ -37,7 +37,7 @@ describe("credentialOffer2Url", () => {
       grants: {
         "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
           "pre-authorized_code": "code123",
-          user_pin_required: true,
+          tx_code: {}, // empty object also indicates that the tx_code is required
         },
       },
     };

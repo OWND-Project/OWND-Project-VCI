@@ -1,6 +1,12 @@
+export interface TxCode {
+  input_mode?: "numeric" | "text";
+  length?: number;
+  description?: string;
+}
+
 interface CredentialGrant {
   "pre-authorized_code": string;
-  user_pin_required: boolean;
+  tx_code?: TxCode;
 }
 
 interface Grants {
