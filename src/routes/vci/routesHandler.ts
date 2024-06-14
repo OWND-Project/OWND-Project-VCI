@@ -20,6 +20,8 @@ export async function handleIssueMetadata(
   defaultLocale: string,
 ) {
   const environment = process.env.ENVIRONMENT || "dev";
+  const needsLocalization = process.env.RESOLVE_ACCEPT_LANGUAGE === "true";
+
   try {
     const originalMetadataJson = await getIssuerMetadata(
       path.join(dirname, "metadata", environment),
@@ -27,27 +29,37 @@ export async function handleIssueMetadata(
     );
     console.debug(originalMetadataJson);
 
+    if (!needsLocalization) {
+      ctx.body = originalMetadataJson;
+      ctx.status = 200;
+      ctx.set("Content-Type", "application/json");
+      return;
+    }
+
     const acceptLanguage = ctx.request.header["accept-language"];
-    if (acceptLanguage) {
-      try {
-        const preferred = resolveAcceptLanguage(
+    if (!acceptLanguage) {
+      ctx.body = originalMetadataJson;
+      ctx.status = 200;
+      ctx.set("Content-Type", "application/json");
+      return;
+    }
+
+    try {
+      const preferred = resolveAcceptLanguage(
           acceptLanguage,
           availableLocales,
           defaultLocale,
-        );
-        // TODO: stop dynamic generation.
-        ctx.body = localizeIssuerMetadata(
+      );
+      // TODO: stop dynamic generation.
+      ctx.body = localizeIssuerMetadata(
           structuredClone(originalMetadataJson),
           preferred,
           defaultLocale,
-        );
-      } catch (err) {
-        console.log(
+      );
+    } catch (err) {
+      console.log(
           `unable to localize metadata using accept-language header: ${acceptLanguage}`,
-        );
-        ctx.body = originalMetadataJson;
-      }
-    } else {
+      );
       ctx.body = originalMetadataJson;
     }
 
