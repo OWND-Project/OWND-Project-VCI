@@ -46,19 +46,19 @@ export async function handleIssueMetadata(
 
     try {
       const preferred = resolveAcceptLanguage(
-          acceptLanguage,
-          availableLocales,
-          defaultLocale,
+        acceptLanguage,
+        availableLocales,
+        defaultLocale,
       );
       // TODO: stop dynamic generation.
       ctx.body = localizeIssuerMetadata(
-          structuredClone(originalMetadataJson),
-          preferred,
-          defaultLocale,
+        structuredClone(originalMetadataJson),
+        preferred,
+        defaultLocale,
       );
     } catch (err) {
       console.log(
-          `unable to localize metadata using accept-language header: ${acceptLanguage}`,
+        `unable to localize metadata using accept-language header: ${acceptLanguage}`,
       );
       ctx.body = originalMetadataJson;
     }
