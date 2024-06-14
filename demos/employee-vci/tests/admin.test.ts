@@ -116,7 +116,7 @@ describe("/admin/employees/employNo/credential-offer endpoint test", () => {
       const preAuthGrant =
         grants["urn:ietf:params:oauth:grant-type:pre-authorized_code"];
       assert.isString(preAuthGrant["pre-authorized_code"]);
-      assert.isTrue(preAuthGrant.user_pin_required);
+      assert.isObject(preAuthGrant.tx_code);
     }
 
     assert.equal(8, userPin.length);

@@ -78,7 +78,7 @@ export async function handleRootPathCallback(ctx: Koa.Context) {
       credentialIssuer,
       ["IdentityCredential"],
       preAuthCode,
-      false,
+      undefined,
       credentialOfferEndpoint,
     );
 
