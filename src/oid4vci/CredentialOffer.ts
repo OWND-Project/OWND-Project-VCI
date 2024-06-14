@@ -28,7 +28,7 @@ export const generatePreAuthCredentialOffer = (
   credentialIssuer: string,
   credentials: string[],
   preAuthCode: string,
-  txCode: TxCode,
+  txCode?: TxCode,
   endpoint?: string,
 ): string => {
   const credentialOffer: CredentialOffer = {
@@ -37,7 +37,7 @@ export const generatePreAuthCredentialOffer = (
     grants: {
       "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
         "pre-authorized_code": preAuthCode,
-        tx_code: txCode,
+        ...(txCode !== undefined && { tx_code: txCode }),
       },
     },
   };

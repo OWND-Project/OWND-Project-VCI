@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { CredentialOffer } from "../../src/oid4vci/protocol.types";
-import { credentialOffer2Url } from "../../src/oid4vci/CredentialOffer";
+import {credentialOffer2Url, generatePreAuthCredentialOffer} from "../../src/oid4vci/CredentialOffer";
 
 describe("credentialOffer2Url", () => {
   it("should return the correct URL when endpoint is provided", () => {
@@ -48,4 +48,58 @@ describe("credentialOffer2Url", () => {
     )}`;
     assert.equal(result, expectedUrl);
   });
+});
+
+
+describe("generatePreAuthCredentialOffer", () => {
+  it("should not include tx_code in the grants when txCode is undefined", () => {
+    const credentialIssuer = "https://issuer.example.com";
+    const credentials = ["config1", "config2"];
+    const preAuthCode = "code123";
+
+    const result = generatePreAuthCredentialOffer(credentialIssuer, credentials, preAuthCode);
+    const credentialOffer = new URL(result).searchParams.get("credential_offer");
+    assert.isNotNull(credentialOffer, "credential_offer parameter is missing in the URL.")
+    if (credentialOffer) {
+      const resultObject = JSON.parse(decodeURIComponent(credentialOffer));
+      assert.notProperty(resultObject.grants["urn:ietf:params:oauth:grant-type:pre-authorized_code"], "tx_code");
+    }
+  });
+
+  it("should include tx_code in the grants when txCode is defined", () => {
+    const credentialIssuer = "https://issuer.example.com";
+    const credentials = ["config1", "config2"];
+    const preAuthCode = "code123";
+
+    const txCode = {
+      input_mode: "numeric",
+      length: 6,
+      description: "Transaction Code"
+    };
+
+    const result = generatePreAuthCredentialOffer(credentialIssuer, credentials, preAuthCode, txCode);
+    const credentialOffer1 = new URL(result).searchParams.get("credential_offer");
+    assert.isNotNull(credentialOffer1, "credential_offer parameter is missing in the URL.");
+    if (credentialOffer1) {
+      const resultObject = JSON.parse(decodeURIComponent(credentialOffer1));
+      assert.deepPropertyVal(resultObject.grants["urn:ietf:params:oauth:grant-type:pre-authorized_code"], "tx_code", txCode);
+    }
+  });
+
+  it("should include tx_code in the grants when txCode is defined (empty txCode)", () => {
+    const credentialIssuer = "https://issuer.example.com";
+    const credentials = ["config1", "config2"];
+    const preAuthCode = "code123";
+
+    const txCode = {};
+
+    const result = generatePreAuthCredentialOffer(credentialIssuer, credentials, preAuthCode, txCode);
+    const credentialOffer1 = new URL(result).searchParams.get("credential_offer");
+    assert.isNotNull(credentialOffer1, "credential_offer parameter is missing in the URL.");
+    if (credentialOffer1) {
+      const resultObject = JSON.parse(decodeURIComponent(credentialOffer1));
+      assert.deepPropertyVal(resultObject.grants["urn:ietf:params:oauth:grant-type:pre-authorized_code"], "tx_code", txCode);
+    }
+  });
+
 });

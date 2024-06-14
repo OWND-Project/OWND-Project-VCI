@@ -1,5 +1,5 @@
 export interface TxCode {
-  input_mode?: "numeric" | "text";
+  input_mode?: string;
   length?: number;
   description?: string;
 }
