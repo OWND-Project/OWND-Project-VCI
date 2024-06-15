@@ -19,6 +19,58 @@ export interface CredentialOffer {
   grants?: Grants;
 }
 
+/**
+ * @TJS-additionalProperties true
+ */
+export interface Proof {
+  proof_type: string;
+}
+
+export interface BaseCredentialRequest {
+  // Conditionally required: its necessity depends on the presence of other parameters.
+  // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html#name-credential-request
+  //   REQUIRED when the credential_identifiers parameter was not returned from the Token Response.
+  //   It MUST NOT be used otherwise.
+  format?: string;
+
+  // Conditionally required: its necessity depends on the presence of other parameters.
+  // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html#name-credential-request
+  //   The proof object is REQUIRED if the proof_types_supported parameter is non-empty and present in the
+  //   credential_configurations_supported parameter of the Issuer metadata for the requested Credential.
+  proof?: Proof;
+
+  // Conditionally required: its necessity depends on the presence of other parameters.
+  // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html#name-credential-request
+  //   REQUIRED when credential_identifiers parameter was returned from the Token Response.
+  //   It MUST NOT be used otherwise
+  credential_identifier?: string;
+
+  credential_response_encryption?: {
+    jwk: {
+      [key: string]: any; // todo: Should be restricted to appropriate properties as jwk
+    };
+    alg: string;
+    end: string;
+  };
+}
+
+export interface CredentialRequestSelectiveDisclosureJwtVc
+  extends BaseCredentialRequest {
+  // REQUIRED when the format parameter is present in the Credential Request. It MUST NOT be used otherwise
+  vct?: string;
+  claims?: Claims;
+}
+
+export interface CredentialRequestJwtVcWithoutJsonLd
+  extends BaseCredentialRequest {
+  // REQUIRED when the format parameter is present in the Credential Request.
+  // It MUST NOT be used otherwise
+  credential_definition?: {
+    type: string[];
+    credentialSubject?: ClaimsOnlyMandatory;
+  };
+}
+
 export interface TokenResponse {
   access_token: string;
   token_type: string;
@@ -86,6 +138,24 @@ interface BaseIssuerMetadata {
   // Add `credential_configurations_supported` depending on the type of credential
 }
 
+export interface Claim {
+  mandatory?: boolean;
+  value_type?: string;
+  display?: ClaimDisplay[];
+}
+
+export type ClaimOnlyMandatory = Omit<Claim, "value_type" | "display">;
+
+export interface Claims {
+  // todo: support nested structure
+  [key: string]: Claim;
+}
+
+export interface ClaimsOnlyMandatory {
+  // todo: support nested structure
+  [key: string]: ClaimOnlyMandatory;
+}
+
 // A.1.1  VC Signed as a JWT, Not Using JSON-LD
 export interface IssuerMetadataJwtVcWithoutJsonLd extends BaseIssuerMetadata {
   credential_configurations_supported: {
@@ -104,14 +174,7 @@ export interface IssuerMetadataJwtVcWithoutJsonLd extends BaseIssuerMetadata {
       // Added parameters specific to A.1.1.
       credential_definition: {
         type: string[];
-        credentialSubject?: {
-          // todo: support nested structure
-          [key: string]: {
-            mandatory?: boolean;
-            value_type?: string;
-            display?: ClaimDisplay[];
-          };
-        };
+        credentialSubject?: Claims;
       };
       order?: string[];
     };
@@ -138,14 +201,7 @@ export interface IssuerMetadataDataIntegrityVcWithJsonLd
       credential_definition: {
         "@context": string[];
         type: string[];
-        credentialSubject?: {
-          // todo: support nested structure
-          [key: string]: {
-            mandatory?: boolean;
-            value_type?: string;
-            display?: ClaimDisplay[];
-          };
-        };
+        credentialSubject?: Claims;
       };
       order?: string[];
     };
@@ -175,14 +231,7 @@ export interface IssuerMetadataSelectiveDisclosureJwtVc
 
       // Added parameters specific to A.3.
       vct: string;
-      claims: {
-        // todo: support nested structure
-        [key: string]: {
-          mandatory?: boolean;
-          value_type?: string;
-          display?: ClaimDisplay[];
-        };
-      };
+      claims: Claims;
       order?: string[];
     };
   };
@@ -193,3 +242,7 @@ export type IssuerMetadata =
   | IssuerMetadataJwtVcWithoutJsonLd
   | IssuerMetadataDataIntegrityVcWithJsonLd
   | IssuerMetadataSelectiveDisclosureJwtVc;
+
+export type CredentialRequest =
+  | CredentialRequestSelectiveDisclosureJwtVc
+  | CredentialRequestJwtVcWithoutJsonLd;
