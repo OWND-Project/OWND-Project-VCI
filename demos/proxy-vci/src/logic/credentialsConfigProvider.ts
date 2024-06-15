@@ -7,7 +7,10 @@ import {
 } from "ownd-vci/dist/oid4vci/credentialEndpoint/types";
 import identityCredential from "./identityCredential.js";
 import authStore from "ownd-vci/dist/store/authStore.js";
-import { Identifiable, VCIAccessToken } from "ownd-vci/dist/oid4vci/types/types.js";
+import {
+  Identifiable,
+  VCIAccessToken,
+} from "ownd-vci/dist/oid4vci/types/types.js";
 import { generateRandomString } from "ownd-vci/dist/utils/randomStringUtils.js";
 
 type StoredAccessToken = VCIAccessToken & Identifiable;
