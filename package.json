@@ -57,12 +57,13 @@
     "typescript": "^5.2.2"
   },
   "scripts": {
-    "build": "yarn fix && ./node_modules/.bin/tsc -p tsconfig.build.json",
-    "test": "./node_modules/.bin/mocha --exit",
+    "build": "yarn fix && yarn generate-json-schemas && ./node_modules/.bin/tsc -p tsconfig.build.json",
+    "test": "yarn generate-json-schemas && ./node_modules/.bin/mocha --exit",
     "lint": "./node_modules/.bin/eslint  --ext .js --config ./.eslintrc.cjs",
     "lint:prettier": "./node_modules/.bin/prettier --check ./src ./tests",
     "fix": "yarn fix:eslint && yarn fix:prettier",
     "fix:eslint": "yarn lint --fix",
-    "fix:prettier": "yarn lint:prettier --write"
+    "fix:prettier": "yarn lint:prettier --write",
+    "generate-json-schemas": "node generate-json-schema.js"
   }
 }

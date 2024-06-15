@@ -1,242 +1,260 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "additionalProperties": false,
-  "definitions": {
-    "BaseLogo": {
-      "additionalProperties": true,
-      "properties": {
-        "alt_text": {
-          "type": "string"
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "additionalProperties": false,
+    "definitions": {
+        "BaseLogo": {
+            "additionalProperties": true,
+            "properties": {
+                "alt_text": {
+                    "type": "string"
+                },
+                "uri": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "uri"
+            ],
+            "type": "object"
         },
-        "uri": {
-          "type": "string"
-        }
-      },
-      "required": ["uri"],
-      "type": "object"
-    },
-    "ClaimDisplay": {
-      "additionalProperties": true,
-      "properties": {
-        "locale": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "CredentialDisplay": {
-      "additionalProperties": true,
-      "properties": {
-        "background_color": {
-          "type": "string"
-        },
-        "background_image": {
-          "additionalProperties": false,
-          "properties": {
-            "uri": {
-              "type": "string"
-            }
-          },
-          "required": ["uri"],
-          "type": "object"
-        },
-        "description": {
-          "type": "string"
-        },
-        "locale": {
-          "type": "string"
-        },
-        "logo": {
-          "$ref": "#/definitions/BaseLogo",
-          "additionalProperties": true
-        },
-        "name": {
-          "type": "string"
-        },
-        "text_color": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "CredentialResponseEncryption": {
-      "additionalProperties": false,
-      "properties": {
-        "alg_values_supported": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "enc_values_supported": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "encryption_required": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "alg_values_supported",
-        "enc_values_supported",
-        "encryption_required"
-      ],
-      "type": "object"
-    },
-    "IssuerDisplay": {
-      "additionalProperties": true,
-      "properties": {
-        "locale": {
-          "type": "string"
-        },
-        "logo": {
-          "$ref": "#/definitions/BaseLogo",
-          "additionalProperties": true
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    }
-  },
-  "properties": {
-    "authorization_servers": {
-      "items": {
-        "type": "string"
-      },
-      "type": "array"
-    },
-    "batch_credential_endpoint": {
-      "type": "string"
-    },
-    "credential_configurations_supported": {
-      "additionalProperties": {
-        "additionalProperties": false,
-        "properties": {
-          "credential_definition": {
+        "Claim": {
             "additionalProperties": false,
             "properties": {
-              "credentialSubject": {
-                "additionalProperties": {
-                  "additionalProperties": false,
-                  "properties": {
-                    "display": {
-                      "items": {
+                "display": {
+                    "items": {
                         "$ref": "#/definitions/ClaimDisplay"
-                      },
-                      "type": "array"
                     },
-                    "mandatory": {
-                      "type": "boolean"
-                    },
-                    "value_type": {
-                      "type": "string"
-                    }
-                  },
-                  "type": "object"
+                    "type": "array"
                 },
-                "type": "object"
-              },
-              "type": {
-                "items": {
-                  "type": "string"
+                "mandatory": {
+                    "type": "boolean"
                 },
-                "type": "array"
-              }
-            },
-            "required": ["type"],
-            "type": "object"
-          },
-          "credential_signing_alg_values_supported": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "cryptographic_binding_methods_supported": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "display": {
-            "items": {
-              "$ref": "#/definitions/CredentialDisplay"
-            },
-            "type": "array"
-          },
-          "format": {
-            "type": "string"
-          },
-          "order": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "proof_types_supported": {
-            "additionalProperties": {
-              "additionalProperties": false,
-              "properties": {
-                "proof_signing_alg_values_supported": {
-                  "items": {
+                "value_type": {
                     "type": "string"
-                  },
-                  "type": "array"
                 }
-              },
-              "required": ["proof_signing_alg_values_supported"],
-              "type": "object"
             },
             "type": "object"
-          },
-          "scope": {
-            "type": "string"
-          }
         },
-        "required": ["credential_definition", "format"],
-        "type": "object"
-      },
-      "type": "object"
+        "ClaimDisplay": {
+            "additionalProperties": true,
+            "properties": {
+                "locale": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Claims": {
+            "additionalProperties": {
+                "$ref": "#/definitions/Claim"
+            },
+            "type": "object"
+        },
+        "CredentialDisplay": {
+            "additionalProperties": true,
+            "properties": {
+                "background_color": {
+                    "type": "string"
+                },
+                "background_image": {
+                    "additionalProperties": false,
+                    "properties": {
+                        "uri": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "uri"
+                    ],
+                    "type": "object"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "locale": {
+                    "type": "string"
+                },
+                "logo": {
+                    "$ref": "#/definitions/BaseLogo",
+                    "additionalProperties": true
+                },
+                "name": {
+                    "type": "string"
+                },
+                "text_color": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "CredentialResponseEncryption": {
+            "additionalProperties": false,
+            "properties": {
+                "alg_values_supported": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "enc_values_supported": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "encryption_required": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "alg_values_supported",
+                "enc_values_supported",
+                "encryption_required"
+            ],
+            "type": "object"
+        },
+        "IssuerDisplay": {
+            "additionalProperties": true,
+            "properties": {
+                "locale": {
+                    "type": "string"
+                },
+                "logo": {
+                    "$ref": "#/definitions/BaseLogo",
+                    "additionalProperties": true
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
     },
-    "credential_endpoint": {
-      "type": "string"
+    "properties": {
+        "authorization_servers": {
+            "items": {
+                "type": "string"
+            },
+            "type": "array"
+        },
+        "batch_credential_endpoint": {
+            "type": "string"
+        },
+        "credential_configurations_supported": {
+            "additionalProperties": {
+                "additionalProperties": false,
+                "properties": {
+                    "credential_definition": {
+                        "additionalProperties": false,
+                        "properties": {
+                            "credentialSubject": {
+                                "$ref": "#/definitions/Claims"
+                            },
+                            "type": {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            }
+                        },
+                        "required": [
+                            "type"
+                        ],
+                        "type": "object"
+                    },
+                    "credential_signing_alg_values_supported": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
+                    "cryptographic_binding_methods_supported": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
+                    "display": {
+                        "items": {
+                            "$ref": "#/definitions/CredentialDisplay"
+                        },
+                        "type": "array"
+                    },
+                    "format": {
+                        "type": "string"
+                    },
+                    "order": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
+                    "proof_types_supported": {
+                        "additionalProperties": {
+                            "additionalProperties": false,
+                            "properties": {
+                                "proof_signing_alg_values_supported": {
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "required": [
+                                "proof_signing_alg_values_supported"
+                            ],
+                            "type": "object"
+                        },
+                        "type": "object"
+                    },
+                    "scope": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "credential_definition",
+                    "format"
+                ],
+                "type": "object"
+            },
+            "type": "object"
+        },
+        "credential_endpoint": {
+            "type": "string"
+        },
+        "credential_identifiers_supported": {
+            "type": "boolean"
+        },
+        "credential_issuer": {
+            "type": "string"
+        },
+        "credential_response_encryption": {
+            "$ref": "#/definitions/CredentialResponseEncryption"
+        },
+        "deferred_credential_endpoint": {
+            "type": "string"
+        },
+        "display": {
+            "items": {
+                "$ref": "#/definitions/IssuerDisplay"
+            },
+            "type": "array"
+        },
+        "notification_endpoint": {
+            "type": "string"
+        },
+        "signed_metadata": {
+            "type": "string"
+        }
     },
-    "credential_identifiers_supported": {
-      "type": "boolean"
-    },
-    "credential_issuer": {
-      "type": "string"
-    },
-    "credential_response_encryption": {
-      "$ref": "#/definitions/CredentialResponseEncryption"
-    },
-    "deferred_credential_endpoint": {
-      "type": "string"
-    },
-    "display": {
-      "items": {
-        "$ref": "#/definitions/IssuerDisplay"
-      },
-      "type": "array"
-    },
-    "notification_endpoint": {
-      "type": "string"
-    },
-    "signed_metadata": {
-      "type": "string"
-    }
-  },
-  "required": [
-    "credential_configurations_supported",
-    "credential_endpoint",
-    "credential_issuer"
-  ],
-  "type": "object"
+    "required": [
+        "credential_configurations_supported",
+        "credential_endpoint",
+        "credential_issuer"
+    ],
+    "type": "object"
 }
+
