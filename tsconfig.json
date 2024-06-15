@@ -22,7 +22,7 @@
   },
   "include": [
     "./src/**/*.ts",
-    "./src/oid4vci/protocolSchema/*.json",
+    "./src/oid4vci/types/protocolSchema/*.json",
     "./tests/**/*.ts"
   ]
 }

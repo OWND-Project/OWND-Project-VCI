@@ -1,5 +1,5 @@
 import { ErrorPayload, Result } from "../../types.js";
-import { Exists, NotExists } from "../types.js";
+import { Exists, NotExists } from "../types/types.js";
 import * as jose from "jose";
 
 export interface ValidAccessTokenState<T> {

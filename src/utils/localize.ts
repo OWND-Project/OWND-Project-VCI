@@ -4,7 +4,7 @@ import {
   CredentialDisplay,
   IssuerDisplay,
   IssuerMetadata,
-} from "../oid4vci/protocol.types.js";
+} from "../oid4vci/types/protocol.types.js";
 
 const localizeDisplay = <T extends BaseDisplay>(
   displays: T[],

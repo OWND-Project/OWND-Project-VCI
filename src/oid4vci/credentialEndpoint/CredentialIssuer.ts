@@ -4,7 +4,7 @@ import {
   IssueResult,
   ProofOfPossession,
 } from "./types";
-import { HttpRequest } from "../types.js";
+import { HttpRequest } from "../types/types.js";
 import { authenticate } from "./authenticate.js";
 import { validateProof } from "./validateProof.js";
 import { Result } from "../../types.js";

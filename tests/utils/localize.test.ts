@@ -2,8 +2,8 @@ import { assert } from "chai";
 import {
   IssuerMetadataJwtVcWithoutJsonLd,
   IssuerMetadataSelectiveDisclosureJwtVc,
-} from "../../src/oid4vci/protocol.types";
-import { localizeIssuerMetadata } from "../../src/utils/localize";
+} from "../../src/oid4vci/types/protocol.types.js";
+import { localizeIssuerMetadata } from "../../src/utils/localize.js";
 
 describe("localizeIssuerMetadata", () => {
   it("should localize IssuerDisplay correctly", () => {
