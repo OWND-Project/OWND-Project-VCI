@@ -10,7 +10,7 @@ const schemaDir = path.join(__dirname, "src/oid4vci/types/protocolSchema/");
 
 export const schemaValidator = <T>(
   fileName: string,
-  payload: any,
+  payload: unknown,
 ): payload is T => {
   try {
     const fullPath = path.join(schemaDir, `${fileName}.json`);
