@@ -1,13 +1,13 @@
 import { assert } from "chai";
 import {
-  IssuerMetadataJwtVcWithoutJsonLd,
-  IssuerMetadataSelectiveDisclosureJwtVc,
+  IssuerMetadataJwtVcJson,
+  IssuerMetadataVcSdJwt,
 } from "../../src/oid4vci/types/protocol.types.js";
 import { localizeIssuerMetadata } from "../../src/utils/localize.js";
 
 describe("localizeIssuerMetadata", () => {
   it("should localize IssuerDisplay correctly", () => {
-    const metadata: IssuerMetadataJwtVcWithoutJsonLd = {
+    const metadata: IssuerMetadataJwtVcJson = {
       credential_issuer: "issuer",
       credential_endpoint: "endpoint",
       credential_configurations_supported: {},
@@ -24,7 +24,7 @@ describe("localizeIssuerMetadata", () => {
   });
 
   it("should fallback to default locale if preferred locale is not found", () => {
-    const metadata: IssuerMetadataJwtVcWithoutJsonLd = {
+    const metadata: IssuerMetadataJwtVcJson = {
       credential_issuer: "issuer",
       credential_endpoint: "endpoint",
       credential_configurations_supported: {},
@@ -38,7 +38,7 @@ describe("localizeIssuerMetadata", () => {
   });
 
   it("should return original displays if neither preferred nor default locale is found", () => {
-    const metadata: IssuerMetadataJwtVcWithoutJsonLd = {
+    const metadata: IssuerMetadataJwtVcJson = {
       credential_issuer: "issuer",
       credential_endpoint: "endpoint",
       credential_configurations_supported: {},
@@ -52,7 +52,7 @@ describe("localizeIssuerMetadata", () => {
   });
 
   it("should localize CredentialDisplay within credential configurations", () => {
-    const metadata: IssuerMetadataJwtVcWithoutJsonLd = {
+    const metadata: IssuerMetadataJwtVcJson = {
       credential_issuer: "issuer",
       credential_endpoint: "endpoint",
       credential_configurations_supported: {
@@ -78,7 +78,7 @@ describe("localizeIssuerMetadata", () => {
   });
 
   it("should localize ClaimDisplay within credential configurations", () => {
-    const metadata: IssuerMetadataJwtVcWithoutJsonLd = {
+    const metadata: IssuerMetadataJwtVcJson = {
       credential_issuer: "issuer",
       credential_endpoint: "endpoint",
       credential_configurations_supported: {
@@ -104,7 +104,7 @@ describe("localizeIssuerMetadata", () => {
       metadata,
       "es",
       "en",
-    ) as IssuerMetadataJwtVcWithoutJsonLd;
+    ) as IssuerMetadataJwtVcJson;
     assert.deepEqual(
       localizedMetadata.credential_configurations_supported.config1
         .credential_definition.credentialSubject?.claim1.display,
@@ -113,7 +113,7 @@ describe("localizeIssuerMetadata", () => {
   });
 
   it("should localize ClaimDisplay within claims", () => {
-    const metadata: IssuerMetadataSelectiveDisclosureJwtVc = {
+    const metadata: IssuerMetadataVcSdJwt = {
       credential_issuer: "issuer",
       credential_endpoint: "endpoint",
       credential_configurations_supported: {
@@ -137,7 +137,7 @@ describe("localizeIssuerMetadata", () => {
       metadata,
       "es",
       "en",
-    ) as IssuerMetadataSelectiveDisclosureJwtVc;
+    ) as IssuerMetadataVcSdJwt;
     assert.deepEqual(
       localizedMetadata.credential_configurations_supported.config1.claims
         ?.claim1.display,

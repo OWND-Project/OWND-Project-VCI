@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
-import { readLocalIssuerMetadata } from "../../src/utils/resourceUtils";
+import { readLocalIssuerMetadata } from "../../src/utils/resourceUtils.js";
 
 describe("readLocalIssuerMetadata", () => {
   /*

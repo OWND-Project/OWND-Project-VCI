@@ -2,14 +2,14 @@ import { exec } from 'child_process';
 
 const typeNames = [
     // IssuerMetadata
-    "IssuerMetadataJwtVcWithJsonLd",
-    "IssuerMetadataJwtVcWithoutJsonLd",
-    "IssuerMetadataDataIntegrityVcWithJsonLd",
-    "IssuerMetadataSelectiveDisclosureJwtVc",
+    "IssuerMetadataJwtVcJsonLd",
+    "IssuerMetadataJwtVcJson",
+    "IssuerMetadataLdpVc",
+    "IssuerMetadataVcSdJwt",
 
     // CredentialRequest
-    "CredentialRequestSelectiveDisclosureJwtVc",
-    "CredentialRequestJwtVcWithoutJsonLd"
+    "CredentialRequestVcSdJwt",
+    "CredentialRequestJwtVcJson"
 ]
 
 const typeDefinitionSrc = "./src/oid4vci/types/protocol.types.ts"

@@ -54,15 +54,13 @@ export interface BaseCredentialRequest {
   };
 }
 
-export interface CredentialRequestSelectiveDisclosureJwtVc
-  extends BaseCredentialRequest {
+export interface CredentialRequestVcSdJwt extends BaseCredentialRequest {
   // REQUIRED when the format parameter is present in the Credential Request. It MUST NOT be used otherwise
   vct?: string;
   claims?: Claims;
 }
 
-export interface CredentialRequestJwtVcWithoutJsonLd
-  extends BaseCredentialRequest {
+export interface CredentialRequestJwtVcJson extends BaseCredentialRequest {
   // REQUIRED when the format parameter is present in the Credential Request.
   // It MUST NOT be used otherwise
   credential_definition?: {
@@ -157,7 +155,7 @@ export interface ClaimsOnlyMandatory {
 }
 
 // A.1.1  VC Signed as a JWT, Not Using JSON-LD
-export interface IssuerMetadataJwtVcWithoutJsonLd extends BaseIssuerMetadata {
+export interface IssuerMetadataJwtVcJson extends BaseIssuerMetadata {
   credential_configurations_supported: {
     [key: string]: {
       format: string;
@@ -182,8 +180,7 @@ export interface IssuerMetadataJwtVcWithoutJsonLd extends BaseIssuerMetadata {
 }
 
 // A.1.2  VC Secured using Data Integrity, using JSON-LD, with a Proof Suite Requiring Linked Data Canonicalization
-export interface IssuerMetadataDataIntegrityVcWithJsonLd
-  extends BaseIssuerMetadata {
+export interface IssuerMetadataLdpVc extends BaseIssuerMetadata {
   credential_configurations_supported: {
     [key: string]: {
       format: string;
@@ -210,12 +207,10 @@ export interface IssuerMetadataDataIntegrityVcWithJsonLd
 
 // A.1.3  VC signed as a JWT, Using JSON-LD
 // The definitions in Appendix A.1.2.2 apply for metadata of Credentials of this type as well.
-export interface IssuerMetadataJwtVcWithJsonLd
-  extends IssuerMetadataDataIntegrityVcWithJsonLd {}
+export interface IssuerMetadataJwtVcJsonLd extends IssuerMetadataLdpVc {}
 
 // A.3 IETF SD-JWT VC
-export interface IssuerMetadataSelectiveDisclosureJwtVc
-  extends BaseIssuerMetadata {
+export interface IssuerMetadataVcSdJwt extends BaseIssuerMetadata {
   credential_configurations_supported: {
     [key: string]: {
       format: string;
@@ -238,11 +233,11 @@ export interface IssuerMetadataSelectiveDisclosureJwtVc
 }
 
 export type IssuerMetadata =
-  | IssuerMetadataJwtVcWithJsonLd
-  | IssuerMetadataJwtVcWithoutJsonLd
-  | IssuerMetadataDataIntegrityVcWithJsonLd
-  | IssuerMetadataSelectiveDisclosureJwtVc;
+  | IssuerMetadataJwtVcJsonLd
+  | IssuerMetadataJwtVcJson
+  | IssuerMetadataLdpVc
+  | IssuerMetadataVcSdJwt;
 
 export type CredentialRequest =
-  | CredentialRequestSelectiveDisclosureJwtVc
-  | CredentialRequestJwtVcWithoutJsonLd;
+  | CredentialRequestVcSdJwt
+  | CredentialRequestJwtVcJson;
