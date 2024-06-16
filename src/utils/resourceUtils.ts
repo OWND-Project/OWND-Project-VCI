@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs/promises";
 import { IssuerMetadata } from "../oid4vci/types/protocol.types.js";
-import { schemaValidator } from "../oid4vci/types/validator.js";
+import { issuerMetadataValidator } from "../oid4vci/types/validator.js";
 
 export const readLocalJsonResource = async (
   dirname: string,
@@ -18,20 +18,7 @@ export const readLocalIssuerMetadata = async (
 ): Promise<IssuerMetadata> => {
   const rawMetadata = await readLocalJsonResource(dirname, filename);
 
-  const schemas = [
-    "IssuerMetadataJwtVcWithoutJsonLd",
-    "IssuerMetadataDataIntegrityVcWithJsonLd",
-    "IssuerMetadataJwtVcWithJsonLd",
-    "IssuerMetadataSelectiveDisclosureJwtVc",
-  ];
-
-  for (const schemaName of schemas) {
-    if (schemaValidator<IssuerMetadata>(schemaName, rawMetadata)) {
-      return rawMetadata;
-    }
-  }
-
-  throw new Error("Invalid metadata");
+  return issuerMetadataValidator(rawMetadata);
 };
 
 let cachedIssuerMetadata: IssuerMetadata | undefined;
