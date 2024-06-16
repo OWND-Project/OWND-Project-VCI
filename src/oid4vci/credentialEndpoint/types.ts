@@ -1,5 +1,10 @@
 import { ErrorPayload, Result } from "../../types.js";
-import { Exists, NotExists } from "../types/types.js";
+import {
+  CredentialRequestJwtVcJson,
+  CredentialRequestVcSdJwt,
+  Exists,
+  NotExists,
+} from "../types/types.js";
 import * as jose from "jose";
 
 export interface ValidAccessTokenState<T> {
@@ -119,7 +124,7 @@ export type AccessTokenStateProvider<T> = (
  */
 export type IssueJwtVcJsonCredential = (
   preAuthorizedCode: string,
-  payload: PayloadJwtVc,
+  payload: CredentialRequestJwtVcJson,
   proofOfPossession?: ProofOfPossession,
 ) => Promise<Result<string, ErrorPayload>>;
 
@@ -139,7 +144,7 @@ export type IssueJwtVcJsonCredential = (
  */
 export type IssueSdJwtVcCredential = (
   preAuthorizedCode: string,
-  payload: PayloadSdJwtVc,
+  payload: CredentialRequestVcSdJwt,
   proofOfPossession?: ProofOfPossession,
 ) => Promise<Result<string, ErrorPayload>>;
 
