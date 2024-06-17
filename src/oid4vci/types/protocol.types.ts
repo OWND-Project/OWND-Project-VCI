@@ -19,11 +19,15 @@ export interface CredentialOffer {
   grants?: Grants;
 }
 
-/**
- * @TJS-additionalProperties true
- */
 export interface Proof {
-  proof_type: string;
+  // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html#section-7.2.1
+  proof_type: string; // `jwt` or `cwt` or `ldp_vp`
+
+  jwt?: string;
+  ldp_vp?: {
+    [key: string]: any;
+  }; // todo: improve type definition
+  cwt?: string;
 }
 
 export interface BaseCredentialRequest {
