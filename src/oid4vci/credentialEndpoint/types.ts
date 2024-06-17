@@ -46,17 +46,16 @@ export type IssueResult = Result<
   ErrorPayloadWithStatusCode
 >;
 
-export interface ProofJwtHeader {
+export interface DecodedProofJwtHeader {
   typ: "openid4vci-proof+jwt";
   alg: string;
   kid?: string;
   jwk?: jose.JWK;
   x5c?: string;
 }
-export interface ProofOfPossession {
-  jwt: { header: ProofJwtHeader; payload: jose.JWTPayload };
+export interface DecodedProofJwt {
+  jwt: { header: DecodedProofJwtHeader; payload: jose.JWTPayload };
 }
-export type Proof = NotExists | Exists<ProofOfPossession>;
 
 /* eslint-disable no-unused-vars */
 // todo add parameter of pre_auth_flow: boolean
@@ -97,7 +96,7 @@ export type AccessTokenStateProvider<T> = (
 export type IssueJwtVcJsonCredential = (
   preAuthorizedCode: string,
   payload: CredentialRequestJwtVcJson,
-  proofOfPossession?: ProofOfPossession,
+  proofOfPossession?: DecodedProofJwt,
 ) => Promise<Result<string, ErrorPayload>>;
 
 /**
@@ -117,7 +116,7 @@ export type IssueJwtVcJsonCredential = (
 export type IssueSdJwtVcCredential = (
   preAuthorizedCode: string,
   payload: CredentialRequestVcSdJwt,
-  proofOfPossession?: ProofOfPossession,
+  proofOfPossession?: DecodedProofJwt,
 ) => Promise<Result<string, ErrorPayload>>;
 
 /**

@@ -2,7 +2,7 @@ import {
   CredentialIssuerConfig,
   ErrorPayloadWithStatusCode,
   IssueResult,
-  ProofOfPossession,
+  DecodedProofJwt,
 } from "./types";
 import {
   CredentialRequest,
@@ -125,7 +125,7 @@ export class CredentialIssuer<T> {
   async _issueJwtVcJson(
     credentialRequest: CredentialRequestJwtVcJson,
     preAuthorizedCode: string,
-    proofOfPossession?: ProofOfPossession,
+    proofOfPossession?: DecodedProofJwt,
   ): Promise<Result<string, ErrorPayloadWithStatusCode>> {
     if (!credentialRequest.credential_definition) {
       const error = toError(
@@ -164,7 +164,7 @@ export class CredentialIssuer<T> {
   async _issueVcSdJwt(
     credentialRequest: CredentialRequestVcSdJwt,
     preAuthorizedCode: string,
-    proofOfPossession?: ProofOfPossession,
+    proofOfPossession?: DecodedProofJwt,
   ): Promise<Result<string, ErrorPayloadWithStatusCode>> {
     const vct = credentialRequest.vct;
     if (!vct) {
@@ -193,7 +193,7 @@ export class CredentialIssuer<T> {
   async _issue(
     credentialRequest: CredentialRequest,
     preAuthorizedCode: string,
-    proofOfPossession?: ProofOfPossession,
+    proofOfPossession?: DecodedProofJwt,
   ): Promise<Result<string, ErrorPayloadWithStatusCode>> {
     /*
     https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#name-credential-error-response
