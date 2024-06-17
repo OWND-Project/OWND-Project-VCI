@@ -37,7 +37,7 @@ export const schemaValidator = <T>(
 };
 
 type ValidatorFunction<T> = (
-  schemaName: string,
+  schemaName: string, // eslint-disable-line no-unused-vars
   rawData: unknown,
 ) => rawData is T;
 
