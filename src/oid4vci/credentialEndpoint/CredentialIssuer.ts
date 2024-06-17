@@ -135,10 +135,10 @@ export class CredentialIssuer<T> {
       return { ok: false, error: { status: 400, payload: error } };
     }
     const { type, credentialSubject } = credentialRequest.credential_definition;
-    if (!type || !credentialSubject) {
+    if (!credentialSubject) {
       const error = toError(
         INVALID_REQUEST,
-        "The payload needs types and credentialSubject",
+        "The payload needs credentialSubject",
       );
       return { ok: false, error: { status: 400, payload: error } };
     }
