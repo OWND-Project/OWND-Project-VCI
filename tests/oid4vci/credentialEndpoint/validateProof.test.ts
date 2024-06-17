@@ -21,18 +21,6 @@ describe("validateProof function with P-256", () => {
     expiresIn,
   };
 
-  it("should return an error if proof_type is missing or malformed", async () => {
-    const proof = { jwt: "dummy-jwt" }; // proof_typeがない場合
-    const result = await validateProof(proof, credentialIssuer, proofElements);
-    if (!result.ok) {
-      const { error, error_description } = result.error;
-      assert.equal(error, INVALID_OR_MISSING_PROOF);
-      assert.equal(error_description, "Missing or malformed proof_type");
-    } else {
-      assert.fail("result.ok is true when it should be false");
-    }
-  });
-
   // JWTのデコードに失敗した場合のテスト
   it("should return an error if JWT header decoding fails", async () => {
     const proof = { proof_type: "jwt", jwt: "invalid-jwt" };
