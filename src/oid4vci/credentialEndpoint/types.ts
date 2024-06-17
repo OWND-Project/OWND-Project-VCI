@@ -32,34 +32,6 @@ export interface CredentialIssuerConfig<T> {
   updateNonce: UpdateNonce<T>;
 }
 
-type CredentialType = string[];
-export interface PayloadLdpVc {
-  format: "ldp_vc";
-}
-
-export interface PayloadJwtVc {
-  format: "jwt_vc_json";
-  credential_definition: {
-    type: CredentialType;
-    credentialSubject?: { [key: string]: any };
-  };
-}
-
-// https://vcstuff.github.io/oid4vc-haip-sd-jwt-vc/draft-oid4vc-haip-sd-jwt-vc.html#section-7.2.2
-// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-sd-jwt-vc-00#section-4.2.2.1
-export interface PayloadSdJwtVc {
-  format: "vc+sd-jwt";
-  credential_definition: {
-    vct: string;
-  };
-}
-
-export interface PayloadJwtVcLd {
-  format: "jwt_vc_json-ld";
-}
-
-export type Payload = PayloadJwtVc | PayloadJwtVcLd | PayloadLdpVc;
-
 export interface ErrorPayloadWithStatusCode {
   status: number;
   payload: ErrorPayload;
