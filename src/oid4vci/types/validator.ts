@@ -10,7 +10,10 @@ import {
 } from "./protocol.types.js";
 
 const require = createRequire(import.meta.url);
-const schemaDir = path.join(dirname(fileURLToPath(import.meta.url)), "protocolSchema/")
+const schemaDir = path.join(
+  dirname(fileURLToPath(import.meta.url)),
+  "protocolSchema/",
+);
 
 export const schemaValidator = <T>(
   schemaName: string,
