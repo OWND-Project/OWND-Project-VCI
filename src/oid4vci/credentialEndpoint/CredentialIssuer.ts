@@ -46,7 +46,7 @@ export class CredentialIssuer<T> {
 
     const credentialRequest = (() => {
       try {
-        return credentialRequestValidator(httpRequest.getBody);
+        return credentialRequestValidator(httpRequest.getBody());
       } catch (e) {
         return undefined;
       }
