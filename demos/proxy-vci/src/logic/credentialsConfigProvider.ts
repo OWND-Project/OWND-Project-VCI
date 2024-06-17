@@ -1,13 +1,13 @@
 import {
   AccessTokenStateProvider,
   CredentialIssuerConfig,
-  ProofOfPossession,
+  DecodedProofJwt,
   IssueSdJwtVcCredential,
-  PayloadSdJwtVc,
 } from "ownd-vci/dist/oid4vci/credentialEndpoint/types";
 import identityCredential from "./identityCredential.js";
 import authStore from "ownd-vci/dist/store/authStore.js";
 import {
+  CredentialRequestVcSdJwt,
   Identifiable,
   VCIAccessToken,
 } from "ownd-vci/dist/oid4vci/types/types.js";
@@ -47,8 +47,8 @@ const accessTokenStateProvider: AccessTokenStateProvider<
 };
 const issueSdJwtVcCredential: IssueSdJwtVcCredential = async (
   preAuthorizedCode: string,
-  payload: PayloadSdJwtVc,
-  proofOfPossession?: ProofOfPossession,
+  payload: CredentialRequestVcSdJwt,
+  proofOfPossession?: DecodedProofJwt,
 ) => {
   if (
     !proofOfPossession ||
@@ -61,7 +61,7 @@ const issueSdJwtVcCredential: IssueSdJwtVcCredential = async (
     };
     return { ok: false, error };
   }
-  const { vct } = payload.credential_definition;
+  const vct = payload.vct;
   console.debug({ payload });
   if (vct === "IdentityCredential") {
     return await identityCredential.issueIdentityCredential(
