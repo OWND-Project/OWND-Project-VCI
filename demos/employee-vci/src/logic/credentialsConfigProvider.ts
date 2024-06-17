@@ -2,9 +2,9 @@ import { StoredAccessToken } from "ownd-vci/dist/store/authStore.js";
 import {
   CredentialIssuerConfig,
   IssueSdJwtVcCredential,
-  PayloadSdJwtVc,
-  ProofOfPossession,
+  DecodedProofJwt,
 } from "ownd-vci/dist/oid4vci/credentialEndpoint/types.js";
+import { CredentialRequestVcSdJwt } from "ownd-vci/dist/oid4vci/types/protocol.types.js";
 
 import employeeCredential from "./employeeCredential.js";
 import { updateNonce } from "ownd-vci/dist/oid4vci/credentialEndpoint/defaults/nonce.js";
@@ -12,8 +12,8 @@ import { accessTokenStateProvider } from "ownd-vci/dist/oid4vci/credentialEndpoi
 
 const issueSdJwtVcCredential: IssueSdJwtVcCredential = async (
   authorizedCode: string,
-  payload: PayloadSdJwtVc,
-  proofOfPossession?: ProofOfPossession,
+  payload: CredentialRequestVcSdJwt,
+  proofOfPossession?: DecodedProofJwt,
 ) => {
   if (
     !proofOfPossession ||
@@ -26,7 +26,7 @@ const issueSdJwtVcCredential: IssueSdJwtVcCredential = async (
     };
     return { ok: false, error };
   }
-  const { vct } = payload.credential_definition;
+  const vct = payload.vct;
   console.debug({ payload });
   if (vct === "EmployeeIdentificationCredential") {
     return await employeeCredential.issueEmployeeCredential(
