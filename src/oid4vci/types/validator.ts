@@ -10,9 +10,7 @@ import {
 } from "./protocol.types.js";
 
 const require = createRequire(import.meta.url);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename).split("/src")[0];
-const schemaDir = path.join(__dirname, "src/oid4vci/types/protocolSchema/");
+const schemaDir = path.join(dirname(fileURLToPath(import.meta.url)), "protocolSchema/")
 
 export const schemaValidator = <T>(
   schemaName: string,
