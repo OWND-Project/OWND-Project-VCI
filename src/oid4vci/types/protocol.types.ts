@@ -69,6 +69,18 @@ export interface CredentialRequestJwtVcJson extends BaseCredentialRequest {
   };
 }
 
+export interface CredentialRequestLdpVc extends BaseCredentialRequest {
+  // REQUIRED when the format parameter is present in the Credential Request.
+  // It MUST NOT be used otherwise
+  credential_definition?: {
+    "@context": string[];
+    type: string[];
+    credentialSubject?: ClaimsOnlyMandatory;
+  };
+}
+
+export interface CredentialRequestJwtVcJsonLd extends CredentialRequestLdpVc {}
+
 export interface TokenResponse {
   access_token: string;
   token_type: string;
@@ -240,4 +252,6 @@ export type IssuerMetadata =
 
 export type CredentialRequest =
   | CredentialRequestVcSdJwt
-  | CredentialRequestJwtVcJson;
+  | CredentialRequestJwtVcJson
+  | CredentialRequestLdpVc
+  | CredentialRequestJwtVcJsonLd;
