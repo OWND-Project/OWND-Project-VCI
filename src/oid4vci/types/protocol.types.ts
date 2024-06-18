@@ -93,6 +93,16 @@ export interface TokenResponse {
   c_nonce_expires_in?: number;
 }
 
+export interface CredentialResponse {
+  // OPTIONAL. Contains issued Credential. It MUST be present when transaction_id is not returned.
+  credential?: unknown;
+
+  transaction_id?: string;
+  c_nonce?: string;
+  c_nonce_expires_in?: number;
+  notification_id?: string;
+}
+
 export interface CredentialResponseEncryption {
   alg_values_supported: string[];
   enc_values_supported: string[];

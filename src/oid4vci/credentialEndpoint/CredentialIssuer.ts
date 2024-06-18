@@ -106,16 +106,15 @@ export class CredentialIssuer<T> {
       return {
         ok: true,
         payload: {
-          format: credentialRequest.format,
           credential: issueResult.payload,
-          nonce: { nonce, expiresIn },
+          c_nonce: nonce,
+          c_nonce_expires_in: expiresIn,
         },
       };
     } else {
       return {
         ok: true,
         payload: {
-          format: credentialRequest.format,
           credential: issueResult.payload,
         },
       };

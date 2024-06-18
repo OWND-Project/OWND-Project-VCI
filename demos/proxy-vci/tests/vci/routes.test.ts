@@ -547,7 +547,9 @@ describe("POST /credential", () => {
         .set("Authorization", "BEARER validToken")
         .send(getPostPayload(token));
       assert.equal(response.status, 200);
-      assert.equal(response.body.format, "vc+sd-jwt");
+      assert.isUndefined(response.body.format);
+      assert.isString(response.body.c_nonce);
+      assert.isNumber(response.body.c_nonce_expires_in);
       assert.isString(response.body.credential);
       const tmp = response.body.credential.split("~");
       const disclosures = decodeDisclosure(tmp.slice(1, tmp.length - 1));

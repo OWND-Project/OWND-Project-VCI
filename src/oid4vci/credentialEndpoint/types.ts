@@ -2,6 +2,7 @@ import { ErrorPayload, Result } from "../../types.js";
 import {
   CredentialRequestJwtVcJson,
   CredentialRequestVcSdJwt,
+  CredentialResponse,
   Exists,
   NotExists,
 } from "../types/types.js";
@@ -38,11 +39,7 @@ export interface ErrorPayloadWithStatusCode {
 }
 
 export type IssueResult = Result<
-  {
-    format: string;
-    credential: string;
-    nonce?: { nonce: string; expiresIn: number };
-  },
+  CredentialResponse,
   ErrorPayloadWithStatusCode
 >;
 
