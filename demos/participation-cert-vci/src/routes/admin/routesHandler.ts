@@ -119,7 +119,6 @@ const credentialOfferForConference = async (
     process.env.CREDENTIAL_ISSUER || "",
     ["ParticipationCertificate"],
     code,
-    false,
   );
 
   const payload = {

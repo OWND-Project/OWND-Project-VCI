@@ -1,4 +1,4 @@
-import { CredentialOffer } from "./types.js";
+import { CredentialOffer, TxCode } from "./types/types.js";
 
 export const credentialOffer2Url = (
   credentialOffer: CredentialOffer,
@@ -20,23 +20,24 @@ export const url2CredentialOffer = (credentialOfferUrl: string) => {
 
   const decodedCredentialOffer = decodeURIComponent(encodedCredentialOffer);
 
-  return JSON.parse(decodedCredentialOffer);
+  // todo: should validate the data structure.
+  return JSON.parse(decodedCredentialOffer) as CredentialOffer;
 };
 
 export const generatePreAuthCredentialOffer = (
   credentialIssuer: string,
   credentials: string[],
   preAuthCode: string,
-  pinRequired: boolean,
+  txCode?: TxCode,
   endpoint?: string,
 ): string => {
-  const credentialOffer = {
+  const credentialOffer: CredentialOffer = {
     credential_issuer: credentialIssuer || "",
-    credentials: credentials,
+    credential_configuration_ids: credentials,
     grants: {
       "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
         "pre-authorized_code": preAuthCode,
-        user_pin_required: pinRequired,
+        ...(txCode !== undefined && { tx_code: txCode }),
       },
     },
   };

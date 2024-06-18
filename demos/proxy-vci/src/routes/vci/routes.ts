@@ -9,7 +9,9 @@ const init = () => {
   router.get("/callback", routesHandler.handleRootPathCallback);
   router.get(
     "/.well-known/openid-credential-issuer",
-    routesHandler.handleIssueMetadata,
+    async (ctx: Koa.Context) => {
+      await routesHandler.handleIssueMetadata(ctx, ["ja-JP", "en-US"], "ja-JP");
+    },
   );
   router.get(
     "/.well-known/oauth-authorization-server",

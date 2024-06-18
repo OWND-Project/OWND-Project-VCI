@@ -1,5 +1,11 @@
 import { ErrorPayload, Result } from "../../types.js";
-import { Exists, NotExists } from "../types.js";
+import {
+  CredentialRequestJwtVcJson,
+  CredentialRequestVcSdJwt,
+  CredentialResponse,
+  Exists,
+  NotExists,
+} from "../types/types.js";
 import * as jose from "jose";
 
 export interface ValidAccessTokenState<T> {
@@ -27,59 +33,26 @@ export interface CredentialIssuerConfig<T> {
   updateNonce: UpdateNonce<T>;
 }
 
-type CredentialType = string[];
-export interface PayloadLdpVc {
-  format: "ldp_vc";
-}
-
-export interface PayloadJwtVc {
-  format: "jwt_vc_json";
-  credential_definition: {
-    type: CredentialType;
-    credentialSubject?: { [key: string]: any };
-  };
-}
-
-// https://vcstuff.github.io/oid4vc-haip-sd-jwt-vc/draft-oid4vc-haip-sd-jwt-vc.html#section-7.2.2
-// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-sd-jwt-vc-00#section-4.2.2.1
-export interface PayloadSdJwtVc {
-  format: "vc+sd-jwt";
-  credential_definition: {
-    vct: string;
-  };
-}
-
-export interface PayloadJwtVcLd {
-  format: "jwt_vc_json-ld";
-}
-
-export type Payload = PayloadJwtVc | PayloadJwtVcLd | PayloadLdpVc;
-
 export interface ErrorPayloadWithStatusCode {
   status: number;
   payload: ErrorPayload;
 }
 
 export type IssueResult = Result<
-  {
-    format: string;
-    credential: string;
-    nonce?: { nonce: string; expiresIn: number };
-  },
+  CredentialResponse,
   ErrorPayloadWithStatusCode
 >;
 
-export interface ProofJwtHeader {
+export interface DecodedProofJwtHeader {
   typ: "openid4vci-proof+jwt";
   alg: string;
   kid?: string;
   jwk?: jose.JWK;
   x5c?: string;
 }
-export interface ProofOfPossession {
-  jwt: { header: ProofJwtHeader; payload: jose.JWTPayload };
+export interface DecodedProofJwt {
+  jwt: { header: DecodedProofJwtHeader; payload: jose.JWTPayload };
 }
-export type Proof = NotExists | Exists<ProofOfPossession>;
 
 /* eslint-disable no-unused-vars */
 // todo add parameter of pre_auth_flow: boolean
@@ -119,8 +92,8 @@ export type AccessTokenStateProvider<T> = (
  */
 export type IssueJwtVcJsonCredential = (
   preAuthorizedCode: string,
-  payload: PayloadJwtVc,
-  proofOfPossession?: ProofOfPossession,
+  payload: CredentialRequestJwtVcJson,
+  proofOfPossession?: DecodedProofJwt,
 ) => Promise<Result<string, ErrorPayload>>;
 
 /**
@@ -139,8 +112,8 @@ export type IssueJwtVcJsonCredential = (
  */
 export type IssueSdJwtVcCredential = (
   preAuthorizedCode: string,
-  payload: PayloadSdJwtVc,
-  proofOfPossession?: ProofOfPossession,
+  payload: CredentialRequestVcSdJwt,
+  proofOfPossession?: DecodedProofJwt,
 ) => Promise<Result<string, ErrorPayload>>;
 
 /**

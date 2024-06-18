@@ -6,18 +6,18 @@ dist
 cli/bin
 cli/out
 
-employee-vci/.env
-employee-vci/TEST_DB
-employee-vci/database.sqlite
-employee-vci/dist
+demos/employee-vci/.env
+demos/employee-vci/TEST_DB
+demos/employee-vci/database.sqlite
+demos/employee-vci/dist
 
-proxy-vci/.env
-proxy-vci/TEST_DB
-proxy-vci/database.sqlite
-proxy-vci/dist
+demos/proxy-vci/.env
+demos/proxy-vci/TEST_DB
+demos/proxy-vci/database.sqlite
+demos/proxy-vci/dist
 
-participation-cert-vci/.env
-participation-cert-vci/TEST_DB
-participation-cert-vci/database.sqlite
-participation-cert-vci/dist
+demos/participation-cert-vci/.env
+demos/participation-cert-vci/TEST_DB
+demos/participation-cert-vci/database.sqlite
+demos/participation-cert-vci/dist
 

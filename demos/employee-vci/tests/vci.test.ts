@@ -222,14 +222,11 @@ describe("POST /credential", () => {
           proof: {},
         });
       assert.equal(response.status, 400);
-      assert.equal(response.body.error, "invalid_or_missing_proof");
-      assert.equal(
-        response.body.error_description,
-        "Missing or malformed proof_type",
-      );
+      assert.equal(response.body.error, "invalid_request");
+      assert.equal(response.body.error_description, "Invalid data received!");
     });
 
-    it("should return 400 when nonce is valid in JWT payload", async () => {
+    it("should return 400 when nonce is invalid in JWT payload", async () => {
       const payload = { nonce: "wrong_nonce" };
       const token = await new jose.SignJWT(payload)
         .setProtectedHeader({ alg: "ES256", jwk })
@@ -243,7 +240,7 @@ describe("POST /credential", () => {
         .set("Authorization", "BEARER validToken")
         .send({
           format: "vc+sd-jwt",
-          credential_definition: { type: "EmployeeCredential" },
+          vct: "EmployeeCredential",
           proof: { proof_type: "jwt", jwt: token },
         });
       assert.equal(response.status, 400);
@@ -272,7 +269,7 @@ describe("POST /credential", () => {
       await validAccessTokenMock();
       const body = {
         format: "vc+sd-jwt",
-        credential_definition: { vct: "EmployeeIdentificationCredential" },
+        vct: "EmployeeIdentificationCredential",
         proof: { proof_type: "jwt", jwt: token },
       };
       console.log(token);
@@ -282,7 +279,6 @@ describe("POST /credential", () => {
         .set("Authorization", "BEARER validToken")
         .send(body);
       assert.equal(response.status, 200);
-      assert.equal(response.body.format, "vc+sd-jwt");
       assert.isString(response.body.credential);
       const tmp = response.body.credential.split("~");
       const disclosures = decodeDisclosure(tmp.slice(1, tmp.length - 1));

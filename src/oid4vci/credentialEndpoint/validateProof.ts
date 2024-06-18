@@ -2,7 +2,8 @@ import * as jose from "jose";
 
 import { ErrorPayload, Result } from "../../types.js";
 import { isExpired, toError } from "../utils.js";
-import { Proof, ProofJwtHeader, ProofOfPossession } from "./types.js";
+import { DecodedProofJwtHeader, DecodedProofJwt } from "./types.js";
+import { Proof } from "../types/protocol.types.js";
 
 const INVALID_OR_MISSING_PROOF = "invalid_or_missing_proof";
 const isIatValid = (iat: any): boolean => {
@@ -22,7 +23,7 @@ interface Opt {
   supportAnonymousAccess: boolean;
 }
 export const validateProof = async (
-  proof: any,
+  proof: Proof,
   credentialIssuer: string,
   proofElements: {
     cNonce: string;
@@ -33,7 +34,7 @@ export const validateProof = async (
     preAuthorizedFlow: false,
     supportAnonymousAccess: false,
   },
-): Promise<Result<ProofOfPossession, ErrorPayload>> => {
+): Promise<Result<DecodedProofJwt, ErrorPayload>> => {
   /*
     https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#name-credential-error-response
 
@@ -56,6 +57,15 @@ export const validateProof = async (
     );
     return { ok: false, error };
   }
+
+  if (!proof.jwt) {
+    const error = toError(
+      INVALID_OR_MISSING_PROOF,
+      "If `proof_type` is `jwt`, the `jwt` property is required.",
+    );
+    return { ok: false, error };
+  }
+
   let decodedHeader;
   try {
     decodedHeader = jose.decodeProtectedHeader(proof.jwt);
@@ -93,9 +103,16 @@ export const validateProof = async (
     const JWKS = jose.createLocalJWKSet({
       keys: [decodedHeader.jwk],
     });
+
+    // A list of algorithms that can be handled by `jose.jwtVerify`.
+    // https://github.com/panva/jose/issues/210#jws-alg
+
+    // Ideally, proofs should be created and tested using the algorithms listed above,
+    // and should be listed in the metadata `proof_signing_alg_values_supported`.
     const { payload } = await jose.jwtVerify(proof.jwt, JWKS, {
       audience: credentialIssuer,
     });
+
     // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#name-proof-types
     // todo check header rules
 
@@ -123,7 +140,9 @@ export const validateProof = async (
     }
     return {
       ok: true,
-      payload: { jwt: { header: decodedHeader as ProofJwtHeader, payload } },
+      payload: {
+        jwt: { header: decodedHeader as DecodedProofJwtHeader, payload },
+      },
     };
   } catch (e) {
     console.error(e);
