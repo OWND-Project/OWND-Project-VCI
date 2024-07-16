@@ -1,0 +1,13 @@
+{
+  "issuer": "https://subdomain-for-this-app.tunnelto.dev",
+  "authorization_endpoint": "https://subdomain-for-this-app.tunnelto.dev/authorize",
+  "token_endpoint": "https://subdomain-for-this-app.tunnelto.dev/token",
+  "token_endpoint_auth_methods_supported": ["client_secret_basic", "private_key_jwt"],
+  "token_endpoint_auth_signing_alg_values_supported": ["RS256", "ES256"],
+  "jwks_uri": "https://subdomain-for-this-app.tunnelto.dev/jwks.json",
+  "registration_endpoint": "https://subdomain-for-this-app.tunnelto.dev/register",
+  "scopes_supported": ["openid", "profile", "email", "address", "phone", "offline_access"],
+  "response_types_supported": ["code", "code token"],
+  "service_documentation": "https://subdomain-for-this-app.tunnelto.dev/service_documentation.html",
+  "ui_locales_supported": ["en-US", "en-GB", "en-CA", "fr-FR", "fr-CA"]
+}
