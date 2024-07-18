@@ -50,7 +50,7 @@
     "typescript": "^5.2.2"
   },
   "scripts": {
-    "preinstall": "rm -rf node_modules && rm -rf ../*/node_modules && rm -rf ../../node_modules",
+    "preinstall": "rm -rf node_modules && rm -rf ../*/node_modules && rm -rf ../../node_modules && rm -rf ../event-certificate-manager/*/node_modules",
     "postinstall": "cd ./node_modules/ownd-vci && yarn install && ../.bin/tsc -p tsconfig.build.json",
     "copy_res_views": "mkdir -p dist/views && cp -r views/* dist/views/",
     "copy_res_statics": "mkdir -p dist/public && cp -r public/* dist/public/",
