@@ -37,6 +37,11 @@ Create the `.env` file based on the `.env.template`. Please adjust the content a
 | VCI_ACCESS_TOKEN_EXPIRES_IN         | 86400                        | 
 | VCI_ACCESS_TOKEN_C_NONCE_EXPIRES_IN | 86400                        | 
 
+## Configuring Credential Issuer Metadata
+
+Please modify the JSON file that exists under the `metadata` directory to match your operating environment.
+In particular, the `REPLACE-WITH-ISSUERS-DOMAIN.EXAMPLE.COM` in the JSON file should be the actual domain that can communicate with the wallet.
+
 ## Specific API
 
 ### POST` /admin/conferences/new`

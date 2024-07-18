@@ -43,3 +43,9 @@ Create the `.env` file based on the `.env.template`. Please adjust the content a
 | X_ID_CLIENT_KEY_PAIR_PRIVATE        | The private key generated during the application to xID Inc. (https://xid.inc). | 
 | X_ID_CLIENT_KEY_PAIR_PUBLIC         | The public key generated during the application to xID Inc. (https://xid.inc). | 
 | X_ID_API_BASE_URL                   | Please obtain it from xID Inc. (https://xid.inc).   | 
+
+
+## Configuring Credential Issuer Metadata
+
+Please modify the JSON file that exists under the `metadata` directory to match your operating environment.
+In particular, the `REPLACE-WITH-ISSUERS-DOMAIN.EXAMPLE.COM` in the JSON file should be the actual domain that can communicate with the wallet.
