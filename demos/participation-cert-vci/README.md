@@ -2,7 +2,7 @@
 ## Participation Cert  Summary
 
 ### Common API
-For details on the common API, please see [README.md](../common/README.md).
+For details on the common API, please see [README.md](../../src/README.md).
 
 - POST `/admin/keys/new`
 - POST `/admin/keys/:kid/revoke`
