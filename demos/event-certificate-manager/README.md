@@ -19,5 +19,4 @@ Please refer to the README files in the following directories for setup and star
 ## Usage
 The specific usage instructions for each application are also described in the respective README files in the directories.
 
-## License
-This project is released under the [MIT License](LICENSE).
+
