@@ -14,9 +14,7 @@ git clone https://github.com/OWND-Project/OWND-Project-VCI.git
 cd ./OWND-Project-VCI || exit
 yarn
 yarn build
-yarn link
 cd /srv/backend || exit
-yarn link ownd-vci
 yarn
 pwd
 fi
@@ -26,6 +24,5 @@ cd /srv/demos/employee-vci/ || exit
 pwd
 fi
 
-cd /srv/common || exit
 yarn install
 yarn build
