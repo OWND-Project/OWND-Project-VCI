@@ -1,6 +1,6 @@
 # VCI CloudFormation Template
 
-This repository contains an AWS CloudFormation template for deploying the Virtual Corporate Infrastructure (VCI).
+This repository contains an AWS CloudFormation template for deploying the Verifiable Credential Issuer (VCI).
 
 ## Template Overview
 
@@ -16,12 +16,12 @@ This template deploys the following resources:
 
 ## Parameters
 
-| Parameter Name   | Description                  | Required | Default Value   |
-| ---------------- | ---------------------------- | -------- | --------------- |
-| `Domain`         | Domain for VCI               | Yes      | None            |
-| `VCISubdomain`   | Subdomain for VCI            | Yes      | None            |
-| `HostedZoneID`   | HostedZoneID for Route53     | Yes      | None            |
-| `ACMARN`         | ACM for VCI (Optional)       | No       | Empty String    |
+| Parameter Name | Description              | Required | Default Value |
+|----------------|--------------------------|----------|---------------|
+| `Domain`       | Domain for VCI           | Yes      | None          |
+| `VCISubdomain` | Subdomain for VCI        | Yes      | None          |
+| `HostedZoneID` | HostedZoneID for Route53 | Yes      | None          |
+| `ACMARN`       | ACM for VCI (Optional)   | No       | Empty String  |
 
 **Note**: All parameters except `ACMARN` are required.
 
@@ -37,9 +37,30 @@ This template deploys the following resources:
 Use specific AWS CLI commands to create, update, and delete the CloudFormation stack. Here are examples:
 
 1. Create the stack
+    ```shell
+   aws cloudformation create-stack --stack-name <EventName> \
+     --template-body file://path/to/template.yaml \
+     --parameters ParameterKey=Domain,ParameterValue=<your-domain> \
+     ParameterKey=VCISubdomain,ParameterValue=<your-subdomain> \
+     ParameterKey=HostedZoneID,ParameterValue=<your-hostedzone-id> \
+     ParameterKey=ACMARN,ParameterValue=<your-acm-arn-if-any> \
+     --capabilities CAPABILITY_NAMED_IAM
+    ```
 2. Update the stack
+    ```shell
+    aws cloudformation update-stack --stack-name <EventName> \
+      --template-body file://path/to/template.yaml \
+      --parameters ParameterKey=Domain,ParameterValue=<your-domain> \
+                   ParameterKey=VCISubdomain,ParameterValue=<your-subdomain> \
+                   ParameterKey=HostedZoneID,ParameterValue=<your-hostedzone-id> \
+                   ParameterKey=ACMARN,ParameterValue=<your-acm-arn-if-any> \
+      --capabilities CAPABILITY_NAMED_IAM
+    ```
 3. Delete the stack
-
+    ```shell
+    aws cloudformation delete-stack --stack-name <EventName>
+    ```
+   
 ### Deploying from the AWS Console
 
 You can also deploy the CloudFormation template using the AWS Console.

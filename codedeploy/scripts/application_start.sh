@@ -8,7 +8,7 @@ pm2 start "yarn start" --name backend
 fi
 
 if [[ "$DEPLOYMENT_GROUP_NAME" =~ ^event ]]; then
-cd /srv/demos/participation-cert-vci/ || exit
+cd /srv/demos/event-certificate-manager/ || exit
 pm2 start "yarn start" --name backend
 fi
 

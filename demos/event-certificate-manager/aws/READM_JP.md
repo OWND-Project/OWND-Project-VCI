@@ -1,6 +1,6 @@
 # VCI CloudFormation Template
 
-このリポジトリには、VCI (Virtual Corporate Infrastructure) をデプロイするためのAWS CloudFormationテンプレートが含まれています。
+このリポジトリには、VCI (Verifiable Credential Issuer) をデプロイするためのAWS CloudFormationテンプレートが含まれています。
 
 ## テンプレートの概要
 
@@ -37,29 +37,29 @@
 CloudFormationスタックを作成、更新、削除するための具体的なAWS CLIコマンドを使用してください。以下は例です：
 
 1. スタックの作成
-```shell
+    ```shell
    aws cloudformation create-stack --stack-name <EventName> \
-   --template-body file://path/to/template.yaml \
-   --parameters ParameterKey=Domain,ParameterValue=<your-domain> \
-   ParameterKey=VCISubdomain,ParameterValue=<your-subdomain> \
-   ParameterKey=HostedZoneID,ParameterValue=<your-hostedzone-id> \
-   ParameterKey=ACMARN,ParameterValue=<your-acm-arn-if-any> \
-   --capabilities CAPABILITY_NAMED_IAM
-```
+     --template-body file://path/to/template.yaml \
+     --parameters ParameterKey=Domain,ParameterValue=<your-domain> \
+     ParameterKey=VCISubdomain,ParameterValue=<your-subdomain> \
+     ParameterKey=HostedZoneID,ParameterValue=<your-hostedzone-id> \
+     ParameterKey=ACMARN,ParameterValue=<your-acm-arn-if-any> \
+     --capabilities CAPABILITY_NAMED_IAM
+    ```
 2. スタックの更新
-```shell
-aws cloudformation update-stack --stack-name <EventName> \
-  --template-body file://path/to/template.yaml \
-  --parameters ParameterKey=Domain,ParameterValue=<your-domain> \
-               ParameterKey=VCISubdomain,ParameterValue=<your-subdomain> \
-               ParameterKey=HostedZoneID,ParameterValue=<your-hostedzone-id> \
-               ParameterKey=ACMARN,ParameterValue=<your-acm-arn-if-any> \
-  --capabilities CAPABILITY_NAMED_IAM
-```
+    ```shell
+    aws cloudformation update-stack --stack-name <EventName> \
+      --template-body file://path/to/template.yaml \
+      --parameters ParameterKey=Domain,ParameterValue=<your-domain> \
+                   ParameterKey=VCISubdomain,ParameterValue=<your-subdomain> \
+                   ParameterKey=HostedZoneID,ParameterValue=<your-hostedzone-id> \
+                   ParameterKey=ACMARN,ParameterValue=<your-acm-arn-if-any> \
+      --capabilities CAPABILITY_NAMED_IAM
+    ```
 3. スタックの削除
-```shell
-aws cloudformation delete-stack --stack-name <EventName>
-```
+    ```shell
+    aws cloudformation delete-stack --stack-name <EventName>
+    ```
 ### AWSコンソールからのデプロイ
 
 AWSコンソールを使用してCloudFormationテンプレートをデプロイすることもできます。
