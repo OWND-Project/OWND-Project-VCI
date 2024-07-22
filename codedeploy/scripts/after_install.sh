@@ -2,25 +2,30 @@
 source /root/.bashrc
 nvm use 18
 
-cd /srv/common
-yarn install
-yarn build
-
 if [[ "$DEPLOYMENT_GROUP_NAME" =~ ^identity ]]; then
-cd /srv/proxy-vci/
+cd /srv/demos/proxy-vci/ || exit
 pwd
 fi
 
 # Todo event用vciのディレクトリが決まったらパスを変える
 if [[ "$DEPLOYMENT_GROUP_NAME" =~ ^event ]]; then
-cd /srv/participation-cert-vci/
+cd /srv/demos/event-certificate-manager/backend|| exit
+git clone https://github.com/OWND-Project/OWND-Project-VCI.git
+cd ./OWND-Project-VCI || exit
+yarn
+yarn build
+yarn link
+cd /srv/backend || exit
+yarn link ownd-vci
+yarn
 pwd
 fi
 
 if [[ "$DEPLOYMENT_GROUP_NAME" =~ ^employee ]]; then
-cd /srv/employee-vci/
+cd /srv/demos/employee-vci/ || exit
 pwd
 fi
 
+cd /srv/common || exit
 yarn install
 yarn build
