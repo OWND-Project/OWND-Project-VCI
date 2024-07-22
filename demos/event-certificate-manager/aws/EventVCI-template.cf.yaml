@@ -1,0 +1,710 @@
+---
+Parameters:
+  Domain:
+    Description: domain for VCI
+    Type: String
+  VCISubdomain:
+    Description: Subdomain for VCI
+    Type: String
+  HostedZoneID:
+    Description: HostedZoneID for route53
+    Type: String
+  ACMARN:
+    Description: "ACM for VCI (Optional)"
+    Type: String
+Conditions:
+ ACMARNProvided: !Not [!Equals [!Ref ACMARN,'' ]]
+ ACMNotProvided: !Equals [!Ref ACMARN ,""]
+
+Resources:
+  # For Network
+  VPC:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPC"
+    DeletionPolicy: "Delete"
+    Properties:
+      CidrBlock: "192.168.0.0/16"
+      EnableDnsSupport: true
+      InstanceTenancy: "default"
+      EnableDnsHostnames: true
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: "EventVCI"
+          Key: "Name"
+  InternetGateway:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::InternetGateway"
+    DeletionPolicy: "Delete"
+    Properties:
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: "EventVCI"
+          Key: "Name"
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+  RouteTablePublic:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::RouteTable"
+    DeletionPolicy: "Delete"
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: !Sub ${AWS::StackName}-public-rt
+          Key: "Name"
+  RoutePublic:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Route"
+    DeletionPolicy: "Delete"
+    Properties:
+      RouteTableId: !Ref "RouteTablePublic"
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref InternetGateway
+  NetworkAcl:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::NetworkAcl"
+    DeletionPolicy: "Delete"
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: "EventVCI"
+          Key: "Name"
+  NaclEntryInbound:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      Egress: false
+      RuleNumber: 100
+      RuleAction: allow
+      Protocol: -1
+      CidrBlock: 0.0.0.0/0
+      NetworkAclId: !Ref NetworkAcl
+  NaclEntryOutbound:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      Egress: true
+      RuleNumber: 100
+      RuleAction: allow
+      Protocol: -1
+      CidrBlock: 0.0.0.0/0
+      NetworkAclId: !Ref NetworkAcl
+  SubnetPubA:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Subnet"
+    DeletionPolicy: "Delete"
+    Properties:
+      VpcId: !Ref VPC
+      MapPublicIpOnLaunch: true
+      EnableDns64: false
+      AvailabilityZone: ap-northeast-1a
+      PrivateDnsNameOptionsOnLaunch:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      CidrBlock: "192.168.48.0/20"
+      Ipv6Native: false
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: !Sub ${AWS::StackName}-publicA-subnet
+          Key: "Name"
+  SubnetPubC:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Subnet"
+    DeletionPolicy: "Delete"
+    Properties:
+      VpcId: !Ref VPC
+      MapPublicIpOnLaunch: true
+      EnableDns64: false
+      AvailabilityZone: ap-northeast-1c
+      PrivateDnsNameOptionsOnLaunch:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      CidrBlock: "192.168.64.0/20"
+      Ipv6Native: false
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: !Sub ${AWS::StackName}-publicC-subnet
+          Key: "Name"
+  SubnetPubD:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Subnet"
+    DeletionPolicy: "Delete"
+    Properties:
+      VpcId: !Ref VPC
+      MapPublicIpOnLaunch: true
+      EnableDns64: false
+      AvailabilityZone: ap-northeast-1d
+      PrivateDnsNameOptionsOnLaunch:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      CidrBlock: "192.168.80.0/20"
+      Ipv6Native: false
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: !Sub ${AWS::StackName}-publicD-subnet
+          Key: "Name"
+  SubnetRouteTableAssociationPubA:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    DeletionPolicy: "Delete"
+    Properties:
+      RouteTableId: !Ref RouteTablePublic
+      SubnetId: !Ref SubnetPubA
+  SubnetRouteTableAssociationPubC:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    DeletionPolicy: "Delete"
+    Properties:
+      RouteTableId: !Ref RouteTablePublic
+      SubnetId: !Ref "SubnetPubC"
+  SubnetRouteTableAssociationPubD:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    DeletionPolicy: "Delete"
+    Properties:
+      RouteTableId: !Ref RouteTablePublic
+      SubnetId: !Ref "SubnetPubD"
+  SubnetNetworkAclAssociationPubA:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetNetworkAclAssociation"
+    DeletionPolicy: "Delete"
+    Properties:
+      NetworkAclId: !Ref NetworkAcl
+      SubnetId: !Ref SubnetPubA
+  SubnetNetworkAclAssociationPubC:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetNetworkAclAssociation"
+    DeletionPolicy: "Delete"
+    Properties:
+      NetworkAclId: !Ref NetworkAcl
+      SubnetId: !Ref SubnetPubC
+  SubnetNetworkAclAssociationPubD:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetNetworkAclAssociation"
+    DeletionPolicy: "Delete"
+    Properties:
+      NetworkAclId: !Ref NetworkAcl
+      SubnetId: !Ref SubnetPubD
+  # For EIC
+  SecurityGroupEIC:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SecurityGroup"
+    DeletionPolicy: "Delete"
+    Properties:
+      GroupDescription: "eic security group"
+      GroupName: !Sub ${AWS::StackName}-vci-ec2-eic-sg
+      VpcId: !Ref VPC
+      SecurityGroupEgress:
+        - CidrIp: "0.0.0.0/0"
+          IpProtocol: "tcp"
+          FromPort: 22
+          ToPort: 22
+      Tags:
+        - Value: "eic"
+          Key: "Name"
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+  InstanceConnectEndpoint:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::InstanceConnectEndpoint"
+    DeletionPolicy: "Delete"
+    Properties:
+      PreserveClientIp: true
+      SubnetId: !Ref SubnetPubA
+      SecurityGroupIds:
+        - !Ref SecurityGroupEIC
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: !Sub ${AWS::StackName}-eic
+          Key: "Name"
+  # For EC2
+  SecurityGroupVCI:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SecurityGroup"
+    DeletionPolicy: "Delete"
+    Properties:
+      GroupDescription: "vci security group"
+      GroupName: !Sub ${AWS::StackName}-vci-ec2-sg
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: "tcp"
+          Description: "ssh port"
+          FromPort: 22
+          SourceSecurityGroupId: !Ref SecurityGroupEIC
+          ToPort: 22
+        - IpProtocol: "tcp"
+          Description: "api port"
+          FromPort: 3000
+          SourceSecurityGroupId: !Ref SecurityGroupALB
+          ToPort: 3000
+      SecurityGroupEgress:
+        - CidrIp: "0.0.0.0/0"
+          IpProtocol: "-1"
+          FromPort: -1
+          ToPort: -1
+      Tags:
+        - Value: !Sub ${AWS::StackName}-vci-ec2-sg
+          Key: "Name"
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+  IAMRoleVCIEC2:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Delete"
+    Properties:
+      Path: "/"
+      MaxSessionDuration: 3600
+      RoleName: !Sub ${AWS::StackName}-vci-ec2-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action: "sts:AssumeRole"
+            Effect: "Allow"
+            Principal:
+              Service: "ec2.amazonaws.com"
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: !Sub ${AWS::StackName}-vci-ec2-role
+          Key: "Name"
+  IAMInstanceProfileVCIEC2:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::InstanceProfile"
+    DeletionPolicy: "Delete"
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref IAMRoleVCIEC2
+      InstanceProfileName: !Sub ${AWS::StackName}-vci-ec2-profile
+  IAMManagedPolicyCodeDeployVCIEC2:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::ManagedPolicy"
+    DeletionPolicy: "Delete"
+    Properties:
+      ManagedPolicyName: !Sub ${AWS::StackName}-vci-ec2-policy
+      Path: "/"
+      Description: ""
+      Groups: []
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Resource: "*"
+            Action:
+              - "s3:Get*"
+              - "s3:List*"
+            Effect: "Allow"
+      Roles:
+        - !Ref IAMRoleVCIEC2
+  EC2VCI:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Instance"
+    DeletionPolicy: "Delete"
+    Properties:
+      Tenancy: "default"
+      InstanceInitiatedShutdownBehavior: "stop"
+      CpuOptions:
+        ThreadsPerCore: 2
+        CoreCount: 1
+      CreditSpecification:
+        CPUCredits: "standard"
+      BlockDeviceMappings:
+        - Ebs:
+            VolumeType: "gp3"
+            Iops: 3000
+            VolumeSize: 36
+            Encrypted: false
+            DeleteOnTermination: true
+          DeviceName: "/dev/xvda"
+      NetworkInterfaces:
+        - DeviceIndex: "0"
+          GroupSet:
+            - !Ref SecurityGroupVCI
+          SubnetId: !Ref SubnetPubC
+          AssociatePublicIpAddress: true
+          DeleteOnTermination: true
+      IamInstanceProfile: !Ref IAMInstanceProfileVCIEC2
+      EbsOptimized: false
+      DisableApiTermination: false
+      SourceDestCheck: true
+      ImageId: !Sub "{{resolve:ssm:/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64}}"
+      InstanceType: "t3.micro"
+      Monitoring: false
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: !Sub ${AWS::StackName}-event-vci
+          Key: "Name"
+        - Value: "BackEnd"
+          Key: FunctionType
+  # For ACM
+  ACMVCI:
+    Condition: ACMNotProvided  # ACMARNが提供されていない場合に作成
+    UpdateReplacePolicy: "Retain"
+    DeletionPolicy: "Delete"
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub ${VCISubdomain}.${Domain}
+      DomainValidationOptions:
+        - DomainName: !Sub ${VCISubdomain}.${Domain}
+          HostedZoneId: !Ref HostedZoneID
+      ValidationMethod: DNS
+  # For ALB
+  SecurityGroupALB:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SecurityGroup"
+    DeletionPolicy: "Delete"
+    Properties:
+      GroupDescription: "alb security group"
+      GroupName: !Sub ${AWS::StackName}-alb-sg
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - CidrIp: "0.0.0.0/0"
+          IpProtocol: "tcp"
+          FromPort: 80
+          ToPort: 80
+        - CidrIp: "0.0.0.0/0"
+          IpProtocol: "tcp"
+          FromPort: 443
+          ToPort: 443
+      SecurityGroupEgress:
+        - CidrIp: "0.0.0.0/0"
+          IpProtocol: "-1"
+          FromPort: -1
+          ToPort: -1
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: !Sub ${AWS::StackName}-alb-sg
+          Key: "Name"
+  ALBEventVCI:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    DeletionPolicy: "Delete"
+    Properties:
+      Type: "application"
+      Scheme: "internet-facing"
+      Name: !Sub ${AWS::StackName}-event-vci
+      IpAddressType: "ipv4"
+      SecurityGroups:
+        - !Ref SecurityGroupALB
+      Subnets:
+        - !Ref SubnetPubD
+        - !Ref SubnetPubC
+        - !Ref SubnetPubA
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: "EventVCI"
+          Key: SystemType
+        - Value: "BackEnd"
+          Key: FunctionType
+  ALBEventVCITargetGroup:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    DeletionPolicy: "Delete"
+    Properties:
+      Name: !Sub ${AWS::StackName}-event-vci
+      IpAddressType: "ipv4"
+      HealthCheckIntervalSeconds: 300
+      Matcher:
+        HttpCode: "200-299"
+      HealthCheckPath: "/.well-known/openid-credential-issuer"
+      Port: 3000
+      Targets:
+        - Port: 3000
+          Id: !Ref EC2VCI
+      HealthCheckEnabled: true
+      ProtocolVersion: "HTTP1"
+      UnhealthyThresholdCount: 2
+      HealthCheckTimeoutSeconds: 5
+      VpcId: !Ref VPC
+      HealthyThresholdCount: 5
+      HealthCheckProtocol: "HTTP"
+      TargetType: "instance"
+      HealthCheckPort: "3000"
+      Protocol: "HTTP"
+      Tags:
+        - Value: !Sub ${AWS::StackName}-event-vci
+          Key: Name
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: "EventVCI"
+          Key: SystemType
+        - Value: "BackEnd"
+          Key: FunctionType
+
+  ALBEventVCIListenerHTTP:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    DeletionPolicy: "Delete"
+    Properties:
+      Protocol: "HTTP"
+      LoadBalancerArn: !Ref ALBEventVCI
+      DefaultActions:
+        - Order: 1
+          Type: "redirect"
+          RedirectConfig:
+            Path: "/#{path}"
+            Host: "#{host}"
+            Query: "#{query}"
+            Protocol: "HTTPS"
+            StatusCode: "HTTP_301"
+            Port: "443"
+      Port: 80
+  ALBEventVCIListenerHTTPS:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    DeletionPolicy: "Delete"
+    Properties:
+      MutualAuthentication:
+        Mode: "off"
+      SslPolicy: "ELBSecurityPolicy-TLS13-1-2-2021-06"
+      LoadBalancerArn: !Ref ALBEventVCI
+      DefaultActions:
+        - Order: 1
+          TargetGroupArn: !Ref ALBEventVCITargetGroup
+          Type: "forward"
+          ForwardConfig:
+            TargetGroupStickinessConfig:
+              Enabled: false
+            TargetGroups:
+              - TargetGroupArn: !Ref ALBEventVCITargetGroup
+                Weight: 1
+      Port: 443
+      Certificates:
+         - CertificateArn: !If
+             - ACMARNProvided
+             - !Ref ACMARN # パラメータが提供されている場合のARN
+             - !Ref ACMVCI # パラメータが提供されていない場合のARN
+      Protocol: "HTTPS"
+  ALBAliasRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneID
+      Name: !Sub ${VCISubdomain}.${Domain}
+      Type: A
+      AliasTarget:
+        HostedZoneId: !GetAtt ALBEventVCI.CanonicalHostedZoneID
+        DNSName: !GetAtt ALBEventVCI.DNSName
+
+  # for CodeStar
+  CodeStarConnectionsConnectionEventVCI:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::CodeStarConnections::Connection"
+    DeletionPolicy: "Delete"
+    Properties:
+      ConnectionName: "VCISource"
+      ProviderType: "GitHub"
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: "EventVCI"
+          Key: SystemType
+        - Value: "BackEnd"
+          Key: FunctionType
+  # for S3
+  S3BucketPipeline:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::S3::Bucket"
+    DeletionPolicy: "Delete"
+    Properties:
+      PublicAccessBlockConfiguration:
+        RestrictPublicBuckets: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        BlockPublicAcls: true
+      BucketName: !Sub pipeline.${Domain}
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: "BucketOwnerEnforced"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - BucketKeyEnabled: false
+            ServerSideEncryptionByDefault:
+              SSEAlgorithm: "AES256"
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: "EventVCI"
+          Key: SystemType
+  # for CodePipeline
+  IAMManagedPolicyCodepipeline:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::ManagedPolicy"
+    DeletionPolicy: "Delete"
+    Properties:
+      ManagedPolicyName: "codepipeline-service-policy"
+      Path: "/service-role/"
+      Description: ""
+      Groups: []
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Condition:
+              StringEqualsIfExists:
+                iam:PassedToService:
+                  - "cloudformation.amazonaws.com"
+                  - "elasticbeanstalk.amazonaws.com"
+                  - "ec2.amazonaws.com"
+                  - "ecs-tasks.amazonaws.com"
+            Resource: "*"
+            Action:
+              - "iam:PassRole"
+            Effect: "Allow"
+          - Resource: "*"
+            Action:
+              - "codecommit:CancelUploadArchive"
+              - "codecommit:GetBranch"
+              - "codecommit:GetCommit"
+              - "codecommit:GetUploadArchiveStatus"
+              - "codecommit:UploadArchive"
+            Effect: "Allow"
+          - Resource: "*"
+            Action:
+              - "codedeploy:CreateDeployment"
+              - "codedeploy:GetApplication"
+              - "codedeploy:GetApplicationRevision"
+              - "codedeploy:GetDeployment"
+              - "codedeploy:GetDeploymentConfig"
+              - "codedeploy:RegisterApplicationRevision"
+            Effect: "Allow"
+          - Resource: "*"
+            Action:
+              - "codestar-connections:UseConnection"
+            Effect: "Allow"
+          - Resource: "*"
+            Action:
+              - "elasticbeanstalk:*"
+              - "ec2:*"
+              - "elasticloadbalancing:*"
+              - "autoscaling:*"
+              - "cloudwatch:*"
+              - "s3:*"
+              - "sns:*"
+              - "cloudformation:*"
+              - "rds:*"
+              - "sqs:*"
+              - "ecs:*"
+            Effect: "Allow"
+          - Resource: "*"
+            Action:
+              - "opsworks:CreateDeployment"
+              - "opsworks:DescribeApps"
+              - "opsworks:DescribeCommands"
+              - "opsworks:DescribeDeployments"
+              - "opsworks:DescribeInstances"
+              - "opsworks:DescribeStacks"
+              - "opsworks:UpdateApp"
+              - "opsworks:UpdateStack"
+            Effect: "Allow"
+          - Resource: "*"
+            Action:
+              - "servicecatalog:ListProvisioningArtifacts"
+              - "servicecatalog:CreateProvisioningArtifact"
+              - "servicecatalog:DescribeProvisioningArtifact"
+              - "servicecatalog:DeleteProvisioningArtifact"
+              - "servicecatalog:UpdateProduct"
+            Effect: "Allow"
+          - Resource: "*"
+            Action:
+              - "states:DescribeExecution"
+              - "states:DescribeStateMachine"
+              - "states:StartExecution"
+            Effect: "Allow"
+          - Resource: "*"
+            Action:
+              - "appconfig:StartDeployment"
+              - "appconfig:StopDeployment"
+              - "appconfig:GetDeployment"
+            Effect: "Allow"
+          - Resource: "*"
+            Action:
+              - "iam:CreateAccessKey"
+              - "iam:CreateUser"
+              - "iam:DeleteAccessKey"
+              - "iam:DeleteUser"
+              - "iam:DeleteUserPolicy"
+              - "iam:ListAccessKeys"
+              - "iam:ListUserPolicies"
+              - "iam:PutUserPolicy"
+              - "iam:GetUser"
+            Effect: "Allow"
+      Users: []
+  IAMRoleCodepipeline:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Delete"
+    Properties:
+      Path: "/"
+      ManagedPolicyArns:
+        - !Ref IAMManagedPolicyCodepipeline
+      MaxSessionDuration: 3600
+      RoleName: "codepipeline-iam-role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action: "sts:AssumeRole"
+            Effect: "Allow"
+            Principal:
+              Service: "codepipeline.amazonaws.com"
+      Tags:
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: "EventVCI"
+          Key: SystemType
+  # for CodeDeploy
+  CodeDeployApplicationEventVCI:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::CodeDeploy::Application"
+    DeletionPolicy: "Delete"
+    Properties:
+      Tags:
+        - Value: !Sub ${AWS::StackName}-event-vci
+          Key: Name
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: "EventVCI"
+          Key: SystemType
+        - Value: "BackEnd"
+          Key: FunctionType
+      ApplicationName: !Sub ${AWS::StackName}-event-vci
+      ComputePlatform: "Server"
+  IAMRoleCodedeployEventVCI:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Delete"
+    Properties:
+      RoleName: !Sub ${AWS::StackName}-codedeploy-iam-role
+      Path: "/"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action: "sts:AssumeRole"
+            Effect: "Allow"
+            Principal:
+              Service: "codedeploy.amazonaws.com"
+      Tags:
+        - Value: !Sub ${AWS::StackName}-codedeploy-iam-role
+          Key: Name
+        - Value: !Sub ${AWS::StackName}
+          Key: Environment
+        - Value: "EventVCI"
+          Key: SystemType
+        - Value: "BackEnd"
+          Key: FunctionType
