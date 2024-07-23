@@ -1,7 +1,7 @@
 {
-  "issuer": "https://datasign-demo-vci.tunnelto.dev",
-  "authorization_endpoint": "https://datasign-demo-vci.tunnelto.dev/authorize",
-  "token_endpoint": "https://datasign-demo-vci.tunnelto.dev/token",
+  "issuer": "https://REPLACE-WITH-ISSUERS-DOMAIN.EXAMPLE.COM",
+  "authorization_endpoint": "https://REPLACE-WITH-ISSUERS-DOMAIN.EXAMPLE.COM/authorize",
+  "token_endpoint": "https://REPLACE-WITH-ISSUERS-DOMAIN.EXAMPLE.COM/token",
   "token_endpoint_auth_methods_supported": ["client_secret_basic", "private_key_jwt"],
   "token_endpoint_auth_signing_alg_values_supported": ["RS256", "ES256"],
   "jwks_uri": "https://server.example.com/jwks.json",

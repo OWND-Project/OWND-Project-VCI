@@ -2,7 +2,7 @@
 ## Participation Cert  Summary
 
 ### Common API
-For details on the common API, please see [README.md](../common/README.md).
+For details on the common API, please see [README.md](../../src/README.md).
 
 - POST `/admin/keys/new`
 - POST `/admin/keys/:kid/revoke`
@@ -36,6 +36,11 @@ Create the `.env` file based on the `.env.template`. Please adjust the content a
 | VCI_PRE_AUTH_CODE_EXPIRES_IN        | 86400                        | 
 | VCI_ACCESS_TOKEN_EXPIRES_IN         | 86400                        | 
 | VCI_ACCESS_TOKEN_C_NONCE_EXPIRES_IN | 86400                        | 
+
+## Configuring Credential Issuer Metadata
+
+Please modify the JSON file that exists under the `metadata` directory to match your operating environment.
+In particular, the `REPLACE-WITH-ISSUERS-DOMAIN.EXAMPLE.COM` in the JSON file should be the actual domain that can communicate with the wallet.
 
 ## Specific API
 
@@ -138,6 +143,6 @@ Example Response
   "subject": {
     "conferenceId": "1"
   },
-  "credentialOffer": "openid-credential-offer://?credential_offer=%7B%22credential_issuer%22%3A%22https%3A%2F%2Fissuer.privacybydesign.jp%3A8443%22%2C%22credentials%22%3A%5B%22ParticipationCertificate%22%5D%2C%22grants%22%3A%7B%22urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Apre-authorized_code%22%3A%7B%22pre-authorized_code%22%3A%22nhzYY0nVOx6TetbsLVMlCQl8ZlRBSbZG%22%2C%22user_pin_required%22%3Afalse%7D%7D%7D"
+  "credentialOffer": "openid-credential-offer://?credential_offer=%7B%22credential_issuer%22%3A%22https%3A%2F%2Fissuer.example.com%3A8443%22%2C%22credentials%22%3A%5B%22ParticipationCertificate%22%5D%2C%22grants%22%3A%7B%22urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Apre-authorized_code%22%3A%7B%22pre-authorized_code%22%3A%22nhzYY0nVOx6TetbsLVMlCQl8ZlRBSbZG%22%2C%22user_pin_required%22%3Afalse%7D%7D%7D"
 }
 ```
