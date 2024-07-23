@@ -208,8 +208,7 @@ export const credentialOfferForEventTicket = async (
   const credentialOfferUrl = generatePreAuthCredentialOffer(
     process.env.CREDENTIAL_ISSUER || "",
     ["EventTicketCredential"],
-    code,
-    true,
+    code, {},
   );
 
   // todo usedAtがそのまま返されるのでIFと一致しないバグの扱いを考える(IFを変えるか実装を変えるか)
@@ -244,7 +243,7 @@ export const allTickets = async (): Promise<
         process.env.CREDENTIAL_ISSUER || "",
         ["EventTicketCredential"],
         ticket.authorizedCode.code,
-        true,
+          {},
       );
       return { ...ticket, credentialOffer: credentialOfferUrl };
     });
@@ -274,7 +273,7 @@ export const getTicketById = async (
       process.env.CREDENTIAL_ISSUER || "",
       ["EventTicketCredential"],
       ticket.authorizedCode.code,
-      true,
+        {},
     );
     const payload = { ...ticket, credentialOffer: credentialOfferUrl };
     return { ok: true, payload };
@@ -319,7 +318,7 @@ export const updateTicketById = async (
       process.env.CREDENTIAL_ISSUER || "",
       ["EventTicketCredential"],
       updated!.authorizedCode.code,
-      true,
+        {},
     );
     const result = { ...updated!, credentialOffer: credentialOfferUrl };
     return { ok: true, payload: result };
@@ -346,7 +345,7 @@ export const allParticipation = async (): Promise<
         process.env.CREDENTIAL_ISSUER || "",
         ["ParticipationCertificate"],
         participation.authorizedCode.code,
-        false,
+        undefined,
       );
       return { ...participation, credentialOffer: credentialOfferUrl };
     });
@@ -381,7 +380,7 @@ export const getParticipationById = async (
       process.env.CREDENTIAL_ISSUER || "",
       ["ParticipationCertificate"],
       participation.authorizedCode.code,
-      false,
+      undefined,
     );
     const payload = { ...participation, credentialOffer: credentialOfferUrl };
     return { ok: true, payload };

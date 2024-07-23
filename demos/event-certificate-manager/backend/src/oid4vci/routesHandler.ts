@@ -39,7 +39,7 @@ export const credentialOfferForParticipation = async (
     process.env.CREDENTIAL_ISSUER || "",
     ["ParticipationCertificate"],
     code,
-    false,
+    undefined,
   );
 
   // todo usedAtがそのまま返されるのでIFと一致しないバグの扱いを考える(IFを変えるか実装を変えるか)
@@ -96,7 +96,7 @@ export const getTicketCredentialOffer = async (
     process.env.CREDENTIAL_ISSUER || "",
     ["EventTicketCredential"],
     ticket.authorizedCode.code,
-    true,
+      {},
   );
   return { ok: true, payload: { credentialOffer: credentialOfferUrl } };
 };

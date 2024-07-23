@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import store, { handleError } from "ownd-vci/dist/store.js";
 import keyStore from "ownd-vci/dist/store/keyStore.js";
 import authStore, { TBL_NM_AUTH_CODES } from "ownd-vci/dist/store/authStore.js";
-import { AuthorizedCode, Identifiable } from "ownd-vci/dist/oid4vci/types";
+import { AuthorizedCode, Identifiable } from "ownd-vci/dist/oid4vci/types/types.js";
 
 /*
 @startuml

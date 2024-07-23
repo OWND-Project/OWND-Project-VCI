@@ -4,7 +4,7 @@ import { assert } from "chai";
 import request from "supertest";
 
 import authStore from "ownd-vci/dist/store/authStore.js";
-import { AuthorizedCode } from "ownd-vci/dist/oid4vci/types";
+import { AuthorizedCode } from "ownd-vci/dist/oid4vci/types/types.js";
 
 import { getSession } from "./testUtils";
 import { init } from "../src/app";
