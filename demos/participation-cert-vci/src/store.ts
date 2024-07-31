@@ -4,7 +4,10 @@ import authStore, {
   StoredAccessToken,
   TBL_NM_AUTH_CODES,
 } from "ownd-vci/dist/store/authStore.js";
-import { AuthorizedCode, Identifiable } from "ownd-vci/dist/oid4vci/types.js";
+import {
+  AuthorizedCode,
+  Identifiable,
+} from "ownd-vci/dist/oid4vci/types/types.js";
 
 /*
 @startuml

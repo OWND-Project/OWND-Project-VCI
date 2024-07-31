@@ -114,7 +114,7 @@ const credentialOfferForEmployee = async (
     process.env.CREDENTIAL_ISSUER || "",
     ["EmployeeIdentificationCredential"],
     code,
-    true,
+    {},
   );
 
   const payload = {

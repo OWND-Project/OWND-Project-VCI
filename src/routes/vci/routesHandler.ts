@@ -1,23 +1,68 @@
 import Koa from "koa";
 
-import { readLocalMetadataResource } from "../../utils/resourceUtils.js";
+import {
+  getIssuerMetadata,
+  readLocalJsonResource,
+} from "../../utils/resourceUtils.js";
 import path from "path";
 import { TokenIssuerConfig } from "../../oid4vci/tokenEndpoint/types.js";
 import { TokenIssuer } from "../../oid4vci/tokenEndpoint/TokenIssuer.js";
 import { CredentialIssuerConfig } from "../../oid4vci/credentialEndpoint/types.js";
 import { StoredAccessToken } from "../../store/authStore.js";
 import { CredentialIssuer } from "../../oid4vci/credentialEndpoint/CredentialIssuer.js";
+import { resolveAcceptLanguage } from "resolve-accept-language";
+import { localizeIssuerMetadata } from "../../utils/localize.js";
 
-export async function handleIssueMetadata(ctx: Koa.Context, dirname: string) {
+export async function handleIssueMetadata(
+  ctx: Koa.Context,
+  dirname: string,
+  availableLocales: string[],
+  defaultLocale: string,
+) {
   const environment = process.env.ENVIRONMENT || "dev";
+  const needsLocalization = process.env.RESOLVE_ACCEPT_LANGUAGE === "true";
+
   try {
-    const metadataJson = await readLocalMetadataResource(
+    const originalMetadataJson = await getIssuerMetadata(
       path.join(dirname, "metadata", environment),
       "credential_issuer_metadata.json",
     );
-    console.debug(metadataJson);
+    console.debug(originalMetadataJson);
 
-    ctx.body = metadataJson;
+    if (!needsLocalization) {
+      ctx.body = originalMetadataJson;
+      ctx.status = 200;
+      ctx.set("Content-Type", "application/json");
+      return;
+    }
+
+    const acceptLanguage = ctx.request.header["accept-language"];
+    if (!acceptLanguage) {
+      ctx.body = originalMetadataJson;
+      ctx.status = 200;
+      ctx.set("Content-Type", "application/json");
+      return;
+    }
+
+    try {
+      const preferred = resolveAcceptLanguage(
+        acceptLanguage,
+        availableLocales,
+        defaultLocale,
+      );
+      // TODO: stop dynamic generation.
+      ctx.body = localizeIssuerMetadata(
+        structuredClone(originalMetadataJson),
+        preferred,
+        defaultLocale,
+      );
+    } catch (err) {
+      console.log(
+        `unable to localize metadata using accept-language header: ${acceptLanguage}`,
+      );
+      ctx.body = originalMetadataJson;
+    }
+
     ctx.status = 200;
     ctx.set("Content-Type", "application/json");
   } catch (err) {
@@ -30,7 +75,7 @@ export async function handleIssueMetadata(ctx: Koa.Context, dirname: string) {
 export async function handleAuthServer(ctx: Koa.Context, dirname: string) {
   const environment = process.env.ENVIRONMENT || "dev";
   try {
-    const metadataJson = await readLocalMetadataResource(
+    const metadataJson = await readLocalJsonResource(
       path.join(dirname, "metadata", environment),
       "authorization_server.json",
     );
@@ -85,15 +130,16 @@ export async function handleCredential(
     return;
   }
 
-  const { format, credential, nonce } = result.payload;
-  const responseBody = { format, credential };
-  ctx.body = nonce
-    ? {
-        ...responseBody,
-        c_nonce: nonce.nonce,
-        c_nonce_expires_in: nonce.expiresIn,
-      }
-    : responseBody;
+  const { credential, c_nonce, c_nonce_expires_in } = result.payload;
+  const responseBody = { credential };
+  ctx.body =
+    c_nonce && c_nonce_expires_in
+      ? {
+          ...responseBody,
+          c_nonce,
+          c_nonce_expires_in,
+        }
+      : responseBody;
   ctx.status = 200;
 }
 

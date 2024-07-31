@@ -1,4 +1,4 @@
-import { HttpRequest } from "../types.js";
+import { HttpRequest } from "../types/types.js";
 import { IssueResult, TokenIssuerConfig } from "./types.js";
 import validate from "./validate.js";
 

@@ -3,5 +3,7 @@
   "compilerOptions": {
     "rootDir": "./src"
   },
-  "include": ["./src/**/*.ts"]
+  "include": ["./src/**/*.ts",
+    "./src/oid4vci/types/protocolSchema/*.json"
+  ]
 }
