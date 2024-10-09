@@ -31,16 +31,18 @@ const execPromise = (cmd) => new Promise((resolve, reject) => {
 
 const runCommands = async () => {
     try {
-        await Promise.all(
-            typeNames.map((typeName, index) => {
-                const outputFilePath = `${outputDirectory}/${typeName}.json`;
-                const cmd = `yarn typescript-json-schema --strictNullChecks true --noExtraProps true --required ${typeDefinitionSrc} ${typeName} --out ${outputFilePath}`;
-                return execPromise(cmd).catch(error => {
-                    console.error(`Error in command ${index + 1}:`, error);
-                    process.exit(1);
-                });
-            })
-        );
+        for (let index = 0; index < typeNames.length; index++) {
+            const typeName = typeNames[index];
+            const outputFilePath = `${outputDirectory}/${typeName}.json`;
+            const cmd = `yarn typescript-json-schema --strictNullChecks true --noExtraProps true --required ${typeDefinitionSrc} ${typeName} --out ${outputFilePath}`;
+            try {
+                console.log(`generation schema for ${typeName}...`);
+                await execPromise(cmd);
+            } catch (error) {
+                console.error(`Error in command ${index + 1}:`, error);
+                process.exit(1);
+            }
+        }
         console.log('All commands executed successfully.');
     } catch (error) {
         console.error('A command failed:', error);
