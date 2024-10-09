@@ -1,5 +1,5 @@
 import { ErrorPayload, Result } from "../../types.js";
-import { HttpRequest } from "../types.js";
+import { HttpRequest } from "../types/types.js";
 import { isExpired } from "../utils.js";
 import { PayloadAtExists, AuthCodeStateProvider } from "./types.js";
 

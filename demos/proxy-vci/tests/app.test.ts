@@ -7,7 +7,7 @@ import nock from "nock";
 import { init } from "../src/app";
 import store from "../src/store";
 import keyStore from "ownd-vci/dist/store/keyStore";
-import { CredentialOffer } from "ownd-vci/dist/oid4vci/types";
+import { CredentialOffer } from "ownd-vci/dist/oid4vci/types/types.js";
 
 const app = init();
 const username = "username";
@@ -398,10 +398,15 @@ describe("Root path test", () => {
     const credentialOffer = JSON.parse(
       decodedCredentialOffer,
     ) as CredentialOffer;
+
+    const grantsPreAuth = credentialOffer.grants;
+    assert.isOk(grantsPreAuth);
+
     const preAuthorizedCode =
-      credentialOffer.grants[
-        "urn:ietf:params:oauth:grant-type:pre-authorized_code"
-      ]["pre-authorized_code"];
+      grantsPreAuth["urn:ietf:params:oauth:grant-type:pre-authorized_code"][
+        "pre-authorized_code"
+      ];
+
     const accessToken = await store.getXIDAccessToken(preAuthorizedCode);
     assert.isNotNull(accessToken);
     assert.equal(accessToken?.token, accessTokenValue);

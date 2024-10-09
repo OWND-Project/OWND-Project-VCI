@@ -298,15 +298,13 @@ describe("POST /credential", () => {
           format: "jwt_vc_json",
           proof: { proof_type: "jwt", jwt: token },
           credential_definition: {
-            // Not compliant with VCI draft-12 E.1.1.5, missing `type` property.
+            // Not compliant with VCI ID1 A.1.1.4, missing `type` property.
+            // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html#appendix-A.1.1.4
           },
         });
       assert.equal(response.status, 400);
       assert.equal(response.body.error, "invalid_request");
-      assert.equal(
-        response.body.error_description,
-        "The payload needs types and credentialSubject",
-      );
+      assert.equal(response.body.error_description, "Invalid data received!");
     });
 
     it("should return 400 when proof is missing in request body", async () => {
@@ -321,11 +319,8 @@ describe("POST /credential", () => {
           proof: {},
         });
       assert.equal(response.status, 400);
-      assert.equal(response.body.error, "invalid_or_missing_proof");
-      assert.equal(
-        response.body.error_description,
-        "Missing or malformed proof_type",
-      );
+      assert.equal(response.body.error, "invalid_request");
+      assert.equal(response.body.error_description, "Invalid data received!");
     });
 
     it("should return 400 when JWT could not be decoded", async () => {
@@ -335,14 +330,16 @@ describe("POST /credential", () => {
         .set("Authorization", "BEARER validToken")
         .send({
           format: "jwt_vc_json",
-          types: ["IdentityCredential"],
+          credential_definition: {
+            type: ["IdentityCredential"],
+          },
           proof: { proof_type: "jwt" },
         });
       assert.equal(response.status, 400);
       assert.equal(response.body.error, "invalid_or_missing_proof");
       assert.equal(
         response.body.error_description,
-        "Failed to decode JWT header",
+        "If `proof_type` is `jwt`, the `jwt` property is required.",
       );
 
       response = await request(app.callback())
@@ -350,22 +347,23 @@ describe("POST /credential", () => {
         .set("Authorization", "BEARER validToken")
         .send({
           format: "jwt_vc_json",
-          types: ["IdentityCredential"],
+          credential_definition: {
+            type: ["IdentityCredential"],
+          },
           proof: { proof_type: "jwt", jwt: null },
         });
       assert.equal(response.status, 400);
-      assert.equal(response.body.error, "invalid_or_missing_proof");
-      assert.equal(
-        response.body.error_description,
-        "Failed to decode JWT header",
-      );
+      assert.equal(response.body.error, "invalid_request");
+      assert.equal(response.body.error_description, "Invalid data received!");
 
       response = await request(app.callback())
         .post("/credentials")
         .set("Authorization", "BEARER validToken")
         .send({
           format: "jwt_vc_json",
-          types: ["IdentityCredential"],
+          credential_definition: {
+            type: ["IdentityCredential"],
+          },
           proof: { proof_type: "jwt", jwt: "あ" },
         });
       assert.equal(response.status, 400);
@@ -380,7 +378,9 @@ describe("POST /credential", () => {
         .set("Authorization", "BEARER validToken")
         .send({
           format: "jwt_vc_json",
-          types: ["IdentityCredential"],
+          credential_definition: {
+            type: ["IdentityCredential"],
+          },
           proof: { proof_type: "jwt", jwt: "invalidJWT" },
         });
       assert.equal(response.status, 400);
@@ -411,9 +411,7 @@ describe("POST /credential", () => {
     const getPostPayload = (token: string) => {
       return {
         format: "vc+sd-jwt",
-        credential_definition: {
-          vct: "IdentityCredential",
-        },
+        vct: "IdentityCredential",
         proof: { proof_type: "jwt", jwt: token },
       };
     };
@@ -549,7 +547,9 @@ describe("POST /credential", () => {
         .set("Authorization", "BEARER validToken")
         .send(getPostPayload(token));
       assert.equal(response.status, 200);
-      assert.equal(response.body.format, "vc+sd-jwt");
+      assert.isUndefined(response.body.format);
+      assert.isString(response.body.c_nonce);
+      assert.isNumber(response.body.c_nonce_expires_in);
       assert.isString(response.body.credential);
       const tmp = response.body.credential.split("~");
       const disclosures = decodeDisclosure(tmp.slice(1, tmp.length - 1));

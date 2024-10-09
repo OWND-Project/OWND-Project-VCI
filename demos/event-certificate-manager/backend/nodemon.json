@@ -1,0 +1,6 @@
+{
+  "watch": ["src", "views"],
+  "ext": ".ts,.js, ejs",
+  "ignore": ["node_modules"],
+  "exec": "NODE_ENV=local node --loader ts-node/esm src/index.ts"
+}

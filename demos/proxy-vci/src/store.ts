@@ -2,7 +2,7 @@ import { TokenResponse } from "./auth.js";
 import keyStore from "ownd-vci/dist/store/keyStore.js";
 import authStore, { TBL_NM_AUTH_CODES } from "ownd-vci/dist/store/authStore.js";
 import store from "ownd-vci/dist/store.js";
-import { AccessToken } from "ownd-vci/dist/oid4vci/types.js";
+import { AccessToken } from "ownd-vci/dist/oid4vci/types/types.js";
 
 const TBL_NM_SESSIONS = "sessions";
 const TBL_NM_XID_ACCESS_TOKENS = "xid_access_tokens";

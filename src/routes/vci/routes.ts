@@ -12,11 +12,18 @@ export const setupCommonRoute = (
   tokenConfigGenerator: () => TokenIssuerConfig,
   credentialConfigGenerator: () => CredentialIssuerConfig<StoredAccessToken>,
   dirname: string,
+  availableLocales: string[] = ["en-US", "ja-JP"],
+  defaultLocale: string = "ja-JP",
 ) => {
   router.get(
     "/.well-known/openid-credential-issuer",
     async (ctx: Koa.Context) => {
-      await routesHandler.handleIssueMetadata(ctx, dirname);
+      await routesHandler.handleIssueMetadata(
+        ctx,
+        dirname,
+        availableLocales,
+        defaultLocale,
+      );
     },
   );
   router.get(

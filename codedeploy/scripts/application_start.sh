@@ -3,16 +3,16 @@ source /root/.bashrc
 nvm use 18
 
 if [[ "$DEPLOYMENT_GROUP_NAME" =~ ^identity ]]; then
-cd /srv/proxy-vci/
-pm2 start "yarn start" --name identity-vci
+cd /srv/demos/proxy-vci/ || exit
+pm2 start "yarn start" --name backend
 fi
 
 if [[ "$DEPLOYMENT_GROUP_NAME" =~ ^event ]]; then
-cd /srv/participation-cert-vci/
-pm2 start "yarn start" --name event-vci
+cd /srv/demos/event-certificate-manager/ || exit
+pm2 start "yarn start" --name backend
 fi
 
 if [[ "$DEPLOYMENT_GROUP_NAME" =~ ^employee ]]; then
-cd /srv/employee-vci/
-pm2 start "yarn start" --name employee-vci
+cd /srv/demos/employee-vci/ || exit
+pm2 start "yarn start" --name backend
 fi
