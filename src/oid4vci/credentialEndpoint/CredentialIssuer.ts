@@ -126,6 +126,7 @@ export class CredentialIssuer<T> {
     preAuthorizedCode: string,
     proofOfPossession?: DecodedProofJwt,
   ): Promise<Result<string, ErrorPayloadWithStatusCode>> {
+    console.log(`credential request: ${JSON.stringify(credentialRequest)}`);
     if (!credentialRequest.credential_definition) {
       const error = toError(
         INVALID_REQUEST,
@@ -134,10 +135,11 @@ export class CredentialIssuer<T> {
       return { ok: false, error: { status: 400, payload: error } };
     }
     const { type, credentialSubject } = credentialRequest.credential_definition;
-    if (!credentialSubject) {
+    if (!type) {
+      // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html#appendix-A.1.1.4
       const error = toError(
         INVALID_REQUEST,
-        "The payload needs credentialSubject",
+        "The payload needs `type` in the credential_definition",
       );
       return { ok: false, error: { status: 400, payload: error } };
     }
