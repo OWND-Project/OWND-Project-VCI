@@ -65,13 +65,13 @@ describe("POST /token", () => {
   it("should return 400 when the token has expired", async () => {
     const employee = await store.getEmployeeByNo("1");
     const preAuthorizedCode = generateRandomString();
-    const userPin = generateRandomNumericString();
-    await store.addPreAuthCode(preAuthorizedCode, -1, userPin, employee?.id!);
+    const txCode = generateRandomNumericString();
+    await store.addPreAuthCode(preAuthorizedCode, -1, txCode, employee?.id!);
 
     const response = await request(app.callback()).post("/token").send({
       grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
       "pre-authorized_code": preAuthorizedCode,
-      user_pin: userPin,
+      tx_code: txCode,
     });
 
     assert.equal(response.status, 400);
@@ -85,18 +85,18 @@ describe("POST /token", () => {
   it("should return 200 and access token details when correct pre-authorized_code is provided", async () => {
     const employee = await store.getEmployeeByNo("1");
     const preAuthorizedCode = generateRandomString();
-    const userPin = generateRandomNumericString();
+    const txCode = generateRandomNumericString();
     await store.addPreAuthCode(
       preAuthorizedCode,
       86400,
-      userPin,
+      txCode,
       employee?.id!,
     );
 
     const response = await request(app.callback()).post("/token").send({
       grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
       "pre-authorized_code": preAuthorizedCode,
-      user_pin: userPin,
+      tx_code: txCode,
     });
 
     assert.equal(response.status, 200);
@@ -112,28 +112,28 @@ describe("POST /token", () => {
     );
   });
 
-  it("should return 400 when the same user_pin is provided again", async () => {
+  it("should return 400 when the same tx_code is provided again", async () => {
     const employee = await store.getEmployeeByNo("1");
     const preAuthorizedCode = generateRandomString();
-    const userPin = generateRandomNumericString();
+    const txCode = generateRandomNumericString();
     await store.addPreAuthCode(
       preAuthorizedCode,
       86400,
-      userPin,
+      txCode,
       employee?.id!,
     );
     // 1st time
     let response = await request(app.callback()).post("/token").send({
       grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
       "pre-authorized_code": preAuthorizedCode,
-      user_pin: userPin,
+      tx_code: txCode,
     });
     assert.equal(response.status, 200);
     // 2nd time
     response = await request(app.callback()).post("/token").send({
       grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
       "pre-authorized_code": preAuthorizedCode,
-      user_pin: userPin,
+      tx_code: txCode,
     });
     assert.equal(response.status, 400);
   });

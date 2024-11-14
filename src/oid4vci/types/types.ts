@@ -6,7 +6,7 @@ export interface Identifiable {
 export interface AuthorizedCode extends Identifiable {
   code: string;
   expiresIn: number;
-  userPin?: string;
+  txCode?: string;
   needsProof: boolean;
   preAuthFlow: boolean;
   isUsed: boolean;

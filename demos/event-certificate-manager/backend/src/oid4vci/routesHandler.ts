@@ -27,11 +27,11 @@ export const credentialOfferForParticipation = async (
   const expiresIn = Number(process.env.VCI_PRE_AUTH_CODE_EXPIRES_IN || "86400");
 
   // todo: It would be better to use null instead of an empty string. This can be fixed when complying with ID1.
-  const userPin = ""; //generateRandomNumericString();
+  const txCode = ""; //generateRandomNumericString();
   const participation = await store.addPreAuthCodeAsParticipation(
     code,
     expiresIn,
-    userPin,
+    txCode,
     event.id,
   );
 
@@ -49,7 +49,7 @@ export const credentialOfferForParticipation = async (
   const authorizedCodeRef = {
     id: authorizedCode.id,
     code: authorizedCode.code,
-    userPin: authorizedCode.userPin,
+    txCode: authorizedCode.txCode,
     expiresIn: authorizedCode.expiresIn,
     createdAt: authorizedCode.createdAt,
     needsProof: authorizedCode.needsProof,

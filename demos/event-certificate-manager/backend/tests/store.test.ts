@@ -92,11 +92,11 @@ describe("Store functions test", () => {
     const eventId = await store.registerEvent(event);
     const code = "test-code";
     const expiresIn = 3600;
-    const userPin = "1234";
+    const txCode = "1234";
     const participation = await addPreAuthCodeAsParticipation(
       code,
       expiresIn,
-      userPin,
+      txCode,
       eventId,
     );
 
@@ -104,7 +104,7 @@ describe("Store functions test", () => {
     assert.equal(participation.eventId, eventId);
     assert.equal(participation.authorizedCode.code, code);
     assert.equal(participation.authorizedCode.expiresIn, expiresIn);
-    assert.equal(participation.authorizedCode.userPin, userPin);
+    assert.equal(participation.authorizedCode.txCode, txCode);
   });
 
   it("Get pre-auth code and event", async () => {
@@ -122,8 +122,8 @@ describe("Store functions test", () => {
     const eventId = await store.registerEvent(event);
     const code = "test-code";
     const expiresIn = 3600;
-    const userPin = "1234";
-    await addPreAuthCodeAsParticipation(code, expiresIn, userPin, eventId);
+    const txCode = "1234";
+    await addPreAuthCodeAsParticipation(code, expiresIn, txCode, eventId);
 
     const result = await getPreAuthCodeForParticipationCredentialAndEvent(code);
     assert.isNotNull(result);
@@ -146,11 +146,11 @@ describe("Store functions test", () => {
     const eventId = await store.registerEvent(event);
     const code = "test-code";
     const expiresIn = 3600;
-    const userPin = "1234";
+    const txCode = "1234";
     const participation = await addPreAuthCodeAsParticipation(
       code,
       expiresIn,
-      userPin,
+      txCode,
       eventId,
     );
 
@@ -192,11 +192,11 @@ describe("Store functions test", () => {
     const eventId = await registerEvent(event);
     const code = "test-code";
     const expiresIn = 3600;
-    const userPin = "1234";
+    const txCode = "1234";
     const ticket = await addPreAuthCodeAsTicket(
       code,
       expiresIn,
-      userPin,
+      txCode,
       eventId,
     );
 
