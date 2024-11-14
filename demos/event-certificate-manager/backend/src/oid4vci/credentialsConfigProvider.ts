@@ -1,6 +1,7 @@
 import { StoredAccessToken } from "ownd-vci/dist/store/authStore.js";
 import {
-  CredentialIssuerConfig, DecodedProofJwt,
+  CredentialIssuerConfig,
+  DecodedProofJwt,
   IssueJwtVcJsonCredential,
 } from "ownd-vci/dist/oid4vci/credentialEndpoint/types.js";
 
@@ -9,12 +10,12 @@ import { updateNonce } from "ownd-vci/dist/oid4vci/credentialEndpoint/defaults/n
 import { accessTokenStateProvider } from "ownd-vci/dist/oid4vci/credentialEndpoint/defaults/accessToken.js";
 import { issueTicketCertificate } from "./ticketCertificate.js";
 import { issueParticipationCertificate } from "./participationCertificate.js";
-import {CredentialRequestJwtVcJson} from "ownd-vci/src/oid4vci/types/types";
+import { CredentialRequestJwtVcJson } from "ownd-vci/src/oid4vci/types/types";
 
 const issueJwtJsonVcCredential: IssueJwtVcJsonCredential = async (
   preAuthorizedCode: string,
   payload: CredentialRequestJwtVcJson,
-  proofOfPossession?: DecodedProofJwt
+  proofOfPossession?: DecodedProofJwt,
 ): Promise<Result<string, ErrorPayload>> => {
   console.log(`payload : ${JSON.stringify(payload)}`);
   const type = payload.credential_definition?.type;

@@ -121,8 +121,7 @@ export function getClientMetadata(clientId: string, baseUrl: string) {
     clientId,
     clientName: "ParticipationCertificateIssuer",
     // todo: change this to the actual logo image
-    logoUri:
-      "https://example.com/images/issuer.png",
+    logoUri: "https://example.com/images/issuer.png",
     policyUri: `${baseUrl}/policy`,
     tosUri: `${baseUrl}/tos`,
     vpFormats: {

@@ -96,7 +96,7 @@ export const getTicketCredentialOffer = async (
     process.env.CREDENTIAL_ISSUER || "",
     ["EventTicketCredential"],
     ticket.authorizedCode.code,
-      {},
+    {},
   );
   return { ok: true, payload: { credentialOffer: credentialOfferUrl } };
 };
