@@ -86,12 +86,7 @@ describe("POST /token", () => {
     const employee = await store.getEmployeeByNo("1");
     const preAuthorizedCode = generateRandomString();
     const txCode = generateRandomNumericString();
-    await store.addPreAuthCode(
-      preAuthorizedCode,
-      86400,
-      txCode,
-      employee?.id!,
-    );
+    await store.addPreAuthCode(preAuthorizedCode, 86400, txCode, employee?.id!);
 
     const response = await request(app.callback()).post("/token").send({
       grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
@@ -116,12 +111,7 @@ describe("POST /token", () => {
     const employee = await store.getEmployeeByNo("1");
     const preAuthorizedCode = generateRandomString();
     const txCode = generateRandomNumericString();
-    await store.addPreAuthCode(
-      preAuthorizedCode,
-      86400,
-      txCode,
-      employee?.id!,
-    );
+    await store.addPreAuthCode(preAuthorizedCode, 86400, txCode, employee?.id!);
     // 1st time
     let response = await request(app.callback()).post("/token").send({
       grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
