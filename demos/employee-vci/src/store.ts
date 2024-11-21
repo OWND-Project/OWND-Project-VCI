@@ -137,7 +137,7 @@ export const getEmployeeByNo = async (employeeNo: string) => {
 export const addPreAuthCode = async (
   code: string,
   expiresIn: number,
-  userPin: string,
+  txCode: string,
   employeeId: number,
 ) => {
   try {
@@ -146,7 +146,7 @@ export const addPreAuthCode = async (
       code,
       expiresIn,
       true,
-      userPin,
+      txCode,
       true,
     );
     await db.run(

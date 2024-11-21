@@ -197,11 +197,11 @@ export const credentialOfferForEventTicket = async (
   // generate pre-auth code
   const code = generateRandomString();
   const expiresIn = Number(process.env.VCI_PRE_AUTH_CODE_EXPIRES_IN || "86400");
-  const userPin = generateRandomNumericString();
+  const txCode = generateRandomNumericString();
   const ticket = await store.addPreAuthCodeAsTicket(
     code,
     expiresIn,
-    userPin,
+    txCode,
     event.id,
   );
 
@@ -218,7 +218,7 @@ export const credentialOfferForEventTicket = async (
   const authorizedCodeRef = {
     id: authorizedCode.id,
     code: authorizedCode.code,
-    userPin: authorizedCode.userPin,
+    txCode: authorizedCode.txCode,
     expiresIn: authorizedCode.expiresIn,
     createdAt: authorizedCode.createdAt,
     needsProof: authorizedCode.needsProof,

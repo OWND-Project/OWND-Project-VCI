@@ -92,7 +92,7 @@ const registerEmployee = async (
 export type GenerateCredentialOfferResult = {
   subject: any;
   credentialOffer: string;
-  userPin: string;
+  txCode: string;
 };
 
 const credentialOfferForEmployee = async (
@@ -107,8 +107,8 @@ const credentialOfferForEmployee = async (
   // generate pre-auth code
   const code = generateRandomString();
   const expiresIn = Number(process.env.VCI_PRE_AUTH_CODE_EXPIRES_IN || "86400");
-  const userPin = generateRandomNumericString();
-  await store.addPreAuthCode(code, expiresIn, userPin, employee.id);
+  const txCode = generateRandomNumericString();
+  await store.addPreAuthCode(code, expiresIn, txCode, employee.id);
 
   const credentialOfferUrl = generatePreAuthCredentialOffer(
     process.env.CREDENTIAL_ISSUER || "",
@@ -120,7 +120,7 @@ const credentialOfferForEmployee = async (
   const payload = {
     subject: { employeeNo },
     credentialOffer: credentialOfferUrl,
-    userPin,
+    txCode: txCode,
   };
   return { ok: true, payload };
 };

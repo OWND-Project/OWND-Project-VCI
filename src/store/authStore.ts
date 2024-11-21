@@ -63,7 +63,7 @@ const DDL_AUTH_CODES = `
     code VARCHAR(32),
     expiresIn INTEGER,
     preAuthFlow BOOLEAN,
-    userPin VARCHAR(8),
+    txCode VARCHAR(8),
     needsProof BOOLEAN,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     usedAt DATETIME DEFAULT NULL
@@ -104,7 +104,7 @@ export const destroyDb = async () => {
 interface JoinedAuthCode {
   authorized_code_id: number;
   code: string;
-  userPin: string;
+  txCode: string;
   needsProof: boolean;
   preAuthFlow: boolean;
   codeExpiresIn: number;
@@ -115,17 +115,17 @@ export const addAuthCode = async (
   code: string,
   expiresIn: number,
   preAuthFlow: boolean,
-  userPin: string,
+  txCode: string,
   needsProof: boolean,
 ) => {
   try {
     const db = await store.openDb();
     const result = await db.run(
-      `INSERT INTO ${TBL_NM_AUTH_CODES} (code, expiresIn, preAuthFlow, userPin, needsProof) VALUES (?, ?, ?, ?, ?)`,
+      `INSERT INTO ${TBL_NM_AUTH_CODES} (code, expiresIn, preAuthFlow, txCode, needsProof) VALUES (?, ?, ?, ?, ?)`,
       code,
       expiresIn,
       preAuthFlow,
-      userPin,
+      txCode,
       needsProof,
     );
     return result.lastID!;
@@ -138,7 +138,7 @@ export const getAuthCode = async (code: string) => {
   try {
     const db = await store.openDb();
     const result = await db.get<AuthorizedCode>(
-      `SELECT id, code, expiresIn, preAuthFlow, userPin, needsProof, createdAt, usedAt FROM ${TBL_NM_AUTH_CODES} WHERE code = ?`,
+      `SELECT id, code, expiresIn, preAuthFlow, txCode, needsProof, createdAt, usedAt FROM ${TBL_NM_AUTH_CODES} WHERE code = ?`,
       code,
     );
     if (result) {
@@ -212,7 +212,7 @@ export const getAccessToken = async (
         p.code, 
         p.expiresIn AS codeExpiresIn, 
         p.createdAt AS codeCreatedAt,
-        p.userPin,
+        p.txCode,
         p.needsProof,
         p.preAuthFlow,
         c.nonce as cNonce, 
@@ -237,7 +237,7 @@ export const getAccessToken = async (
           id: row.authorized_code_id,
           code: row.code,
           expiresIn: row.codeExpiresIn,
-          userPin: row.userPin,
+          txCode: row.txCode,
           needsProof: row.needsProof,
           preAuthFlow: row.preAuthFlow,
           isUsed: row.usedAt !== null,
