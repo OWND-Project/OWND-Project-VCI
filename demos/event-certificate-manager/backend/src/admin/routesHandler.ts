@@ -208,7 +208,8 @@ export const credentialOfferForEventTicket = async (
   const credentialOfferUrl = generatePreAuthCredentialOffer(
     process.env.CREDENTIAL_ISSUER || "",
     ["EventTicketCredential"],
-    code, {},
+    code,
+    {},
   );
 
   // todo usedAtがそのまま返されるのでIFと一致しないバグの扱いを考える(IFを変えるか実装を変えるか)
@@ -243,7 +244,7 @@ export const allTickets = async (): Promise<
         process.env.CREDENTIAL_ISSUER || "",
         ["EventTicketCredential"],
         ticket.authorizedCode.code,
-          {},
+        {},
       );
       return { ...ticket, credentialOffer: credentialOfferUrl };
     });
@@ -273,7 +274,7 @@ export const getTicketById = async (
       process.env.CREDENTIAL_ISSUER || "",
       ["EventTicketCredential"],
       ticket.authorizedCode.code,
-        {},
+      {},
     );
     const payload = { ...ticket, credentialOffer: credentialOfferUrl };
     return { ok: true, payload };
@@ -318,7 +319,7 @@ export const updateTicketById = async (
       process.env.CREDENTIAL_ISSUER || "",
       ["EventTicketCredential"],
       updated!.authorizedCode.code,
-        {},
+      {},
     );
     const result = { ...updated!, credentialOffer: credentialOfferUrl };
     return { ok: true, payload: result };
