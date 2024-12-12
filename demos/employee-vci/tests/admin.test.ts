@@ -97,7 +97,7 @@ describe("/admin/employees/employNo/credential-offer endpoint test", () => {
 
     const payload = response.body as GenerateCredentialOfferResult;
     assert.isObject(payload, "Payload should be an object");
-    const { credentialOffer: credentialOfferUrl, userPin } = payload;
+    const { credentialOffer: credentialOfferUrl, txCode } = payload;
     const credentialOffer = url2CredentialOffer(credentialOfferUrl);
     assert.equal(
       credentialOffer.credential_issuer,
@@ -119,7 +119,7 @@ describe("/admin/employees/employNo/credential-offer endpoint test", () => {
       assert.isObject(preAuthGrant.tx_code);
     }
 
-    assert.equal(8, userPin.length);
-    assert.match(userPin, /^[0-9]+$/);
+    assert.equal(8, txCode.length);
+    assert.match(txCode, /^[0-9]+$/);
   });
 });

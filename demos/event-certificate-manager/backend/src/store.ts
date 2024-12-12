@@ -3,7 +3,10 @@ import { v4 as uuidv4 } from "uuid";
 import store, { handleError } from "ownd-vci/dist/store.js";
 import keyStore from "ownd-vci/dist/store/keyStore.js";
 import authStore, { TBL_NM_AUTH_CODES } from "ownd-vci/dist/store/authStore.js";
-import { AuthorizedCode, Identifiable } from "ownd-vci/dist/oid4vci/types/types.js";
+import {
+  AuthorizedCode,
+  Identifiable,
+} from "ownd-vci/dist/oid4vci/types/types.js";
 
 /*
 @startuml
@@ -260,7 +263,7 @@ export const updateEvent = async (
 export const addPreAuthCodeAsTicket = async (
   code: string,
   expiresIn: number,
-  userPin: string,
+  txCode: string,
   eventId: number,
 ): Promise<Ticket> => {
   try {
@@ -269,7 +272,7 @@ export const addPreAuthCodeAsTicket = async (
       code,
       expiresIn,
       true,
-      userPin,
+      txCode,
       false,
     );
     const ticketNo = uuidv4();
@@ -306,7 +309,7 @@ export const getTickets = async (): Promise<Ticket[]> => {
         ac.id authorizedCodeId,
         ac.code,
         ac.expiresIn,
-        ac.userPin,
+        ac.txCode,
         ac.needsProof,
         ac.preAuthFlow,
         ac.createdAt,
@@ -325,7 +328,7 @@ export const getTickets = async (): Promise<Ticket[]> => {
         code: row.code,
         createdAt: row.createdAt,
         expiresIn: row.expiresIn,
-        userPin: row.userPin,
+        txCode: row.txCode,
         needsProof: row.needsProof,
         preAuthFlow: row.preAuthFlow,
         usedAt: row.usedAt,
@@ -358,7 +361,7 @@ export const getTicketById = async (
         ac.id authorizedCodeId,
         ac.code,
         ac.expiresIn,
-        ac.userPin,
+        ac.txCode,
         ac.needsProof,
         ac.preAuthFlow,
         ac.createdAt,
@@ -380,7 +383,7 @@ export const getTicketById = async (
         code: row.code,
         createdAt: row.createdAt,
         expiresIn: row.expiresIn,
-        userPin: row.userPin,
+        txCode: row.txCode,
         needsProof: row.needsProof,
         preAuthFlow: row.preAuthFlow,
         usedAt: row.usedAt,
@@ -432,7 +435,7 @@ export const getTicketByTicketNo = async (
         ac.id authorizedCodeId,
         ac.code,
         ac.expiresIn,
-        ac.userPin,
+        ac.txCode,
         ac.needsProof,
         ac.preAuthFlow,
         ac.createdAt,
@@ -454,7 +457,7 @@ export const getTicketByTicketNo = async (
         code: row.code,
         createdAt: row.createdAt,
         expiresIn: row.expiresIn,
-        userPin: row.userPin,
+        txCode: row.txCode,
         needsProof: row.needsProof,
         preAuthFlow: row.preAuthFlow,
         usedAt: row.usedAt,
@@ -571,7 +574,7 @@ export const getAllParticipation = async (): Promise<Participation[]> => {
         ac.id authorizedCodeId,
         ac.code,
         ac.expiresIn,
-        ac.userPin,
+        ac.txCode,
         ac.needsProof,
         ac.preAuthFlow,
         ac.createdAt,
@@ -590,7 +593,7 @@ export const getAllParticipation = async (): Promise<Participation[]> => {
         code: row.code,
         createdAt: row.createdAt,
         expiresIn: row.expiresIn,
-        userPin: row.userPin,
+        txCode: row.txCode,
         needsProof: row.needsProof,
         preAuthFlow: row.preAuthFlow,
         usedAt: row.usedAt,
@@ -620,7 +623,7 @@ export const getParticipationById = async (
         ac.id authorizedCodeId,
         ac.code,
         ac.expiresIn,
-        ac.userPin,
+        ac.txCode,
         ac.needsProof,
         ac.preAuthFlow,
         ac.createdAt,
@@ -642,7 +645,7 @@ export const getParticipationById = async (
         code: row.code,
         createdAt: row.createdAt,
         expiresIn: row.expiresIn,
-        userPin: row.userPin,
+        txCode: row.txCode,
         needsProof: row.needsProof,
         preAuthFlow: row.preAuthFlow,
         usedAt: row.usedAt,
@@ -664,7 +667,7 @@ export const getParticipationById = async (
 export const addPreAuthCodeAsParticipation = async (
   code: string,
   expiresIn: number,
-  userPin: string,
+  txCode: string,
   eventId: number,
 ): Promise<Participation> => {
   try {
@@ -673,7 +676,7 @@ export const addPreAuthCodeAsParticipation = async (
       code,
       expiresIn,
       true,
-      userPin,
+      txCode,
       false,
     );
     let result = await db.run(

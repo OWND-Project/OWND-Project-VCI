@@ -107,19 +107,19 @@ const validate = async (
     return { ok: false, error };
   }
 
-  if (authorizedCode.userPin) {
-    const userPin = body["user_pin"];
+  if (authorizedCode.txCode) {
+    const txCode = body["tx_code"];
 
-    if (!userPin) {
+    if (!txCode) {
       const error = {
         error: "invalid_request",
         error_description: "the Authorization Server expects a PIN",
       };
       return { ok: false, error };
-    } else if (userPin !== authorizedCode.userPin) {
+    } else if (txCode !== authorizedCode.txCode) {
       const error = {
         error: "invalid_grant",
-        error_description: "Invalid user_pin",
+        error_description: "Invalid tx_code",
       };
       return { ok: false, error };
     }
@@ -131,8 +131,8 @@ const validate = async (
       return { ok: false, error };
     }
   } else {
-    const userPin = body["user_pin"];
-    if (userPin) {
+    const txCode = body["tx_code"];
+    if (txCode) {
       const error = {
         error: "invalid_request",
         error_description: "the Authorization Server does not expect a PIN",

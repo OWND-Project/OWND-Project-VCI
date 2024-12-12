@@ -165,7 +165,7 @@ export const getPreAuthCodeAndConference = async (code: string) => {
 export const addPreAuthCode = async (
   code: string,
   expiresIn: number,
-  userPin: string,
+  txCode: string,
   conferenceId: number,
 ) => {
   try {
@@ -174,7 +174,7 @@ export const addPreAuthCode = async (
       code,
       expiresIn,
       true,
-      userPin,
+      txCode,
       false,
     );
     await db.run(

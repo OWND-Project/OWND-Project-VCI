@@ -47,7 +47,7 @@ interface Ticket {
     id: number;
     code: string;
     expiresIn: number;
-    userPin: string;
+    txCode: string;
     usedAt: string;
   };
 }
@@ -59,7 +59,7 @@ const exporter = (tickets: Ticket[]) => {
       id,
       eventId,
       ticketNo,
-      userPin: authorizedCode.userPin,
+      txCode: authorizedCode.txCode,
       link,
       expiresIn: authorizedCode.expiresIn,
       usedAt: authorizedCode.usedAt,
@@ -87,7 +87,7 @@ export const TicketList = () => {
           <TextField source="ticketNo" label="ticket no" />
           <TextField source="authorizedCode.code" label="auth code" />
           <TextField source="authorizedCode.expiresIn" label="expiresIn" />
-          <TextField source="authorizedCode.userPin" label="userPin" />
+          <TextField source="authorizedCode.txCode" label="txCode" />
           <DateField source="authorizedCode.createdAt" label="createdAt" />
           <DateField source="updatedAt" label="updatedAt" />
           <DateField source="authorizedCode.usedAt" label="auth code usedAt" />
@@ -106,7 +106,7 @@ export const TicketShow = () => (
       <TextField source="ticketNo" label="ticket no" />
       <TextField source="authorizedCode.code" label="auth code" />
       <TextField source="authorizedCode.expiresIn" label="expiresIn" />
-      <TextField source="authorizedCode.userPin" label="userPin" />
+      <TextField source="authorizedCode.txCode" label="txCode" />
       <DateField
         source="authorizedCode.createdAt"
         label="createdAt"

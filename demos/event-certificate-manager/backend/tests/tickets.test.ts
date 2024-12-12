@@ -35,7 +35,7 @@ export const defaultFixtureTicket: FixtureTicket = {
   ticketNo: uuidv4(),
   code: "test code",
   expiresIn: 86400,
-  userPin: "test pin",
+  txCode: "test pin",
   updatedAt: new Date().toISOString(),
 };
 
@@ -52,17 +52,17 @@ export const fixtureTicket = async (
   eventId: number,
   payload: FixtureTicket,
 ) => {
-  const { code, expiresIn, userPin } = payload;
+  const { code, expiresIn, txCode } = payload;
   return await store.addPreAuthCodeAsTicket(
     code,
     expiresIn,
-    userPin || "",
+    txCode || "",
     eventId,
   );
 };
 
 const assertTicket = (actual: Ticket, expected: FixtureTicket) => {
-  const { eventId, code, expiresIn, userPin } = expected;
+  const { eventId, code, expiresIn, txCode } = expected;
   assert.isObject(actual, "Payload should be an object");
   assert.isNumber(actual.id);
   assert.equal(actual.eventId, eventId);
@@ -70,7 +70,7 @@ const assertTicket = (actual: Ticket, expected: FixtureTicket) => {
   assert.isObject(authorizedCode, "AuthorizedCode should be an object");
   assert.equal(authorizedCode.code, code);
   assert.equal(authorizedCode.expiresIn, expiresIn);
-  assert.equal(authorizedCode.userPin, userPin);
+  assert.equal(authorizedCode.txCode, txCode);
 };
 
 describe("/admin/tickets/new endpoint test", () => {
@@ -111,13 +111,13 @@ describe("/admin/tickets/new endpoint test", () => {
     const payload = response.body as Ticket;
     assert.isObject(payload, "Payload should be an object");
 
-    const { code, userPin, expiresIn, createdAt, needsProof } =
+    const { code, txCode, expiresIn, createdAt, needsProof } =
       payload.authorizedCode;
     const authCode = await authStore.getAuthCode(code);
     assert.isObject(authCode, "AuthCode should be an object");
 
     assert.isNumber(payload.id);
-    assert.equal(userPin, authCode!.userPin);
+    assert.equal(txCode, authCode!.txCode);
     assert.equal(expiresIn, authCode!.expiresIn);
     assert.equal(createdAt, authCode!.createdAt);
     assert.equal(needsProof, authCode!.needsProof);
@@ -168,7 +168,7 @@ describe("/admin/tickets get endpoint test", () => {
     const record2Input = {
       ...defaultFixtureTicket,
       code: "test code 2",
-      userPin: "test pint 2",
+      txCode: "test pint 2",
       email: "test@test.com2",
       name: "test name 2",
     };
@@ -238,7 +238,7 @@ describe("/admin/tickets get detail endpoint test", () => {
     const record2Input = {
       ...defaultFixtureTicket,
       code: "test code 2",
-      userPin: "test pint 2",
+      txCode: "test pint 2",
     };
     await fixtureTicket(eventId, record2Input);
 
