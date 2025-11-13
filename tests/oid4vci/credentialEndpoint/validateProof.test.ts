@@ -10,24 +10,37 @@ const privateKey = await jose.importJWK(privateJwk, "ES256");
 const jwk = publicJwkFromPrivate(privateJwk);
 
 describe("validateProof function with P-256", () => {
-  const INVALID_OR_MISSING_PROOF = "invalid_or_missing_proof"; // この値は実際の値に置き換えてください。
+  const INVALID_PROOF = "invalid_proof";
+  const INVALID_NONCE = "invalid_nonce";
   const credentialIssuer = "https://example.com"; // 適切なCredential Issuer URLに置き換えてください。
   const cNonce = "test-cnonce"; // テスト用のcNonceを設定してください。
   const createdAt = new Date().toISOString();
   const expiresIn = 3600; // 1時間の有効期限
-  const proofElements = {
-    cNonce,
-    createdAt,
-    expiresIn,
+
+  // Mock getCNonce function
+  const getCNonceMock = async (nonce: string) => {
+    if (nonce === cNonce) {
+      return {
+        nonce: cNonce,
+        expired_in: expiresIn,
+        createdAt,
+      };
+    }
+    return undefined;
   };
 
   // JWTのデコードに失敗した場合のテスト
   it("should return an error if JWT header decoding fails", async () => {
     const proof = { proof_type: "jwt", jwt: "invalid-jwt" };
-    const result = await validateProof(proof, credentialIssuer, proofElements);
+    const result = await validateProof(
+      proof,
+      credentialIssuer,
+      { preAuthorizedFlow: false, supportAnonymousAccess: false },
+      getCNonceMock,
+    );
     if (!result.ok) {
       const { error, error_description } = result.error;
-      assert.equal(error, INVALID_OR_MISSING_PROOF);
+      assert.equal(error, INVALID_PROOF);
       assert.equal(error_description, "Failed to decode JWT header");
     } else {
       assert.fail("result.ok is true when it should be false");
@@ -43,11 +56,43 @@ describe("validateProof function with P-256", () => {
       .setExpirationTime("2h")
       .sign(privateKey);
     const proof = { proof_type: "jwt", jwt: token };
-    const result = await validateProof(proof, credentialIssuer, proofElements);
+    const result = await validateProof(
+      proof,
+      credentialIssuer,
+      { preAuthorizedFlow: false, supportAnonymousAccess: false },
+      getCNonceMock,
+    );
     if (!result.ok) {
       const { error, error_description } = result.error;
-      assert.equal(error, INVALID_OR_MISSING_PROOF);
+      assert.equal(error, INVALID_PROOF);
       assert.equal(error_description, "Missing JWK in JWT header");
+    } else {
+      assert.fail("result.ok is true when it should be false");
+    }
+  });
+
+  it("should return an error if typ is missing or invalid in JWT header", async () => {
+    const token = await new jose.SignJWT({})
+      .setProtectedHeader({ alg: "ES256", jwk })
+      .setIssuedAt()
+      .setIssuer("urn:example:issuer")
+      .setAudience(credentialIssuer)
+      .setExpirationTime("2h")
+      .sign(privateKey);
+    const proof = { proof_type: "jwt", jwt: token };
+    const result = await validateProof(
+      proof,
+      credentialIssuer,
+      { preAuthorizedFlow: false, supportAnonymousAccess: false },
+      getCNonceMock,
+    );
+    if (!result.ok) {
+      const { error, error_description } = result.error;
+      assert.equal(error, INVALID_PROOF);
+      assert.equal(
+        error_description,
+        "Invalid typ in JWT header, must be openid4vci-proof+jwt",
+      );
     } else {
       assert.fail("result.ok is true when it should be false");
     }
@@ -58,6 +103,7 @@ describe("validateProof function with P-256", () => {
     const token = await new jose.SignJWT({})
       .setProtectedHeader({
         alg: "ES256",
+        typ: "openid4vci-proof+jwt",
         jwk: publicJwkFromPrivate(anotherPrivateJwk),
       })
       .setIssuedAt()
@@ -66,10 +112,15 @@ describe("validateProof function with P-256", () => {
       .setExpirationTime("2h")
       .sign(privateKey);
     const proof = { proof_type: "jwt", jwt: token };
-    const result = await validateProof(proof, credentialIssuer, proofElements);
+    const result = await validateProof(
+      proof,
+      credentialIssuer,
+      { preAuthorizedFlow: false, supportAnonymousAccess: false },
+      getCNonceMock,
+    );
     if (!result.ok) {
       const { error, error_description } = result.error;
-      assert.equal(error, INVALID_OR_MISSING_PROOF);
+      assert.equal(error, INVALID_PROOF);
       assert.equal(error_description, "Failed to verify JWT");
     } else {
       assert.fail("result.ok is true when it should be false");
@@ -78,16 +129,21 @@ describe("validateProof function with P-256", () => {
 
   it("should return an error if iss verification fails 1", async () => {
     const token = await new jose.SignJWT({})
-      .setProtectedHeader({ alg: "ES256", jwk })
+      .setProtectedHeader({ alg: "ES256", typ: "openid4vci-proof+jwt", jwk })
       .setIssuedAt()
       .setAudience(credentialIssuer)
       .setExpirationTime("2h")
       .sign(privateKey);
     const proof = { proof_type: "jwt", jwt: token };
-    const result = await validateProof(proof, credentialIssuer, proofElements);
+    const result = await validateProof(
+      proof,
+      credentialIssuer,
+      { preAuthorizedFlow: false, supportAnonymousAccess: false },
+      getCNonceMock,
+    );
     if (!result.ok) {
       const { error, error_description } = result.error;
-      assert.equal(error, INVALID_OR_MISSING_PROOF);
+      assert.equal(error, INVALID_PROOF);
       assert.equal(error_description, "Failed to verify iss");
     } else {
       assert.fail("result.ok is true when it should be false");
@@ -95,19 +151,24 @@ describe("validateProof function with P-256", () => {
   });
   it("should return an error if iss verification fails 2", async () => {
     const token = await new jose.SignJWT({})
-      .setProtectedHeader({ alg: "ES256", jwk })
+      .setProtectedHeader({ alg: "ES256", typ: "openid4vci-proof+jwt", jwk })
       .setIssuedAt()
       .setAudience(credentialIssuer)
       .setExpirationTime("2h")
       .sign(privateKey);
     const proof = { proof_type: "jwt", jwt: token };
-    const result = await validateProof(proof, credentialIssuer, proofElements, {
-      preAuthorizedFlow: true,
-      supportAnonymousAccess: false,
-    });
+    const result = await validateProof(
+      proof,
+      credentialIssuer,
+      {
+        preAuthorizedFlow: true,
+        supportAnonymousAccess: false,
+      },
+      getCNonceMock,
+    );
     if (!result.ok) {
       const { error, error_description } = result.error;
-      assert.equal(error, INVALID_OR_MISSING_PROOF);
+      assert.equal(error, INVALID_PROOF);
       assert.equal(error_description, "Failed to verify iss");
     } else {
       assert.fail("result.ok is true when it should be false");
@@ -117,6 +178,7 @@ describe("validateProof function with P-256", () => {
     const token = await new jose.SignJWT({ nonce: cNonce })
       .setProtectedHeader({
         alg: "ES256",
+        typ: "openid4vci-proof+jwt",
         jwk: publicJwkFromPrivate(privateJwk),
       })
       .setIssuer("urn:example:issuer")
@@ -125,10 +187,15 @@ describe("validateProof function with P-256", () => {
       // iatを意図的に設定しない
       .sign(privateKey);
     const proof = { proof_type: "jwt", jwt: token };
-    const result = await validateProof(proof, credentialIssuer, proofElements);
+    const result = await validateProof(
+      proof,
+      credentialIssuer,
+      { preAuthorizedFlow: false, supportAnonymousAccess: false },
+      getCNonceMock,
+    );
     if (!result.ok) {
       const { error, error_description } = result.error;
-      assert.equal(error, INVALID_OR_MISSING_PROOF);
+      assert.equal(error, INVALID_PROOF);
       assert.equal(error_description, "Failed to verify iat");
     } else {
       assert.fail("result.ok is true when it should be false");
@@ -138,6 +205,7 @@ describe("validateProof function with P-256", () => {
     const token = await new jose.SignJWT({ nonce: cNonce })
       .setProtectedHeader({
         alg: "ES256",
+        typ: "openid4vci-proof+jwt",
         jwk: publicJwkFromPrivate(privateJwk),
       })
       .setIssuedAt()
@@ -150,14 +218,26 @@ describe("validateProof function with P-256", () => {
     const pastDate = new Date(
       Date.now() - (expiresIn * 1000 + 1000),
     ).toISOString();
-    const result = await validateProof(proof, credentialIssuer, {
-      cNonce,
-      expiresIn,
-      createdAt: pastDate,
-    });
+    // Mock that returns expired nonce
+    const getCNonceExpiredMock = async (nonce: string) => {
+      if (nonce === cNonce) {
+        return {
+          nonce: cNonce,
+          expired_in: expiresIn,
+          createdAt: pastDate,
+        };
+      }
+      return undefined;
+    };
+    const result = await validateProof(
+      proof,
+      credentialIssuer,
+      { preAuthorizedFlow: false, supportAnonymousAccess: false },
+      getCNonceExpiredMock,
+    );
     if (!result.ok) {
       const { error, error_description } = result.error;
-      assert.equal(error, INVALID_OR_MISSING_PROOF);
+      assert.equal(error, INVALID_NONCE);
       assert.equal(error_description, "The c_nonce expired");
     } else {
       assert.fail("result.ok is true when it should be false");
@@ -165,14 +245,19 @@ describe("validateProof function with P-256", () => {
   });
   it("should return a valid payload if all verifications pass", async () => {
     const token = await new jose.SignJWT({ nonce: cNonce })
-      .setProtectedHeader({ alg: "ES256", jwk })
+      .setProtectedHeader({ alg: "ES256", typ: "openid4vci-proof+jwt", jwk })
       .setIssuedAt()
       .setIssuer("urn:example:issuer")
       .setAudience(credentialIssuer)
       .setExpirationTime("2h")
       .sign(privateKey);
     const proof = { proof_type: "jwt", jwt: token };
-    const result = await validateProof(proof, credentialIssuer, proofElements);
+    const result = await validateProof(
+      proof,
+      credentialIssuer,
+      { preAuthorizedFlow: false, supportAnonymousAccess: false },
+      getCNonceMock,
+    );
     if (result.ok) {
       const { jwt } = result.payload;
       assert.deepEqual(jwt.header.jwk, publicJwkFromPrivate(privateJwk));
@@ -199,10 +284,17 @@ describe("validateProof function with other algorithms", () => {
   const cNonce = "test-cnonce"; // テスト用のcNonceを設定してください。
   const createdAt = new Date().toISOString();
   const expiresIn = 3600; // 1時間の有効期限
-  const proofElements = {
-    cNonce,
-    createdAt,
-    expiresIn,
+
+  // Mock getCNonce function
+  const getCNonceMock = async (nonce: string) => {
+    if (nonce === cNonce) {
+      return {
+        nonce: cNonce,
+        expired_in: expiresIn,
+        createdAt,
+      };
+    }
+    return undefined;
   };
 
   // Currently, unable to test with key pair for P-384
@@ -230,7 +322,11 @@ describe("validateProof function with other algorithms", () => {
   describe("secp256k1", () => {
     it("should return a valid payload if all verifications pass", async () => {
       const token = await new jose.SignJWT({ nonce: cNonce })
-        .setProtectedHeader({ alg: "ES256K", jwk: jwkK1 })
+        .setProtectedHeader({
+          alg: "ES256K",
+          typ: "openid4vci-proof+jwt",
+          jwk: jwkK1,
+        })
         .setIssuedAt()
         .setIssuer("urn:example:issuer")
         .setAudience(credentialIssuer)
@@ -240,7 +336,8 @@ describe("validateProof function with other algorithms", () => {
       const result = await validateProof(
         proof,
         credentialIssuer,
-        proofElements,
+        { preAuthorizedFlow: false, supportAnonymousAccess: false },
+        getCNonceMock,
       );
       if (result.ok) {
         const { jwt } = result.payload;

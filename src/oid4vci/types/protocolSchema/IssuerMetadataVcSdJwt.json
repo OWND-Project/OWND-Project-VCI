@@ -119,6 +119,9 @@
         "IssuerDisplay": {
             "additionalProperties": true,
             "properties": {
+                "background_color": {
+                    "type": "string"
+                },
                 "locale": {
                     "type": "string"
                 },
@@ -127,6 +130,9 @@
                     "additionalProperties": true
                 },
                 "name": {
+                    "type": "string"
+                },
+                "text_color": {
                     "type": "string"
                 }
             },
@@ -147,7 +153,7 @@
             "additionalProperties": {
                 "additionalProperties": false,
                 "properties": {
-                    "claims": {
+                    "credential_metadata": {
                         "$ref": "#/definitions/Claims"
                     },
                     "credential_signing_alg_values_supported": {
@@ -203,7 +209,9 @@
                     }
                 },
                 "required": [
-                    "claims",
+                    "credential_metadata",
+                    "credential_signing_alg_values_supported",
+                    "cryptographic_binding_methods_supported",
                     "format",
                     "vct"
                 ],
@@ -231,6 +239,9 @@
                 "$ref": "#/definitions/IssuerDisplay"
             },
             "type": "array"
+        },
+        "nonce_endpoint": {
+            "type": "string"
         },
         "notification_endpoint": {
             "type": "string"

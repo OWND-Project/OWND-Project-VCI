@@ -1,10 +1,10 @@
 import Koa from "koa";
 
-import { Result } from "ownd-vci/dist/types";
+import { Result } from "ownd-vci/dist/types.js";
 import {
   handleNotSuccessResult,
   NotSuccessResult,
-} from "ownd-vci/dist/routes/common.js";
+} from "ownd-vci-common/dist/routes/common.js";
 import {
   generateRandomNumericString,
   generateRandomString,
@@ -23,8 +23,14 @@ export async function handleNewEmployee(ctx: Koa.Context) {
 
   const result = await registerEmployee(employee);
   if (result.ok) {
-    ctx.body = result.payload;
-    ctx.status = 201;
+    // Check if request is from HTML form (has Accept header for html)
+    const acceptsHtml = ctx.request.headers.accept?.includes("text/html");
+    if (acceptsHtml) {
+      ctx.redirect("/admin/employees");
+    } else {
+      ctx.body = result.payload;
+      ctx.status = 201;
+    }
   } else {
     handleNotSuccessResult(result.error, ctx);
   }
@@ -108,7 +114,7 @@ const credentialOfferForEmployee = async (
   const code = generateRandomString();
   const expiresIn = Number(process.env.VCI_PRE_AUTH_CODE_EXPIRES_IN || "86400");
   const txCode = generateRandomNumericString();
-  await store.addPreAuthCode(code, expiresIn, txCode, employee.id);
+  await store.addPreAuthCode(code, expiresIn, txCode, String(employee.id));
 
   const credentialOfferUrl = generatePreAuthCredentialOffer(
     process.env.CREDENTIAL_ISSUER || "",
@@ -125,7 +131,85 @@ const credentialOfferForEmployee = async (
   return { ok: true, payload };
 };
 
+// Employee Management UI Handlers
+export async function handleEmployeesList(ctx: Koa.Context) {
+  try {
+    const employees = await store.getAllEmployees();
+    await ctx.render("admin/employees", {
+      title: "社員一覧",
+      employees,
+    });
+  } catch (err) {
+    console.error(err);
+    ctx.status = 500;
+    ctx.body = { error: "Failed to load employees" };
+  }
+}
+
+export async function handleEmployeeNewForm(ctx: Koa.Context) {
+  await ctx.render("admin/employee-new", {
+    title: "社員登録",
+  });
+}
+
+export async function handleEmployeeEditForm(ctx: Koa.Context) {
+  try {
+    const { id } = ctx.params;
+    const employee = await store.getEmployeeById(Number(id));
+    if (!employee) {
+      ctx.status = 404;
+      ctx.body = { error: "Employee not found" };
+      return;
+    }
+    await ctx.render("admin/employee-edit", {
+      title: "社員編集",
+      employee,
+    });
+  } catch (err) {
+    console.error(err);
+    ctx.status = 500;
+    ctx.body = { error: "Failed to load employee" };
+  }
+}
+
+export async function handleEmployeeUpdate(ctx: Koa.Context) {
+  try {
+    const { id } = ctx.params;
+    const employee = ctx.request.body.employee;
+
+    if (!employee) {
+      ctx.status = 400;
+      ctx.body = { error: "Invalid data received" };
+      return;
+    }
+
+    await store.updateEmployee(Number(id), employee);
+    ctx.redirect("/admin/employees");
+  } catch (err) {
+    console.error(err);
+    ctx.status = 500;
+    ctx.body = { error: "Failed to update employee" };
+  }
+}
+
+export async function handleEmployeeDelete(ctx: Koa.Context) {
+  try {
+    const { id } = ctx.params;
+    await store.deleteEmployee(Number(id));
+    ctx.status = 204;
+  } catch (err) {
+    console.error(err);
+    ctx.status = 500;
+    ctx.body = { error: "Failed to delete employee" };
+  }
+}
+
 export default {
   handleNewEmployee,
   handleEmployeeCredentialOffer,
+  handleEmployeesList,
+  handleEmployeeNewForm,
+  handleEmployeeEditForm,
+  handleEmployeeUpdate,
+  handleEmployeeDelete,
 };

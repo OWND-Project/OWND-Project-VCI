@@ -11,6 +11,7 @@ export interface AuthorizedCode extends Identifiable {
   preAuthFlow: boolean;
   isUsed: boolean;
   createdAt: string;
+  sub: string;
 }
 
 export interface AccessToken {

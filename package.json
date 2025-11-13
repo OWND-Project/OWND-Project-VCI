@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./dist/*": "./dist/*"
+  },
   "files": [
     "./dist/index.js"
   ],
@@ -11,6 +18,7 @@
   "dependencies": {
     "@ladjs/koa-views": "^9.0.0",
     "@meeco/sd-jwt": "^0.0.2",
+    "@ownd-project/ts-toolbox": "^1.0.0",
     "ajv": "^8.16.0",
     "axios": "^1.5.1",
     "dotenv": "^16.3.1",
@@ -26,8 +34,6 @@
     "koa-static": "^5.0.0",
     "libsodium-wrappers": "^0.7.13",
     "resolve-accept-language": "^3.1.4",
-    "sqlite": "^5.0.1",
-    "sqlite3": "^5.1.6",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
@@ -57,13 +63,13 @@
     "typescript-json-schema": "^0.64.0"
   },
   "scripts": {
-    "build": "yarn fix && yarn generate-json-schemas && ./node_modules/.bin/tsc -p tsconfig.build.json",
-    "test": "yarn generate-json-schemas && ./node_modules/.bin/mocha --exit",
+    "build": "npm run fix && npm run generate-json-schemas && ./node_modules/.bin/tsc -p tsconfig.build.json && cd demos/common && npm run build && cd ../..",
+    "test": "./node_modules/.bin/mocha --exit",
     "lint": "./node_modules/.bin/eslint  --ext .js --config ./.eslintrc.cjs",
     "lint:prettier": "./node_modules/.bin/prettier --check ./src ./tests",
-    "fix": "yarn fix:eslint && yarn fix:prettier",
-    "fix:eslint": "yarn lint --fix",
-    "fix:prettier": "yarn lint:prettier --write",
+    "fix": "npm run fix:eslint && npm run fix:prettier",
+    "fix:eslint": "npm run lint --fix",
+    "fix:prettier": "npm run lint:prettier --write",
     "generate-json-schemas": "node generate-json-schema.js"
   }
 }

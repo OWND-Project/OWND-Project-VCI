@@ -20,10 +20,11 @@
     "koa-router": "^12.0.0",
     "koa-static": "^5.0.0",
     "libsodium-wrappers": "^0.7.13",
+    "ownd-vci": "file:../../",
+    "ownd-vci-common": "file:../common",
     "sqlite": "^5.0.1",
     "sqlite3": "^5.1.6",
-    "uuid": "^9.0.1",
-    "ownd-vci": "../../"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/chai": "^4.3.6",
@@ -34,6 +35,8 @@
     "@types/koa-static": "^4.0.2",
     "@types/libsodium-wrappers": "^0.7.11",
     "@types/mocha": "^10.0.1",
+    "@types/node": "^20.19.24",
+    "@types/sqlite3": "^3.1.8",
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^9.0.4",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
@@ -50,15 +53,13 @@
     "typescript": "^5.2.2"
   },
   "scripts": {
-    "preinstall": "rm -rf node_modules && rm -rf ../*/node_modules && rm -rf ../../node_modules && rm -rf ../event-certificate-manager/*/node_modules",
-    "postinstall": "cd ./node_modules/ownd-vci && yarn install && ../.bin/tsc -p tsconfig.build.json",
-    "build": "yarn fix && tsc -p tsconfig.json",
+    "build": "npm run fix && tsc -p tsconfig.json",
     "start": "nodemon",
     "test": "mocha --exit",
     "lint": "eslint  --ext .js --config .eslintrc.cjs",
     "lint:prettier": "prettier --check ./src ./tests",
-    "fix": "yarn fix:eslint && yarn fix:prettier",
-    "fix:eslint": "yarn lint --fix",
-    "fix:prettier": "yarn lint:prettier --write"
+    "fix": "npm run fix:eslint && npm run fix:prettier",
+    "fix:eslint": "npm run lint --fix",
+    "fix:prettier": "npm run lint:prettier --write"
   }
 }

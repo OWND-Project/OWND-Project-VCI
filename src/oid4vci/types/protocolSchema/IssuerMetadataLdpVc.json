@@ -119,6 +119,9 @@
         "IssuerDisplay": {
             "additionalProperties": true,
             "properties": {
+                "background_color": {
+                    "type": "string"
+                },
                 "locale": {
                     "type": "string"
                 },
@@ -127,6 +130,9 @@
                     "additionalProperties": true
                 },
                 "name": {
+                    "type": "string"
+                },
+                "text_color": {
                     "type": "string"
                 }
             },
@@ -223,6 +229,8 @@
                 },
                 "required": [
                     "credential_definition",
+                    "credential_signing_alg_values_supported",
+                    "cryptographic_binding_methods_supported",
                     "format"
                 ],
                 "type": "object"
@@ -249,6 +257,9 @@
                 "$ref": "#/definitions/IssuerDisplay"
             },
             "type": "array"
+        },
+        "nonce_endpoint": {
+            "type": "string"
         },
         "notification_endpoint": {
             "type": "string"

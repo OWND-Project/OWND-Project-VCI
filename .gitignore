@@ -8,6 +8,7 @@ cli/out
 
 demos/employee-vci/.env
 demos/employee-vci/TEST_DB
+TEST_DB
 demos/employee-vci/database.sqlite
 demos/employee-vci/dist
 
@@ -21,3 +22,4 @@ demos/participation-cert-vci/TEST_DB
 demos/participation-cert-vci/database.sqlite
 demos/participation-cert-vci/dist
 
+launch.json

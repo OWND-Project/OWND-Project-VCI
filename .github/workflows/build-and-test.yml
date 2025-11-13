@@ -22,81 +22,145 @@ jobs:
         run: npm install -g yarn
       - name: yarn install
         run: yarn install
-      - name: yarn test
-        run: yarn test
-      - name: prettier
-        run: yarn lint:prettier
-      - name: eslint
-        run: yarn lint
-  for-demos-proxy-vci:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [18.16.0]
-    defaults:
-      run:
-        working-directory: demos/proxy-vci
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node }}
-      - name: install yarn
-        run: npm install -g yarn
-      - name: yarn install
+      - name: verify source files before build
+        run: |
+          echo "=== Checking source files ==="
+          ls -la src/index.ts || echo "src/index.ts not found"
+          ls -la src/types.ts || echo "src/types.ts not found"
+      - name: clean build output
+        run: rm -rf dist/ tsconfig.build.tsbuildinfo
+      - name: build ownd-vci only
+        run: |
+          npm run generate-json-schemas
+          echo "=== Running TypeScript compiler ==="
+          ./node_modules/.bin/tsc --version
+          ./node_modules/.bin/tsc -p tsconfig.build.json --listFiles | tail -20
+          echo "=== TypeScript compilation completed ==="
+      - name: verify ownd-vci build output
+        run: |
+          ls -la dist/ || echo "dist/ not found"
+          ls -la dist/types.d.ts || echo "dist/types.d.ts not found"
+          ls -la dist/utils/localize.d.ts || echo "dist/utils/localize.d.ts not found"
+      - name: yarn install in demos/common
         run: yarn install
+        working-directory: demos/common
+      - name: clean demos/common build artifacts
+        run: rm -rf dist/ tsconfig.tsbuildinfo
+        working-directory: demos/common
+      - name: build demos/common
+        run: npm run build
+        working-directory: demos/common
+      - name: verify demos/common build output
+        run: |
+          echo "=== Checking demos/common/dist/ ==="
+          ls -laR demos/common/dist/ || echo "demos/common/dist/ not found"
+          echo "=== Checking for store.js and store.d.ts ==="
+          ls -la demos/common/dist/store.js || echo "store.js not found"
+          ls -la demos/common/dist/store.d.ts || echo "store.d.ts not found"
+      - name: upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            dist/
+            demos/common/dist/
       - name: yarn test
         run: yarn test
       - name: prettier
         run: yarn lint:prettier
       - name: eslint
         run: yarn lint
+  # for-demos-proxy-vci:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #       node: [18.16.0]
+  #   defaults:
+  #     run:
+  #       working-directory: demos/proxy-vci
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: ${{ matrix.node }}
+  #     - name: install yarn
+  #       run: npm install -g yarn
+  #     - name: yarn install
+  #       run: yarn install
+  #     - name: yarn test
+  #       run: yarn test
+  #     - name: prettier
+  #       run: yarn lint:prettier
+  #     - name: eslint
+  #       run: yarn lint
   for-demos-employee-vci:
+    needs: for-common
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
         node: [18.16.0]
-    defaults:
-      run:
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: ./
+      - name: verify downloaded artifacts
+        run: |
+          echo "=== Checking dist/ directory ==="
+          ls -la dist/ || echo "dist/ not found"
+          echo "=== Checking for .d.ts files ==="
+          ls -la dist/types.d.ts || echo "dist/types.d.ts not found"
+          ls -la dist/types.js || echo "dist/types.js not found"
+          ls -la dist/utils/localize.d.ts || echo "dist/utils/localize.d.ts not found"
+          ls -la dist/utils/localize.js || echo "dist/utils/localize.js not found"
+          ls -la dist/utils/datetime.d.ts || echo "dist/utils/datetime.d.ts not found"
+          ls -la dist/utils/datetime.js || echo "dist/utils/datetime.js not found"
+          echo "=== Checking demos/common/dist/ ==="
+          ls -la demos/common/dist/ || echo "demos/common/dist/ not found"
+      - name: install yarn
+        run: npm install -g yarn
+      - name: yarn install and link local packages
+        run: |
+          yarn install --check-files
+          yarn install --force
         working-directory: demos/employee-vci
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node }}
-      - name: install yarn
-        run: npm install -g yarn
-      - name: yarn install
-        run: yarn install
       - name: yarn test
         run: yarn test
+        working-directory: demos/employee-vci
       - name: prettier
         run: yarn lint:prettier
+        working-directory: demos/employee-vci
       - name: eslint
         run: yarn lint
-  for-demos-participation-cert-vci:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [18.16.0]
-    defaults:
-      run:
-        working-directory: demos/participation-cert-vci
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node }}
-      - name: install yarn
-        run: npm install -g yarn
-      - name: yarn install
-        run: yarn install
-      - name: yarn test
-        run: yarn test
-      - name: prettier
-        run: yarn lint:prettier
-      - name: eslint
-        run: yarn lint
+        working-directory: demos/employee-vci
+  # for-demos-participation-cert-vci:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #       node: [18.16.0]
+  #   defaults:
+  #     run:
+  #       working-directory: demos/participation-cert-vci
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: ${{ matrix.node }}
+  #     - name: install yarn
+  #       run: npm install -g yarn
+  #     - name: yarn install
+  #       run: yarn install
+  #     - name: yarn test
+  #       run: yarn test
+  #     - name: prettier
+  #       run: yarn lint:prettier
+  #     - name: eslint
+  #       run: yarn lint

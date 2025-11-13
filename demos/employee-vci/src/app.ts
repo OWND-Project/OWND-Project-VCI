@@ -3,6 +3,7 @@ import path, { dirname } from "path";
 
 import Koa from "koa";
 import serve from "koa-static";
+import views from "@ladjs/koa-views";
 
 import adminRoutes from "./routes/admin/routes.js";
 import vciRoutes from "./routes/vci/routes.js";
@@ -16,6 +17,14 @@ export const init = () => {
   const app = new Koa();
   const adminRouter = adminRoutes();
   const vciRouter = vciRoutes();
+
+  // Setup EJS template engine
+  app.use(
+    views(path.join(__dirname, "views"), {
+      extension: "ejs",
+      map: { html: "ejs" },
+    }),
+  );
 
   app.use(serve(path.join(__dirname, "public")));
 

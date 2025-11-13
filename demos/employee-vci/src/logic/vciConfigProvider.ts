@@ -5,7 +5,7 @@ import {
   AuthCodeStateProvider,
   AuthorizedCodeWithStoredData,
   TokenIssuerConfig,
-} from "ownd-vci/dist/oid4vci/tokenEndpoint/types";
+} from "ownd-vci/dist/oid4vci/tokenEndpoint/types.js";
 
 export const authCodeStateProvider: AuthCodeStateProvider = async (
   authorizedCode: string,
@@ -30,6 +30,7 @@ export const authCodeStateProvider: AuthCodeStateProvider = async (
     },
   };
 };
+
 export const accessTokenIssuer: AccessTokenIssuer = async (
   authorizedCode: AuthorizedCodeWithStoredData,
 ) => {
@@ -39,22 +40,25 @@ export const accessTokenIssuer: AccessTokenIssuer = async (
   try {
     const expiresIn = Number(process.env.VCI_ACCESS_TOKEN_EXPIRES_IN);
     let nonce = {};
+
+    // アクセストークンを追加
+    await store.addAccessToken(
+      newAccessToken,
+      expiresIn,
+      authorizedCode.storedData.id,
+    );
+
+    // TODO: needsProofの場合、c_nonceを別途追加する処理を実装
     if (needsProof) {
-      const cNonce = generateRandomString();
-      const cNonceExpiresIn = Number(
-        process.env.VCI_ACCESS_TOKEN_C_NONCE_EXPIRES_IN,
-      );
-      await store.addAccessToken(
-        newAccessToken,
-        expiresIn,
-        cNonce,
-        cNonceExpiresIn,
-        authorizedCode.storedData.id,
-      );
-      nonce = {
-        c_nonce: cNonce,
-        c_nonce_expires_in: cNonceExpiresIn,
-      };
+      // const cNonce = generateRandomString();
+      // const cNonceExpiresIn = Number(
+      //   process.env.VCI_ACCESS_TOKEN_C_NONCE_EXPIRES_IN,
+      // );
+      // await authStore.addCNonce(accessTokenId, cNonce, cNonceExpiresIn);
+      // nonce = {
+      //   c_nonce: cNonce,
+      //   c_nonce_expires_in: cNonceExpiresIn,
+      // };
     }
     const tokenResponse = {
       access_token: newAccessToken,

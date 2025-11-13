@@ -56,35 +56,32 @@ describe("credentialOffer2Url", () => {
 describe("generatePreAuthCredentialOffer", () => {
   it("should not include tx_code in the grants when txCode is undefined", () => {
     const credentialIssuer = "https://issuer.example.com";
-    const credentials = ["config1", "config2"];
+    const credentialConfigurationIds = ["config1", "config2"];
     const preAuthCode = "code123";
 
     const result = generatePreAuthCredentialOffer(
       credentialIssuer,
-      credentials,
+      credentialConfigurationIds,
       preAuthCode,
     );
     const credentialOffer = new URL(result).searchParams.get(
       "credential_offer",
     );
-    assert.isNotNull(
-      credentialOffer,
-      "credential_offer parameter is missing in the URL.",
-    );
-    if (credentialOffer) {
-      const resultObject = JSON.parse(decodeURIComponent(credentialOffer));
-      assert.notProperty(
-        resultObject.grants[
-          "urn:ietf:params:oauth:grant-type:pre-authorized_code"
-        ],
-        "tx_code",
-      );
+    if (!credentialOffer) {
+      assert.fail("credential_offer parameter is missing in the URL.");
     }
+    const resultObject = JSON.parse(decodeURIComponent(credentialOffer));
+    assert.notProperty(
+      resultObject.grants[
+        "urn:ietf:params:oauth:grant-type:pre-authorized_code"
+      ],
+      "tx_code",
+    );
   });
 
   it("should include tx_code in the grants when txCode is defined", () => {
     const credentialIssuer = "https://issuer.example.com";
-    const credentials = ["config1", "config2"];
+    const credentialConfigurationIds = ["config1", "config2"];
     const preAuthCode = "code123";
 
     const txCode = {
@@ -95,58 +92,52 @@ describe("generatePreAuthCredentialOffer", () => {
 
     const result = generatePreAuthCredentialOffer(
       credentialIssuer,
-      credentials,
+      credentialConfigurationIds,
       preAuthCode,
       txCode,
     );
-    const credentialOffer1 = new URL(result).searchParams.get(
+    const credentialOffer = new URL(result).searchParams.get(
       "credential_offer",
     );
-    assert.isNotNull(
-      credentialOffer1,
-      "credential_offer parameter is missing in the URL.",
-    );
-    if (credentialOffer1) {
-      const resultObject = JSON.parse(decodeURIComponent(credentialOffer1));
-      assert.deepPropertyVal(
-        resultObject.grants[
-          "urn:ietf:params:oauth:grant-type:pre-authorized_code"
-        ],
-        "tx_code",
-        txCode,
-      );
+    if (!credentialOffer) {
+      assert.fail("credential_offer parameter is missing in the URL.");
     }
+    const resultObject = JSON.parse(decodeURIComponent(credentialOffer));
+    assert.deepPropertyVal(
+      resultObject.grants[
+        "urn:ietf:params:oauth:grant-type:pre-authorized_code"
+      ],
+      "tx_code",
+      txCode,
+    );
   });
 
   it("should include tx_code in the grants when txCode is defined (empty txCode)", () => {
     const credentialIssuer = "https://issuer.example.com";
-    const credentials = ["config1", "config2"];
+    const credentialConfigurationIds = ["config1", "config2"];
     const preAuthCode = "code123";
 
     const txCode = {};
 
     const result = generatePreAuthCredentialOffer(
       credentialIssuer,
-      credentials,
+      credentialConfigurationIds,
       preAuthCode,
       txCode,
     );
-    const credentialOffer1 = new URL(result).searchParams.get(
+    const credentialOffer = new URL(result).searchParams.get(
       "credential_offer",
     );
-    assert.isNotNull(
-      credentialOffer1,
-      "credential_offer parameter is missing in the URL.",
-    );
-    if (credentialOffer1) {
-      const resultObject = JSON.parse(decodeURIComponent(credentialOffer1));
-      assert.deepPropertyVal(
-        resultObject.grants[
-          "urn:ietf:params:oauth:grant-type:pre-authorized_code"
-        ],
-        "tx_code",
-        txCode,
-      );
+    if (!credentialOffer) {
+      assert.fail("credential_offer parameter is missing in the URL.");
     }
+    const resultObject = JSON.parse(decodeURIComponent(credentialOffer));
+    assert.deepPropertyVal(
+      resultObject.grants[
+        "urn:ietf:params:oauth:grant-type:pre-authorized_code"
+      ],
+      "tx_code",
+      txCode,
+    );
   });
 });

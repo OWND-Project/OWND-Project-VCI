@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "ownd-vci/dist/*": ["../../dist/*"]
+    }
+  },
+  "include": ["./src/**/*.ts"],
+  "references": [
+    { "path": "../../tsconfig.build.json" }
+  ]
+}

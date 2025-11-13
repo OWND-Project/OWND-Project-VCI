@@ -9,12 +9,13 @@ import {
   CredentialRequestJwtVcJson,
   CredentialRequestVcSdJwt,
   HttpRequest,
+  Proof,
 } from "../types/types.js";
 import { authenticate } from "./authenticate.js";
 import { validateProof } from "./validateProof.js";
 import { Result } from "../../types.js";
 import { toError } from "../utils.js";
-import authStore from "../../store/authStore.js";
+// import authStore from "../../../demos/common/src/authStore.js";
 import {
   credentialRequestJwtVcJsonValidator,
   credentialRequestValidator,
@@ -57,29 +58,85 @@ export class CredentialIssuer<T> {
       return { ok: false, error: { status: 400, payload: error } };
     }
 
-    if (!credentialRequest.format) {
-      const error = toError(INVALID_REQUEST, "Missing or malformed format");
+    // Check for credential_configuration_id or credential_identifier
+    if (
+      !credentialRequest.credential_configuration_id &&
+      !credentialRequest.credential_identifier
+    ) {
+      const error = toError(
+        INVALID_REQUEST,
+        "Missing credential_configuration_id or credential_identifier",
+      );
+      return { ok: false, error: { status: 400, payload: error } };
+    }
+
+    // credential_identifier is not yet supported
+    if (credentialRequest.credential_identifier) {
+      const error = toError(
+        "invalid_credential_request",
+        "credential_identifier is not yet supported",
+      );
+      return { ok: false, error: { status: 400, payload: error } };
+    }
+
+    // Resolve credential configuration from metadata
+    const credentialConfigId = credentialRequest.credential_configuration_id!;
+    const credentialConfig =
+      this.config.issuerMetadata.credential_configurations_supported[
+        credentialConfigId
+      ];
+
+    if (!credentialConfig) {
+      const error = toError(
+        "unknown_credential_configuration",
+        `Unknown credential_configuration_id: ${credentialConfigId}`,
+      );
       return { ok: false, error: { status: 400, payload: error } };
     }
 
     const { authorizedCode } = authResult.payload;
+
+    // Validate that sub is present
+    if (!authorizedCode.sub) {
+      const error = toError(
+        INVALID_REQUEST,
+        "Missing subject identifier (sub)",
+      );
+      return { ok: false, error: { status: 400, payload: error } };
+    }
+
     let proofOfPossession = undefined;
-    if (authorizedCode.proofElements) {
-      if (!credentialRequest.proof) {
-        const error = toError(INVALID_REQUEST, "Missing or malformed format");
-        return { ok: false, error: { status: 400, payload: error } };
+
+    // Support both new proofs and legacy proof parameter
+    let proofToValidate: Proof | undefined = undefined;
+
+    if (credentialRequest.proofs) {
+      // proofs: New format. Object containing proofs of possession of the key material.
+      // For now, we only support jwt proofs and process only the first one
+      if (
+        credentialRequest.proofs.jwt &&
+        credentialRequest.proofs.jwt.length > 0
+      ) {
+        const jwtProof = credentialRequest.proofs.jwt[0];
+        proofToValidate = {
+          proof_type: "jwt",
+          jwt: jwtProof,
+        };
       }
-      // proof: OPTIONAL. JSON object containing proof of possession of the key material the issued Credential shall be bound to.
-      const checkFlow = await authStore.getAuthCode(authorizedCode.code);
+    } else if (credentialRequest.proof) {
+      // proof: Legacy format. Still supported for backward compatibility.
+      proofToValidate = credentialRequest.proof;
+    }
+
+    if (proofToValidate) {
       const validateProofResult = await validateProof(
-        credentialRequest.proof,
+        proofToValidate,
         this.config.credentialIssuer,
-        authorizedCode.proofElements,
         {
-          preAuthorizedFlow:
-            checkFlow == undefined ? true : checkFlow.preAuthFlow,
+          preAuthorizedFlow: true, // TODO: get from checkFlow after design change
           supportAnonymousAccess: this.config.supportAnonymousAccess || false,
         },
+        this.config.getCNonce,
       );
       if (!validateProofResult.ok) {
         const { ok, error } = validateProofResult;
@@ -89,7 +146,8 @@ export class CredentialIssuer<T> {
     }
     const issueResult = await this._issue(
       credentialRequest,
-      authorizedCode.code,
+      credentialConfig,
+      authorizedCode.sub,
       proofOfPossession,
     );
 
@@ -98,32 +156,17 @@ export class CredentialIssuer<T> {
       return { ok, error };
     }
 
-    // update nonce
-    if (authorizedCode.proofElements) {
-      const { nonce, expiresIn } = await this.config.updateNonce(
-        authResult.payload.storedAccessToken,
-      );
-      return {
-        ok: true,
-        payload: {
-          credential: issueResult.payload,
-          c_nonce: nonce,
-          c_nonce_expires_in: expiresIn,
-        },
-      };
-    } else {
-      return {
-        ok: true,
-        payload: {
-          credential: issueResult.payload,
-        },
-      };
-    }
+    return {
+      ok: true,
+      payload: {
+        credential: issueResult.payload,
+      },
+    };
   }
 
   async _issueJwtVcJson(
     credentialRequest: CredentialRequestJwtVcJson,
-    preAuthorizedCode: string,
+    sub: string,
     proofOfPossession?: DecodedProofJwt,
   ): Promise<Result<string, ErrorPayloadWithStatusCode>> {
     console.log(`credential request: ${JSON.stringify(credentialRequest)}`);
@@ -134,7 +177,7 @@ export class CredentialIssuer<T> {
       );
       return { ok: false, error: { status: 400, payload: error } };
     }
-    const { type, credentialSubject } = credentialRequest.credential_definition;
+    const { type } = credentialRequest.credential_definition;
     if (!type) {
       // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html#appendix-A.1.1.4
       const error = toError(
@@ -151,7 +194,7 @@ export class CredentialIssuer<T> {
       return { ok: false, error: { status: 500, payload: error } };
     }
     const result = await this.config.issuingExecutor.jwtVcJson(
-      preAuthorizedCode,
+      sub,
       credentialRequest,
       proofOfPossession,
     );
@@ -164,12 +207,17 @@ export class CredentialIssuer<T> {
 
   async _issueVcSdJwt(
     credentialRequest: CredentialRequestVcSdJwt,
-    preAuthorizedCode: string,
+    credentialConfig: any, // TODO: Type this properly
+    sub: string,
     proofOfPossession?: DecodedProofJwt,
   ): Promise<Result<string, ErrorPayloadWithStatusCode>> {
-    const vct = credentialRequest.vct;
+    // Get vct from credentialConfig (resolved from metadata)
+    const vct = credentialConfig.vct;
     if (!vct) {
-      const error = toError(INVALID_REQUEST, "The payload needs vct");
+      const error = toError(
+        INVALID_REQUEST,
+        "The credential configuration does not contain vct",
+      );
       return { ok: false, error: { status: 400, payload: error } };
     }
     if (!this.config.issuingExecutor.sdJwtVc) {
@@ -179,9 +227,13 @@ export class CredentialIssuer<T> {
       );
       return { ok: false, error: { status: 500, payload: error } };
     }
+
+    // Add vct to credentialRequest for backward compatibility with issuingExecutor
+    const requestWithVct = { ...credentialRequest, vct };
+
     const result = await this.config.issuingExecutor.sdJwtVc(
-      preAuthorizedCode,
-      credentialRequest,
+      sub,
+      requestWithVct,
       proofOfPossession,
     );
     if (result.ok) {
@@ -193,7 +245,8 @@ export class CredentialIssuer<T> {
 
   async _issue(
     credentialRequest: CredentialRequest,
-    preAuthorizedCode: string,
+    credentialConfig: any, // TODO: Type this properly based on IssuerMetadata
+    sub: string,
     proofOfPossession?: DecodedProofJwt,
   ): Promise<Result<string, ErrorPayloadWithStatusCode>> {
     /*
@@ -220,22 +273,20 @@ export class CredentialIssuer<T> {
       },
     };
 
-    switch (credentialRequest.format) {
+    // Use format from credentialConfig resolved from metadata
+    switch (credentialConfig.format) {
       case "jwt_vc_json": {
         const jwtVcJsonRequest =
           credentialRequestJwtVcJsonValidator(credentialRequest);
-        return this._issueJwtVcJson(
-          jwtVcJsonRequest,
-          preAuthorizedCode,
-          proofOfPossession,
-        );
+        return this._issueJwtVcJson(jwtVcJsonRequest, sub, proofOfPossession);
       }
-      case "vc+sd-jwt": {
+      case "dc+sd-jwt": {
         const vcSdJwtRequest =
           credentialRequestVcSdJwtValidator(credentialRequest);
         return this._issueVcSdJwt(
           vcSdJwtRequest,
-          preAuthorizedCode,
+          credentialConfig,
+          sub,
           proofOfPossession,
         );
       }

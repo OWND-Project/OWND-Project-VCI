@@ -30,7 +30,23 @@ export interface Proof {
   cwt?: string;
 }
 
+export interface Proofs {
+  // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html
+  // Map of proof type to array of proof JWTs/CWTs
+  jwt?: string[];
+  cwt?: string[];
+  ldp_vp?: {
+    [key: string]: any;
+  }[]; // todo: improve type definition
+}
+
 export interface BaseCredentialRequest {
+  // Conditionally required: its necessity depends on the presence of other parameters.
+  // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#name-credential-request
+  //   REQUIRED when credential_identifiers parameter was not returned from the Token Response.
+  //   It MUST NOT be used otherwise.
+  credential_configuration_id?: string;
+
   // Conditionally required: its necessity depends on the presence of other parameters.
   // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html#name-credential-request
   //   REQUIRED when the credential_identifiers parameter was not returned from the Token Response.
@@ -38,9 +54,11 @@ export interface BaseCredentialRequest {
   format?: string;
 
   // Conditionally required: its necessity depends on the presence of other parameters.
-  // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0-ID1.html#name-credential-request
-  //   The proof object is REQUIRED if the proof_types_supported parameter is non-empty and present in the
-  //   credential_configurations_supported parameter of the Issuer metadata for the requested Credential.
+  // https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#name-credential-request
+  //   The proofs object is OPTIONAL. Contains proofs of possession of key material.
+  proofs?: Proofs;
+
+  // DEPRECATED: Use proofs instead. Kept for backward compatibility.
   proof?: Proof;
 
   // Conditionally required: its necessity depends on the presence of other parameters.
@@ -89,7 +107,10 @@ export interface TokenResponse {
   access_token: string;
   token_type: string;
   expires_in: number;
-  c_nonce?: string;
+}
+
+export interface NonceResponse {
+  c_nonce: string;
   c_nonce_expires_in?: number;
 }
 
@@ -98,8 +119,6 @@ export interface CredentialResponse {
   credential?: unknown;
 
   transaction_id?: string;
-  c_nonce?: string;
-  c_nonce_expires_in?: number;
   notification_id?: string;
 }
 
@@ -127,6 +146,8 @@ export interface BaseLogo {
  */
 export interface IssuerDisplay extends BaseDisplay {
   logo?: BaseLogo;
+  background_color?: string;
+  text_color?: string;
 }
 
 /**
@@ -151,6 +172,7 @@ interface BaseIssuerMetadata {
   credential_issuer: string;
   authorization_servers?: string[];
   credential_endpoint: string;
+  nonce_endpoint?: string; // REQUIRED by HAIP when cryptographic binding is supported
   batch_credential_endpoint?: string;
   deferred_credential_endpoint?: string;
   notification_endpoint?: string;
@@ -185,9 +207,9 @@ export interface IssuerMetadataJwtVcJson extends BaseIssuerMetadata {
   credential_configurations_supported: {
     [key: string]: {
       format: string;
-      scope?: string;
-      cryptographic_binding_methods_supported?: string[];
-      credential_signing_alg_values_supported?: string[];
+      scope?: string; // REQUIRED by HAIP for each credential configuration
+      cryptographic_binding_methods_supported: string[]; // REQUIRED by OID4VCI 1.0
+      credential_signing_alg_values_supported: string[]; // REQUIRED by OID4VCI 1.0
       proof_types_supported?: {
         [key: string]: {
           proof_signing_alg_values_supported: string[];
@@ -210,9 +232,9 @@ export interface IssuerMetadataLdpVc extends BaseIssuerMetadata {
   credential_configurations_supported: {
     [key: string]: {
       format: string;
-      scope?: string;
-      cryptographic_binding_methods_supported?: string[];
-      credential_signing_alg_values_supported?: string[];
+      scope?: string; // REQUIRED by HAIP for each credential configuration
+      cryptographic_binding_methods_supported: string[]; // REQUIRED by OID4VCI 1.0
+      credential_signing_alg_values_supported: string[]; // REQUIRED by OID4VCI 1.0
       proof_types_supported?: {
         [key: string]: {
           proof_signing_alg_values_supported: string[];
@@ -240,9 +262,9 @@ export interface IssuerMetadataVcSdJwt extends BaseIssuerMetadata {
   credential_configurations_supported: {
     [key: string]: {
       format: string;
-      scope?: string;
-      cryptographic_binding_methods_supported?: string[];
-      credential_signing_alg_values_supported?: string[];
+      scope?: string; // REQUIRED by HAIP for each credential configuration
+      cryptographic_binding_methods_supported: string[]; // REQUIRED by OID4VCI 1.0
+      credential_signing_alg_values_supported: string[]; // REQUIRED by OID4VCI 1.0
       proof_types_supported?: {
         [key: string]: {
           proof_signing_alg_values_supported: string[];
@@ -252,7 +274,7 @@ export interface IssuerMetadataVcSdJwt extends BaseIssuerMetadata {
 
       // Added parameters specific to A.3.
       vct: string;
-      claims: Claims;
+      credential_metadata: Claims; // Updated from 'claims' to 'credential_metadata' per latest spec
       order?: string[];
     };
   };
@@ -269,3 +291,35 @@ export type CredentialRequest =
   | CredentialRequestJwtVcJson
   | CredentialRequestLdpVc
   | CredentialRequestJwtVcJsonLd;
+
+/**
+ * OAuth 2.0 Authorization Server Metadata
+ * RFC 8414: https://www.rfc-editor.org/rfc/rfc8414.html
+ */
+export interface AuthorizationServerMetadata {
+  // REQUIRED
+  issuer: string; // Authorization server's issuer identifier URL
+
+  // OPTIONAL but commonly used
+  authorization_endpoint?: string;
+  token_endpoint?: string; // REQUIRED for OID4VCI pre-authorized code flow
+  jwks_uri?: string;
+  registration_endpoint?: string;
+  scopes_supported?: string[];
+  response_types_supported?: string[];
+  response_modes_supported?: string[];
+  grant_types_supported?: string[];
+  token_endpoint_auth_methods_supported?: string[];
+  token_endpoint_auth_signing_alg_values_supported?: string[];
+  service_documentation?: string;
+  ui_locales_supported?: string[];
+  op_policy_uri?: string;
+  op_tos_uri?: string;
+  revocation_endpoint?: string;
+  revocation_endpoint_auth_methods_supported?: string[];
+  revocation_endpoint_auth_signing_alg_values_supported?: string[];
+  introspection_endpoint?: string;
+  introspection_endpoint_auth_methods_supported?: string[];
+  introspection_endpoint_auth_signing_alg_values_supported?: string[];
+  code_challenge_methods_supported?: string[];
+}

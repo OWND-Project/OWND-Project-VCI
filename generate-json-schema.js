@@ -34,7 +34,7 @@ const runCommands = async () => {
         for (let index = 0; index < typeNames.length; index++) {
             const typeName = typeNames[index];
             const outputFilePath = `${outputDirectory}/${typeName}.json`;
-            const cmd = `yarn typescript-json-schema --strictNullChecks true --noExtraProps true --required ${typeDefinitionSrc} ${typeName} --out ${outputFilePath}`;
+            const cmd = `npx typescript-json-schema --strictNullChecks true --noExtraProps true --required ${typeDefinitionSrc} ${typeName} --out ${outputFilePath}`;
             try {
                 console.log(`generation schema for ${typeName}...`);
                 await execPromise(cmd);

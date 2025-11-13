@@ -240,7 +240,7 @@ const validMetadata = [
           },
         ],
         vct: "EmployeeIdentificationCredential",
-        claims: {
+        credential_metadata: {
           companyName: {
             display: [
               {

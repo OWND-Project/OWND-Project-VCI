@@ -58,6 +58,8 @@ describe("localizeIssuerMetadata", () => {
       credential_configurations_supported: {
         config1: {
           format: "format",
+          cryptographic_binding_methods_supported: ["jwk"],
+          credential_signing_alg_values_supported: ["ES256"],
           display: [
             { name: "Credential Default", locale: "en" },
             { name: "Credential Spanish", locale: "es" },
@@ -84,6 +86,8 @@ describe("localizeIssuerMetadata", () => {
       credential_configurations_supported: {
         config1: {
           format: "format",
+          cryptographic_binding_methods_supported: ["jwk"],
+          credential_signing_alg_values_supported: ["ES256"],
           credential_definition: {
             type: ["type"],
             credentialSubject: {
@@ -112,15 +116,17 @@ describe("localizeIssuerMetadata", () => {
     );
   });
 
-  it("should localize ClaimDisplay within claims", () => {
+  it("should localize ClaimDisplay within credential_metadata", () => {
     const metadata: IssuerMetadataVcSdJwt = {
       credential_issuer: "issuer",
       credential_endpoint: "endpoint",
       credential_configurations_supported: {
         config1: {
           format: "format",
+          cryptographic_binding_methods_supported: ["jwk"],
+          credential_signing_alg_values_supported: ["ES256"],
           vct: "vct",
-          claims: {
+          credential_metadata: {
             claim1: {
               display: [
                 { name: "Claim Default", locale: "en" },
@@ -139,8 +145,8 @@ describe("localizeIssuerMetadata", () => {
       "en",
     ) as IssuerMetadataVcSdJwt;
     assert.deepEqual(
-      localizedMetadata.credential_configurations_supported.config1.claims
-        ?.claim1.display,
+      localizedMetadata.credential_configurations_supported.config1
+        .credential_metadata?.claim1.display,
       [{ name: "Claim Spanish", locale: "es" }],
     );
   });

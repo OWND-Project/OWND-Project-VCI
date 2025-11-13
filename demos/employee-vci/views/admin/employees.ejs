@@ -1,0 +1,67 @@
+<h2>社員一覧</h2>
+
+<div class="toolbar">
+  <div></div>
+  <a href="/admin/employees/new" class="btn btn-primary">新規登録</a>
+</div>
+
+<% if (employees && employees.length > 0) { %>
+  <table>
+    <thead>
+      <tr>
+        <th>社員番号</th>
+        <th>氏名</th>
+        <th>会社名</th>
+        <th>部署</th>
+        <th>性別</th>
+        <th>アクション</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% employees.forEach(function(employee) { %>
+        <tr>
+          <td><%= employee.employeeNo %></td>
+          <td><%= employee.familyName %> <%= employee.givenName %></td>
+          <td><%= employee.companyName %></td>
+          <td><%= employee.division %></td>
+          <td><%= employee.gender === 'male' ? '男性' : employee.gender === 'female' ? '女性' : 'その他' %></td>
+          <td>
+            <div class="actions">
+              <a href="/admin/employees/<%= employee.id %>/edit" class="btn btn-secondary btn-small">編集</a>
+              <button onclick="deleteEmployee(<%= employee.id %>)" class="btn btn-danger btn-small">削除</button>
+            </div>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+<% } else { %>
+  <div class="empty-state">
+    <p>登録されている社員がいません</p>
+    <a href="/admin/employees/new" class="btn btn-primary">最初の社員を登録</a>
+  </div>
+<% } %>
+
+<script>
+async function deleteEmployee(id) {
+  if (!confirm('この社員を削除してもよろしいですか？')) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`/admin/employees/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      location.reload();
+    } else {
+      alert('削除に失敗しました');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('削除に失敗しました');
+  }
+}
+</script>

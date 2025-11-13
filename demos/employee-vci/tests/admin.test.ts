@@ -1,7 +1,12 @@
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const setupTestEnv = require("../test-env-setup.cjs");
+setupTestEnv();
+
 import { assert } from "chai";
 import request from "supertest";
 
-import { url2CredentialOffer } from "ownd-vci/dist/oid4vci/CredentialOffer";
+import { url2CredentialOffer } from "ownd-vci/dist/oid4vci/CredentialOffer.js";
 import { init } from "../src/app";
 import store, { Employee, NewEmployee } from "../src/store";
 import { GenerateCredentialOfferResult } from "../src/routes/admin/routesHandler";

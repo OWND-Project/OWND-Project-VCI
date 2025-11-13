@@ -62,7 +62,7 @@ const validate = async (
   const grantType = body["grant_type"];
   if (grantType !== "urn:ietf:params:oauth:grant-type:pre-authorized_code") {
     const error = {
-      error: "unsupported_grant_type",
+      error: "invalid_request",
       error_description: "Unsupported grant_type",
     };
     return { ok: false, error };
@@ -125,8 +125,8 @@ const validate = async (
     }
     if (authorizedCode.isUsed) {
       const error = {
-        error: "invalid_request",
-        error_description: "the PIN is already used",
+        error: "invalid_grant",
+        error_description: "the tx_code is already used",
       };
       return { ok: false, error };
     }

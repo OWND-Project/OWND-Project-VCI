@@ -1,23 +1,32 @@
 import * as jose from "jose";
+import { PrivateJwk } from "elliptic-jwk";
 
 import store from "../store.js";
-import keyStore from "ownd-vci/dist/store/keyStore.js";
-import { issueFlatCredential } from "ownd-vci/dist/credentials/sd-jwt/issuer.js";
-import { ErrorPayload, Result } from "ownd-vci/dist/types";
+import keyStore from "ownd-vci-common/dist/store/keyStore.js";
+import { issueFlatCredential } from "@ownd-project/ts-toolbox";
+import { ErrorPayload, Result } from "ownd-vci/dist/types.js";
 
 const issueEmployeeCredential = async (
-  authorizedCode: string,
+  sub: string,
   jwk: jose.JWK,
 ): Promise<Result<string, ErrorPayload>> => {
-  const data = await store.getPreAuthCodeAndEmployee(authorizedCode);
-  if (!data) {
+  const employee = await store.getEmployeeById(sub);
+  if (!employee) {
     return { ok: false, error: { error: "NotFound" } }; // todo define constant
   }
-  const { employee } = data;
   const keyPair = await keyStore.getLatestKeyPair();
   if (keyPair) {
     const { x509cert } = keyPair;
     const x5c = x509cert ? JSON.parse(x509cert) : [];
+    // Extract JWK properties only - cast to PrivateJwk to access inherited properties
+    const privateJwk = keyPair as unknown as PrivateJwk;
+    const issuerJwk: PrivateJwk = {
+      kty: privateJwk.kty,
+      crv: privateJwk.crv,
+      x: privateJwk.x,
+      y: privateJwk.y,
+      d: privateJwk.d,
+    };
     // issue vc
     const iss = process.env.CREDENTIAL_ISSUER_IDENTIFIER;
     const iat = Math.floor(Date.now() / 1000);
@@ -38,7 +47,7 @@ const issueEmployeeCredential = async (
       iat,
       exp,
     };
-    const credential = await issueFlatCredential(claims, keyPair, x5c);
+    const credential = await issueFlatCredential(claims, issuerJwk, x5c);
     return { ok: true, payload: credential };
   } else {
     const error = { status: 500, error: "No keypair exists" };

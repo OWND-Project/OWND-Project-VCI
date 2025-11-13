@@ -1,0 +1,45 @@
+<h2>社員編集</h2>
+
+<div class="form-container">
+  <form action="/admin/employees/<%= employee.id %>/update" method="POST">
+    <div class="form-group">
+      <label for="companyName">会社名 *</label>
+      <input type="text" id="companyName" name="employee[companyName]" value="<%= employee.companyName %>" required>
+    </div>
+
+    <div class="form-group">
+      <label for="employeeNo">社員番号 *</label>
+      <input type="text" id="employeeNo" name="employee[employeeNo]" value="<%= employee.employeeNo %>" required>
+    </div>
+
+    <div class="form-group">
+      <label for="familyName">姓 *</label>
+      <input type="text" id="familyName" name="employee[familyName]" value="<%= employee.familyName %>" required>
+    </div>
+
+    <div class="form-group">
+      <label for="givenName">名 *</label>
+      <input type="text" id="givenName" name="employee[givenName]" value="<%= employee.givenName %>" required>
+    </div>
+
+    <div class="form-group">
+      <label for="division">部署</label>
+      <input type="text" id="division" name="employee[division]" value="<%= employee.division %>">
+    </div>
+
+    <div class="form-group">
+      <label for="gender">性別 *</label>
+      <select id="gender" name="employee[gender]" required>
+        <option value="">選択してください</option>
+        <option value="male" <%= employee.gender === 'male' ? 'selected' : '' %>>男性</option>
+        <option value="female" <%= employee.gender === 'female' ? 'selected' : '' %>>女性</option>
+        <option value="other" <%= employee.gender === 'other' ? 'selected' : '' %>>その他</option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">更新</button>
+      <a href="/admin/employees" class="btn btn-secondary">キャンセル</a>
+    </div>
+  </form>
+</div>

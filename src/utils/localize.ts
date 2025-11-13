@@ -91,9 +91,9 @@ export const localizeIssuerMetadata = (
       );
     }
 
-    if ("claims" in config) {
-      Object.keys(config.claims).forEach((claimKey) => {
-        const claim = config.claims![claimKey];
+    if ("credential_metadata" in config) {
+      Object.keys(config.credential_metadata).forEach((claimKey) => {
+        const claim = config.credential_metadata![claimKey];
         if (claim.display) {
           claim.display = localizeClaimDisplay(
             claim.display,
